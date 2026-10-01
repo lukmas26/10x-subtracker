@@ -269,28 +269,28 @@ No data or schema migration. One test user is added to production `auth.users` o
 
 #### Automated
 
-- [x] 1.1 Matcher tests pass: `npm run test:smoke`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Type check passes: `npx astro check`
-- [x] 1.4 Local 8/8: build + preview + `npm run smoke` against local Supabase
+- [x] 1.1 Matcher tests pass: `npm run test:smoke` — 5840e15
+- [x] 1.2 Lint passes: `npm run lint` — 5840e15
+- [x] 1.3 Type check passes: `npx astro check` — 5840e15
+- [x] 1.4 Local 8/8: build + preview + `npm run smoke` against local Supabase — 5840e15
 
 #### Manual
 
-- [x] 1.5 Deliberately broken correct-password step shows FAIL, then reverted
+- [x] 1.5 Deliberately broken correct-password step shows FAIL, then reverted — 5840e15
 
 ### Phase 2: Remote smoke mode
 
 #### Automated
 
-- [ ] 2.1 Matcher tests still pass: `npm run test:smoke`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 `git check-ignore .env.smoke` reports the file as ignored
-- [ ] 2.4 Local mode unchanged: `npm run smoke` 8/8 against local Supabase, prints `mode: local`
-- [ ] 2.5 Misconfiguration guard: `SMOKE_EMAIL=x npm run smoke` exits non-zero without sending requests
+- [x] 2.1 Matcher tests still pass: `npm run test:smoke`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 `git check-ignore .env.smoke` reports the file as ignored
+- [x] 2.4 Local mode unchanged: `npm run smoke` 8/8 against local Supabase, prints `mode: local`
+- [x] 2.5 Misconfiguration guard: `SMOKE_EMAIL=x npm run smoke` exits non-zero without sending requests
 
 #### Manual
 
-- [ ] 2.6 Remote mode against local preview + local Supabase passes all 7 steps and prints `mode: remote`
+- [x] 2.6 Remote mode against local preview + local Supabase passes all 7 steps and prints `mode: remote`
 
 ### Phase 3: Access setup, runbook and live verification
 

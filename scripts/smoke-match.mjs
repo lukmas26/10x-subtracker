@@ -24,3 +24,20 @@ export function matches(actual, expected, baseUrl) {
   const error = url.searchParams.get("error");
   return expected.error === true ? Boolean(error) : error === null;
 }
+
+/**
+ * True when an anonymous request was stopped before reaching the app:
+ * 401/403, or a 302 to a Cloudflare Access login host.
+ * @param {{ status: number, location: string }} actual
+ * @param {string} baseUrl
+ * @returns {boolean}
+ */
+export function blocksAnonymous(actual, baseUrl) {
+  if (actual.status === 401 || actual.status === 403) return true;
+  if (actual.status !== 302 || !actual.location) return false;
+  try {
+    return new URL(actual.location, baseUrl).hostname.endsWith(".cloudflareaccess.com");
+  } catch {
+    return false;
+  }
+}

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { matches } from "./smoke-match.mjs";
+import { blocksAnonymous, matches } from "./smoke-match.mjs";
 
 const BASE = "http://localhost:4321";
 const home = { status: 302, path: "/" };
@@ -50,4 +50,29 @@ test("wrong status fails even with the right path", () => {
 test("status-only expectation ignores location", () => {
   assert.equal(matches({ status: 200, location: "" }, { status: 200 }, BASE), true);
   assert.equal(matches({ status: 500, location: "" }, { status: 200 }, BASE), false);
+});
+
+const PREVIEW = "https://preview.example.workers.dev";
+
+test("access: 401 and 403 count as blocked", () => {
+  assert.equal(blocksAnonymous({ status: 401, location: "" }, PREVIEW), true);
+  assert.equal(blocksAnonymous({ status: 403, location: "" }, PREVIEW), true);
+});
+
+test("access: 302 to a cloudflareaccess.com host counts as blocked", () => {
+  const location = "https://team.cloudflareaccess.com/cdn-cgi/access/login/preview.example.workers.dev";
+  assert.equal(blocksAnonymous({ status: 302, location }, PREVIEW), true);
+});
+
+test("access: 200 from the app is not blocked", () => {
+  assert.equal(blocksAnonymous({ status: 200, location: "" }, PREVIEW), false);
+});
+
+test("access: 302 to an app path or look-alike host is not blocked", () => {
+  assert.equal(blocksAnonymous({ status: 302, location: "/auth/signin" }, PREVIEW), false);
+  assert.equal(
+    blocksAnonymous({ status: 302, location: "https://cloudflareaccess.com.evil.example/" }, PREVIEW),
+    false,
+  );
+  assert.equal(blocksAnonymous({ status: 302, location: "" }, PREVIEW), false);
 });

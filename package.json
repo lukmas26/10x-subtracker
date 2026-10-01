@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "smoke": "node scripts/smoke.mjs",
     "test:smoke": "node --test \"scripts/*.test.mjs\"",
+    "smoke:remote": "node --env-file=.env.smoke scripts/smoke.mjs",
     "prepare": "husky"
   },
   "dependencies": {
