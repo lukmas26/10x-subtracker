@@ -3,7 +3,7 @@ project: SubTracker
 version: 1
 status: draft
 created: 2026-09-28
-updated: 2026-10-01
+updated: 2026-10-02
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -41,7 +41,7 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 
 | ID   | Change ID                          | Outcome (user can …)                                                                     | Prerequisites | PRD refs                                                                                              | Status   |
 | ---- | ---------------------------------- | ---------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- | -------- |
-| F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | in-progress |
+| F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | done |
 | S-01 | first-subscription-on-list         | add a first subscription (name, amount, cycle, category) and see it on the list          | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | ready    |
 | S-02 | edit-subscription                  | correct an existing subscription without risking data loss                               | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                            | proposed |
 | S-03 | delete-subscription                | delete a subscription they no longer pay for                                             | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                              | proposed |
@@ -85,7 +85,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Protect previews, or give previews a separate database? — Owner: user. Block: no.
 - **Risk:** Without this, S-01's first preview exposes real amounts publicly, and the smoke test reports success where sign-in actually failed. It is not a prerequisite for planning S-01, only for promoting it safely — so it runs in parallel rather than ahead of the north star.
-- **Status:** in-progress
+- **Status:** done
 
 ## Slices
 
@@ -198,3 +198,5 @@ The PRD has no open questions (all three were resolved on 2026-09-19). The quest
 ## Milestone History
 
 ## Done
+
+- **F-01: (foundation) deployment previews are not publicly accessible (or point at a separate database), and the smoke test can run the full sign-up → sign-in → protected page round trip against the production database without letting wrong redirects pass.** — Archived 2026-10-02 → `context/archive/2026-09-30-safe-release-verification/`. Lesson: —.
