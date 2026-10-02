@@ -28,7 +28,7 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 - `src/pages/api/auth/{signin,signup,signout}.ts` — `POST` handlers that read `formData()` and respond with redirects; errors go back as `?error=<message>` on the auth page, not as JSON.
 - Pages: `src/pages/auth/*.astro` render React forms from `src/components/auth/`; `src/pages/dashboard.astro` is the protected example.
 
-`scripts/smoke.mjs` encodes the expected behavior of this flow (status codes, redirect targets, cookies) — update it when changing auth routes.
+`scripts/smoke.mjs` (with its matcher `scripts/smoke-match.mjs`) encodes the expected behavior of this flow (status codes, redirect targets, cookies) — update them when changing auth routes.
 
 ## Commands
 
@@ -38,6 +38,8 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 - `npx astro check` — type-check `.astro` + TS files (CI runs it; there is no `typecheck` script)
 - `npm run format` — Prettier (astro + tailwind plugins)
 - `npm run smoke` — dependency-free end-to-end auth smoke test (`scripts/smoke.mjs`) against a running server; `BASE_URL` defaults to `http://localhost:4321`. Needs a reachable Supabase. Run after dependency upgrades.
+- `npm run test:smoke` — unit tests for the smoke matcher (`scripts/*.test.mjs`, `node --test`); no server needed.
+- `npm run smoke:remote` — same smoke test against a hosted environment, loading `.env.smoke` (copy `.env.smoke.example`; gitignored, never commit it). `SMOKE_EMAIL`/`SMOKE_PASSWORD` select remote mode: signs in to an existing confirmed account and never signs up. `CF_ACCESS_CLIENT_ID`/`CF_ACCESS_CLIENT_SECRET` add Cloudflare Access service-token headers. Pass `BASE_URL` (and `SMOKE_EXPECT_ACCESS=1` to first assert anonymous requests are blocked by Access) per run, e.g. `BASE_URL=https://<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`. Half-set credential pairs exit 1 before any request.
 
 ## Environment
 
