@@ -42,7 +42,7 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 | ID   | Change ID                          | Outcome (user can …)                                                                     | Prerequisites | PRD refs                                                                                              | Status   |
 | ---- | ---------------------------------- | ---------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- | -------- |
 | F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | done |
-| S-01 | first-subscription-on-list         | add a first subscription (name, amount, cycle, category) and see it on the list          | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | ready    |
+| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | planning |
 | S-02 | edit-subscription                  | correct an existing subscription without risking data loss                               | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                            | proposed |
 | S-03 | delete-subscription                | delete a subscription they no longer pay for                                             | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                              | proposed |
 | S-04 | spending-summary                   | see the monthly and yearly total of all their subscriptions                              | S-01          | FR-006                                                                                                | proposed |
@@ -91,17 +91,17 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ### S-01: User adds their first subscription and sees it on the list
 
-- **Outcome:** user can, once signed in, add a subscription (name, amount, monthly/yearly cycle, a category picked from a list or created on the spot) and immediately see it on their own subscription list — visible only to them.
+- **Outcome:** user can, once signed in, add a subscription (name, amount, currency — PLN, EUR or USD — monthly/yearly cycle, a category picked from a list or created on the spot) and immediately see it on their own subscription list — visible only to them.
 - **Change ID:** first-subscription-on-list
 - **PRD refs:** US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers)
 - **Prerequisites:** —
 - **Parallel with:** F-01
 - **Blockers:** —
 - **Unknowns:**
-  - One currency for all amounts (e.g. PLN), or a currency per subscription? — Owner: user. Block: no (default: a single currency).
+  - ~~One currency for all amounts (e.g. PLN), or a currency per subscription?~~ — Resolved 2026-10-02: each subscription carries its own currency, limited to PLN, EUR and USD (default PLN).
   - Where does the initial category list come from, given that the admin-curated shared catalog (FR-005) is parked? — Owner: user. Block: no (default: a short starter list + the user's own categories).
 - **Risk:** The first table holding financial data and the first row-level access policies are born here — a cross-account isolation bug is the most expensive possible bug, so the slice must explicitly verify that a second account cannot see someone else's subscriptions.
-- **Status:** ready
+- **Status:** planning
 
 ### S-02: User edits a subscription
 
@@ -130,14 +130,14 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ### S-04: User sees the spending summary
 
-- **Outcome:** user can open the summary screen and see the monthly and yearly total of all their subscriptions, with monthly and yearly cycles normalized to a common unit.
+- **Outcome:** user can open the summary screen and see the monthly and yearly total of all their subscriptions, with monthly and yearly cycles normalized to a common unit and totals shown per currency (PLN, EUR, USD — no conversion).
 - **Change ID:** spending-summary
 - **PRD refs:** FR-006
 - **Prerequisites:** S-01
 - **Parallel with:** S-02, S-03, F-01
 - **Blockers:** —
 - **Unknowns:** —
-- **Risk:** Misleading totals with mixed cycles (the PRD calls this out explicitly) — cycle normalization must be checked against worked examples. This screen is also where the recommendation will appear, so it comes before S-05.
+- **Risk:** Misleading totals with mixed cycles (the PRD calls this out explicitly) — cycle normalization must be checked against worked examples. Amounts in different currencies must never be summed together; each currency gets its own total. This screen is also where the recommendation will appear, so it comes before S-05.
 - **Status:** proposed
 
 ### S-05: User sees a savings recommendation for a duplicated category
@@ -183,7 +183,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 The PRD has no open questions (all three were resolved on 2026-09-19). The questions below surfaced while decomposing the work:
 
 1. **Recommendation rule: which subscription should be named, and how are savings computed for the "consolidate" and "replace" options without plan-price or alternative data?** — Owner: user. Block: S-05, S-06.
-2. **Currency: one per account, or one per subscription?** — Owner: user. Block: roadmap-wide (low — default is a single currency; changing it later means migrating S-01 data and reworking S-04 totals).
+2. ~~**Currency: one per account, or one per subscription?**~~ — Resolved 2026-10-02 (during `/10x-plan first-subscription-on-list`): multiple currencies, one per subscription, limited to PLN, EUR and USD. S-04 totals per currency without conversion; S-05 states savings in the named subscription's own currency.
 3. **Is the `admin` role needed in this milestone at all, given that its only permission (FR-005) is parked?** — Owner: user. Block: roadmap-wide (low — default is the `user` role only).
 
 ## Parked
