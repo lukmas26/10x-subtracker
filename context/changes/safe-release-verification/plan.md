@@ -282,28 +282,28 @@ No data or schema migration. One test user is added to production `auth.users` o
 
 #### Automated
 
-- [x] 2.1 Matcher tests still pass: `npm run test:smoke`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 `git check-ignore .env.smoke` reports the file as ignored
-- [x] 2.4 Local mode unchanged: `npm run smoke` 8/8 against local Supabase, prints `mode: local`
-- [x] 2.5 Misconfiguration guard: `SMOKE_EMAIL=x npm run smoke` exits non-zero without sending requests
+- [x] 2.1 Matcher tests still pass: `npm run test:smoke` — bcee409
+- [x] 2.2 Lint passes: `npm run lint` — bcee409
+- [x] 2.3 `git check-ignore .env.smoke` reports the file as ignored — bcee409
+- [x] 2.4 Local mode unchanged: `npm run smoke` 8/8 against local Supabase, prints `mode: local` — bcee409
+- [x] 2.5 Misconfiguration guard: `SMOKE_EMAIL=x npm run smoke` exits non-zero without sending requests — bcee409
 
 #### Manual
 
-- [x] 2.6 Remote mode against local preview + local Supabase passes all 7 steps and prints `mode: remote`
+- [x] 2.6 Remote mode against local preview + local Supabase passes all 7 steps and prints `mode: remote` — bcee409
 
 ### Phase 3: Access setup, runbook and live verification
 
 #### Automated
 
-- [ ] 3.1 Remote smoke against Access-protected preview passes all 8 steps
-- [ ] 3.2 Remote smoke against production passes all 7 steps
-- [ ] 3.3 `curl -sI <preview-url>/` without Access headers does not return 200
-- [ ] 3.4 Lint passes: `npm run lint`
+- [x] 3.1 Remote smoke against Access-protected preview passes all 8 steps
+- [x] 3.2 Remote smoke against production passes all 7 steps
+- [x] 3.3 `curl -sI <preview-url>/` without Access headers does not return 200
+- [x] 3.4 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.5 Preview URL in a private window shows the Cloudflare Access login
-- [ ] 3.6 Production URL opens the app without an Access prompt
-- [ ] 3.7 Test account created via hosted sign-up and confirmation link worked
-- [ ] 3.8 No `.env.smoke` in `git status`; runbook and Pass 3 entry read correctly
+- [x] 3.5 Preview URL in a private window shows the Cloudflare Access login
+- [x] 3.6 Production URL opens the app without an Access prompt
+- [x] 3.7 Test account created via hosted sign-up and confirmation link worked
+- [x] 3.8 No `.env.smoke` in `git status`; runbook and Pass 3 entry read correctly
