@@ -296,14 +296,14 @@ No data or schema migration. One test user is added to production `auth.users` o
 
 #### Automated
 
-- [x] 3.1 Remote smoke against Access-protected preview passes all 8 steps
-- [x] 3.2 Remote smoke against production passes all 7 steps
-- [x] 3.3 `curl -sI <preview-url>/` without Access headers does not return 200
-- [x] 3.4 Lint passes: `npm run lint`
+- [x] 3.1 Remote smoke against Access-protected preview passes all 8 steps — dd61596
+- [x] 3.2 Remote smoke against production passes all 7 steps — dd61596
+- [x] 3.3 `curl -sI <preview-url>/` without Access headers does not return 200 — dd61596
+- [x] 3.4 Lint passes: `npm run lint` — dd61596
 
 #### Manual
 
-- [x] 3.5 Preview URL in a private window shows the Cloudflare Access login
-- [x] 3.6 Production URL opens the app without an Access prompt
-- [x] 3.7 Test account created via hosted sign-up and confirmation link worked
-- [x] 3.8 No `.env.smoke` in `git status`; runbook and Pass 3 entry read correctly
+- [x] 3.5 Preview URL in a private window shows the Cloudflare Access login — dd61596
+- [x] 3.6 Production URL opens the app without an Access prompt — dd61596
+- [x] 3.7 Test account created via hosted sign-up and confirmation link worked — dd61596
+- [x] 3.8 No `.env.smoke` in `git status`; runbook and Pass 3 entry read correctly — dd61596
