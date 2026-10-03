@@ -494,3 +494,31 @@ carries a database migration; it follows the runbook, including the new migratio
 | Migration    | `20261003120000_subscriptions_and_categories.sql` (additive)                                                       |
 | Remote smoke | preview 10/10, production 9/9                                                                                      |
 | Rollback     | `npx wrangler rollback acbce2f0-84a8-409b-997c-c433a62b8016` (the tables stay; the old version never touches them) |
+
+### Pass 5 — 2026-10-03 (implementation review fixes; atomic save RPC)
+
+Change `first-subscription-on-list`, review fixes from PR #11 (`adb9304`). It follows the runbook.
+
+1. Local gates and CI on PR #11 are green: `test:rls` 16/16, local smoke 16/16, and the new CI
+   types-drift step.
+2. The user ran `npx supabase db push`, which applied `20261003140000_create_subscription_rpc.sql`
+   (additive: a new function only). The live `b00106c6` kept working on it.
+3. `npm run build` + `npx wrangler versions upload` produced `3d3f296a-5014-4929-a97f-773005887175`
+   (preview `https://3d3f296a-subtracker.lukasz-maslowski.workers.dev`).
+4. `BASE_URL=<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` gave **10/10 PASS**.
+   - `smoke:remote` never writes, so it does not exercise `create_subscription`.
+   - The user therefore added a subscription with a new category on the preview, and it saved.
+     This shows the function exists on hosted.
+5. The user approved, then: `npx wrangler versions deploy 3d3f296a-5014-4929-a97f-773005887175@100% -y`.
+6. `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote` gave **9/9 PASS**.
+   Anonymous `/` returns `200` and `/subscriptions` returns `302` → `/auth/signin`.
+
+| Item         | Value                                                                                                    |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| Live version | `3d3f296a-5014-4929-a97f-773005887175` (100%)                                                            |
+| Migration    | `20261003140000_create_subscription_rpc.sql` (additive)                                                  |
+| Remote smoke | preview 10/10, production 9/9, plus a manual RPC save on the preview                                     |
+| Rollback     | `npx wrangler rollback b00106c6-cab3-4853-9916-7dfb00af2bd1` (it doesn't call the function, which stays) |
+
+Lesson: `smoke:remote` cannot see write paths. When a release changes how data is written, run one
+manual write on the preview before promoting.
