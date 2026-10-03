@@ -375,32 +375,32 @@ Additive only (new tables, policies, grants, starter rows); safe to apply while 
 
 #### Automated
 
-- [x] 2.1 Lint passes: `npm run lint`
-- [x] 2.2 Type check passes: `npx astro check`
-- [x] 2.3 Build passes: `npm run build`
-- [x] 2.4 Existing local smoke still passes 8/8 against `npm run preview` + local Supabase: `npm run smoke`
+- [x] 2.1 Lint passes: `npm run lint` — 26a7d27
+- [x] 2.2 Type check passes: `npx astro check` — 26a7d27
+- [x] 2.3 Build passes: `npm run build` — 26a7d27
+- [x] 2.4 Existing local smoke still passes 8/8 against `npm run preview` + local Supabase: `npm run smoke` — 26a7d27
 
 #### Manual
 
-- [x] 2.5 Signed in locally: adding "Netflix", `49,99`, PLN, monthly, Streaming shows "Subscription saved" and the row `49.99 PLN · monthly · Streaming` at the top
-- [x] 2.6 Choosing "+ New category…" with `Video` creates and uses it; adding another with `video` reuses the same category (appears once in the select)
-- [x] 2.7 Empty name, `0`, `abc`, `1.999` are blocked client-side with field errors; a crafted bad post (e.g. curl with `currency=GBP`) returns to the page with a visible error and writes nothing
-- [x] 2.8 Anonymous `/subscriptions` redirects to `/auth/signin`; a second local account sees an empty list
-- [x] 2.9 Page is usable at ~375px width (no horizontal scroll, form controls reachable)
-- [x] 2.10 A new category named `S%` is created as its own category and does not reuse "Streaming"
+- [x] 2.5 Signed in locally: adding "Netflix", `49,99`, PLN, monthly, Streaming shows "Subscription saved" and the row `49.99 PLN · monthly · Streaming` at the top — 26a7d27
+- [x] 2.6 Choosing "+ New category…" with `Video` creates and uses it; adding another with `video` reuses the same category (appears once in the select) — 26a7d27
+- [x] 2.7 Empty name, `0`, `abc`, `1.999` are blocked client-side with field errors; a crafted bad post (e.g. curl with `currency=GBP`) returns to the page with a visible error and writes nothing — 26a7d27
+- [x] 2.8 Anonymous `/subscriptions` redirects to `/auth/signin`; a second local account sees an empty list — 26a7d27
+- [x] 2.9 Page is usable at ~375px width (no horizontal scroll, form controls reachable) — 26a7d27
+- [x] 2.10 A new category named `S%` is created as its own category and does not reuse "Streaming" — 26a7d27
 
 ### Phase 3: Smoke coverage for add and cross-account isolation
 
 #### Automated
 
-- [ ] 3.1 Matcher tests pass: `npm run test:smoke`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 Local smoke passes 16/16 against `npm run preview` + local Supabase: `npm run smoke`
-- [ ] 3.4 Remote-mode shape against local: with a local confirmed user in `SMOKE_EMAIL`/`SMOKE_PASSWORD`, `npm run smoke` passes 9/9 and writes no subscription
+- [x] 3.1 Matcher tests pass: `npm run test:smoke`
+- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.3 Local smoke passes 16/16 against `npm run preview` + local Supabase: `npm run smoke`
+- [x] 3.4 Remote-mode shape against local: with a local confirmed user in `SMOKE_EMAIL`/`SMOKE_PASSWORD`, `npm run smoke` passes 9/9 and writes no subscription
 
 #### Manual
 
-- [ ] 3.5 A deliberately broken run (temporarily make the subscriptions select policy `using (true)` in a local scratch reset, or point the B check at A's session) shows FAIL for `second account does not see first account's subscription`, then revert
+- [x] 3.5 A deliberately broken run (temporarily make the subscriptions select policy `using (true)` in a local scratch reset, or point the B check at A's session) shows FAIL for `second account does not see first account's subscription`, then revert
 
 ### Phase 4: Hosted rollout and live verification
 

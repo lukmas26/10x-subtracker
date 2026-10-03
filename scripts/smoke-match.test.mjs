@@ -52,6 +52,55 @@ test("status-only expectation ignores location", () => {
   assert.equal(matches({ status: 500, location: "" }, { status: 200 }, BASE), false);
 });
 
+test("body: bodyIncludes passes when the body contains the string", () => {
+  assert.equal(
+    matches(
+      { status: 200, location: "", body: "<p>Smoke-Sub-1</p>" },
+      { status: 200, bodyIncludes: "Smoke-Sub-1" },
+      BASE,
+    ),
+    true,
+  );
+});
+
+test("body: bodyIncludes fails when the body lacks the string", () => {
+  assert.equal(
+    matches({ status: 200, location: "", body: "<p>Other</p>" }, { status: 200, bodyIncludes: "Smoke-Sub-1" }, BASE),
+    false,
+  );
+});
+
+test("body: bodyExcludes passes when the body lacks the string", () => {
+  assert.equal(
+    matches({ status: 200, location: "", body: "<p>Other</p>" }, { status: 200, bodyExcludes: "Smoke-Sub-1" }, BASE),
+    true,
+  );
+});
+
+test("body: bodyExcludes fails when the body contains the string", () => {
+  assert.equal(
+    matches(
+      { status: 200, location: "", body: "<p>Smoke-Sub-1</p>" },
+      { status: 200, bodyExcludes: "Smoke-Sub-1" },
+      BASE,
+    ),
+    false,
+  );
+});
+
+test("body: a body expectation with no body fails", () => {
+  assert.equal(matches({ status: 200, location: "" }, { status: 200, bodyIncludes: "x" }, BASE), false);
+  assert.equal(matches({ status: 200, location: "" }, { status: 200, bodyExcludes: "x" }, BASE), false);
+});
+
+test("body: checked after status and redirect rules", () => {
+  assert.equal(matches({ status: 500, location: "", body: "x" }, { status: 200, bodyIncludes: "x" }, BASE), false);
+  assert.equal(
+    matches({ status: 302, location: "/auth/signin?error=x", body: "x" }, { ...signin, bodyIncludes: "x" }, BASE),
+    false,
+  );
+});
+
 const PREVIEW = "https://preview.example.workers.dev";
 
 test("access: 401 and 403 count as blocked", () => {

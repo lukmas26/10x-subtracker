@@ -2,19 +2,29 @@
 // Exact on purpose: a redirect must land on the expected path, not merely start with it.
 
 /**
- * @param {{ status: number, location: string }} actual
- * @param {{ status: number, path?: string, error?: boolean }} expected
+ * @param {{ status: number, location: string, body?: string }} actual
+ * @param {{ status: number, path?: string, error?: boolean, bodyIncludes?: string, bodyExcludes?: string }} expected
  * @param {string} baseUrl
  * @returns {boolean}
  */
 export function matches(actual, expected, baseUrl) {
   if (actual.status !== expected.status) return false;
-  if (expected.path === undefined) return true;
-  if (!actual.location) return false;
+  if (expected.path !== undefined && !matchesRedirect(actual.location, expected, baseUrl)) return false;
+  return matchesBody(actual.body, expected);
+}
+
+/**
+ * @param {string} location
+ * @param {{ path?: string, error?: boolean }} expected
+ * @param {string} baseUrl
+ * @returns {boolean}
+ */
+function matchesRedirect(location, expected, baseUrl) {
+  if (!location) return false;
 
   let url;
   try {
-    url = new URL(actual.location, baseUrl);
+    url = new URL(location, baseUrl);
   } catch {
     return false;
   }
@@ -23,6 +33,20 @@ export function matches(actual, expected, baseUrl) {
 
   const error = url.searchParams.get("error");
   return expected.error === true ? Boolean(error) : error === null;
+}
+
+/**
+ * A body expectation with no body to check fails rather than passing vacuously.
+ * @param {string | undefined} body
+ * @param {{ bodyIncludes?: string, bodyExcludes?: string }} expected
+ * @returns {boolean}
+ */
+function matchesBody(body, expected) {
+  if (expected.bodyIncludes === undefined && expected.bodyExcludes === undefined) return true;
+  if (typeof body !== "string") return false;
+  if (expected.bodyIncludes !== undefined && !body.includes(expected.bodyIncludes)) return false;
+  if (expected.bodyExcludes !== undefined && body.includes(expected.bodyExcludes)) return false;
+  return true;
 }
 
 /**
