@@ -279,14 +279,20 @@ paths exactly.
 **Coverage.** `npm run smoke` (local and CI) covers sign-up on every run against local Supabase.
 `npm run smoke:remote` **never signs up**: it signs in with the test account. Hosted sign-up and e-mail
 confirmation were proven once, by hand, when the test account was created. Variables set in the shell
-take precedence over `.env.smoke`, so `BASE_URL` is passed per run.
+take precedence over `.env.smoke`, so `BASE_URL` is passed per run. Remote mode only reads
+`/subscriptions` (it never adds a subscription), so no test data accumulates in the shared database;
+the add flow and cross-account isolation are covered by the local smoke and `npm run test:rls`.
 
 **Per release:**
 
-1. Local gates: `npm run lint`, `npm run test:smoke`, `npx astro check`, then a local `npm run smoke`
-   at 8/8.
+1. Local gates: `npm run lint`, `npm run test:smoke`, `npx astro check`, `npm run test:rls` (local
+   Supabase only), then a local `npm run smoke` at 16/16.
 2. Build, then upload a version without promoting it. `wrangler.jsonc` has no build step, so
    `versions upload` ships whatever is currently in `dist/`.
+   - **Apply pending migrations first** (human-only): `npx supabase db push` against the linked
+     hosted project, before uploading a version that needs them. Preview and production share the
+     hosted database, so the migration must be additive — the live version keeps running on it.
+     Worker rollback does not revert it.
    - Stop any running local `npm run preview` first. On Windows it locks `dist/`, and the build then
      fails with `EPERM`.
    - Upload only after the build exits 0.
@@ -296,7 +302,7 @@ take precedence over `.env.smoke`, so `BASE_URL` is passed per run.
    npx wrangler versions upload          # prints the version id and preview URL
    ```
 
-3. Verify the preview. All **8** steps must pass, including `preview blocks anonymous request`.
+3. Verify the preview. All **10** steps must pass, including `preview blocks anonymous request`.
 
    ```bash
    BASE_URL=<preview-url> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote
@@ -309,7 +315,7 @@ take precedence over `.env.smoke`, so `BASE_URL` is passed per run.
 
 4. **Human approval.** Promote only after the user says go:
    `npx wrangler versions deploy <version-id>@100% -y`.
-5. Verify production. All **7** steps must pass. Production has no Access, so `SMOKE_EXPECT_ACCESS`
+5. Verify production. All **9** steps must pass. Production has no Access, so `SMOKE_EXPECT_ACCESS`
    must be unset.
 
    ```bash
@@ -359,15 +365,15 @@ npx wrangler deploy                                                 # user appro
 BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke
 ```
 
-| Item                  | Value                                                           |
-| --------------------- | --------------------------------------------------------------- |
-| Production URL        | https://subtracker.lukasz-maslowski.workers.dev                 |
-| Live version          | `ea571db7-bfe6-411f-89a5-6335222e7049` (100%)                   |
-| Auto-provisioned      | KV namespace `subtracker-session` (`6a605027a7d043dea58feced919d719b`), bound as `SESSION` by the Astro adapter's sessions support — not mentioned in the original plan |
-| Other bindings        | `IMAGES` (Cloudflare Images), `ASSETS` (`./dist`)                |
-| Secrets wired         | none                                                            |
-| Secrets pending       | `SUPABASE_URL`, `SUPABASE_KEY` (hosted project)                 |
-| Rollback              | none possible yet (first version); afterwards `npx wrangler rollback` |
+| Item             | Value                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Production URL   | https://subtracker.lukasz-maslowski.workers.dev                                                                                                                         |
+| Live version     | `ea571db7-bfe6-411f-89a5-6335222e7049` (100%)                                                                                                                           |
+| Auto-provisioned | KV namespace `subtracker-session` (`6a605027a7d043dea58feced919d719b`), bound as `SESSION` by the Astro adapter's sessions support — not mentioned in the original plan |
+| Other bindings   | `IMAGES` (Cloudflare Images), `ASSETS` (`./dist`)                                                                                                                       |
+| Secrets wired    | none                                                                                                                                                                    |
+| Secrets pending  | `SUPABASE_URL`, `SUPABASE_KEY` (hosted project)                                                                                                                         |
+| Rollback         | none possible yet (first version); afterwards `npx wrangler rollback`                                                                                                   |
 
 The workerd-local run with a real Supabase got **8/8 PASS**, confirming that the `@supabase/ssr` cookie flow
 survives the `nodejs_compat` shims (Devil's advocate #4, locally).
@@ -391,11 +397,11 @@ starts with `/`. That assertion in `scripts/smoke.mjs` is too weak and should be
 4. Production check: `/` 200 with no banner, `/dashboard` 302 → `/auth/signin`, wrong-password POST
    (with an `Origin` header; without one Astro's CSRF check returns 403) → `?error=Invalid login credentials`.
 
-| Item            | Value                                                         |
-| --------------- | ------------------------------------------------------------- |
-| Live version    | `acbce2f0-84a8-409b-997c-c433a62b8016` (100%)                 |
-| Secrets wired   | `SUPABASE_URL`, `SUPABASE_KEY`                                |
-| Rollback        | `npx wrangler rollback ea571db7-bfe6-411f-89a5-6335222e7049` (degraded, no-auth build) |
+| Item          | Value                                                                                  |
+| ------------- | -------------------------------------------------------------------------------------- |
+| Live version  | `acbce2f0-84a8-409b-997c-c433a62b8016` (100%)                                          |
+| Secrets wired | `SUPABASE_URL`, `SUPABASE_KEY`                                                         |
+| Rollback      | `npx wrangler rollback ea571db7-bfe6-411f-89a5-6335222e7049` (degraded, no-auth build) |
 
 **Still unverified:** a full sign-up → confirm → sign-in → `/dashboard` round trip on hosted Supabase.
 It needs a real email address, or a smoke test that takes the address domain from an env var.
@@ -424,6 +430,7 @@ Change `safe-release-verification` (roadmap F-01), commits `5840e15` (exact redi
 
    Two checks with `curl` passed. Without the token, the Pass 2 preview returns `302` to the Access
    login. With the token, it returns `200`.
+
 2. `npm run build` + `npx wrangler versions upload` → `05ed91ff-dacd-40d1-85cc-376e22f5330b`
    (preview `https://05ed91ff-subtracker.lukasz-maslowski.workers.dev`).
    - **Deviation:** the first build failed with `EPERM` on `dist\client`. A local `npm run preview`
@@ -449,11 +456,41 @@ Change `safe-release-verification` (roadmap F-01), commits `5840e15` (exact redi
      and `smoke:remote` on production is 7/7 again.
    - The runbook's step 5 now includes the anonymous `curl` check.
 
-| Item            | Value                                                                      |
-| --------------- | -------------------------------------------------------------------------- |
-| Live version    | `acbce2f0-84a8-409b-997c-c433a62b8016` (100%, unchanged)                   |
-| Verified preview | `05ed91ff-dacd-40d1-85cc-376e22f5330b` (not promoted)                     |
-| Stale upload    | `d99545c2-fc91-48d8-bb30-3fc0a133a75b` (stale `dist/`, ignore)              |
-| Preview access  | Cloudflare Access; service token `subtracker-smoke` (Service Auth)         |
-| Remote smoke    | preview 8/8, production 7/7                                                |
-| Production access | public: anonymous `200` (Access applies to Preview URLs only)            |
+| Item              | Value                                                              |
+| ----------------- | ------------------------------------------------------------------ |
+| Live version      | `acbce2f0-84a8-409b-997c-c433a62b8016` (100%, unchanged)           |
+| Verified preview  | `05ed91ff-dacd-40d1-85cc-376e22f5330b` (not promoted)              |
+| Stale upload      | `d99545c2-fc91-48d8-bb30-3fc0a133a75b` (stale `dist/`, ignore)     |
+| Preview access    | Cloudflare Access; service token `subtracker-smoke` (Service Auth) |
+| Remote smoke      | preview 8/8, production 7/7                                        |
+| Production access | public: anonymous `200` (Access applies to Preview URLs only)      |
+
+### Pass 4 — 2026-10-03 (first schema migration; subscriptions list)
+
+Change `first-subscription-on-list` (roadmap S-01), commits `fa0260b` (schema, RLS, `test:rls`),
+`26a7d27` (service, API, `/subscriptions`) and `06da851` (smoke coverage). The first release that
+carries a database migration; it follows the runbook, including the new migration step.
+
+1. Local gates: `npm run lint`, `npm run test:smoke` (21/21), `npx astro check`, `npm run test:rls`
+   (12/12) and local `npm run smoke` (16/16), all green.
+2. The user ran `npx supabase login`, `npx supabase link` and `npx supabase db push` in their own
+   terminal (`supabase login` needs a TTY, so it cannot run through the agent's shell). That applied
+   `20261003120000_subscriptions_and_categories.sql` to the hosted project. In the dashboard:
+   `categories` has the 8 starter rows, and RLS is on for both tables.
+3. The local `npm run preview` was stopped first, so `dist/` was not locked. Then `npm run build` and
+   `npx wrangler versions upload` produced `b00106c6-cab3-4853-9916-7dfb00af2bd1` (preview
+   `https://b00106c6-subtracker.lukasz-maslowski.workers.dev`).
+4. `BASE_URL=<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` gave **10/10 PASS**.
+5. Manual check on the preview: the owner's account added a subscription and saw it, and the smoke
+   test account did not see it on `/subscriptions`.
+6. The user approved, then: `npx wrangler versions deploy b00106c6-cab3-4853-9916-7dfb00af2bd1@100% -y`.
+7. `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote` gave **9/9 PASS**.
+   Anonymous `curl`: `/` returns `200` and `/subscriptions` returns `302` → `/auth/signin`.
+   Production stays public.
+
+| Item         | Value                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Live version | `b00106c6-cab3-4853-9916-7dfb00af2bd1` (100%)                                                                      |
+| Migration    | `20261003120000_subscriptions_and_categories.sql` (additive)                                                       |
+| Remote smoke | preview 10/10, production 9/9                                                                                      |
+| Rollback     | `npx wrangler rollback acbce2f0-84a8-409b-997c-c433a62b8016` (the tables stay; the old version never touches them) |

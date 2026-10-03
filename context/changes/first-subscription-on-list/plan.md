@@ -393,25 +393,25 @@ Additive only (new tables, policies, grants, starter rows); safe to apply while 
 
 #### Automated
 
-- [x] 3.1 Matcher tests pass: `npm run test:smoke`
-- [x] 3.2 Lint passes: `npm run lint`
-- [x] 3.3 Local smoke passes 16/16 against `npm run preview` + local Supabase: `npm run smoke`
-- [x] 3.4 Remote-mode shape against local: with a local confirmed user in `SMOKE_EMAIL`/`SMOKE_PASSWORD`, `npm run smoke` passes 9/9 and writes no subscription
+- [x] 3.1 Matcher tests pass: `npm run test:smoke` — 06da851
+- [x] 3.2 Lint passes: `npm run lint` — 06da851
+- [x] 3.3 Local smoke passes 16/16 against `npm run preview` + local Supabase: `npm run smoke` — 06da851
+- [x] 3.4 Remote-mode shape against local: with a local confirmed user in `SMOKE_EMAIL`/`SMOKE_PASSWORD`, `npm run smoke` passes 9/9 and writes no subscription — 06da851
 
 #### Manual
 
-- [x] 3.5 A deliberately broken run (temporarily make the subscriptions select policy `using (true)` in a local scratch reset, or point the B check at A's session) shows FAIL for `second account does not see first account's subscription`, then revert
+- [x] 3.5 A deliberately broken run (temporarily make the subscriptions select policy `using (true)` in a local scratch reset, or point the B check at A's session) shows FAIL for `second account does not see first account's subscription`, then revert — 06da851
 
 ### Phase 4: Hosted rollout and live verification
 
 #### Automated
 
-- [ ] 4.1 Preview remote smoke passes 10/10: `BASE_URL=<preview-url> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`
-- [ ] 4.2 Production remote smoke passes 9/9: `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote`
-- [ ] 4.3 Lint passes: `npm run lint`
+- [x] 4.1 Preview remote smoke passes 10/10: `BASE_URL=<preview-url> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`
+- [x] 4.2 Production remote smoke passes 9/9: `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote`
+- [x] 4.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 4.4 Hosted dashboard shows `categories` (8 starter rows) and `subscriptions` with RLS enabled after `db push`
-- [ ] 4.5 On the preview, the owner's account adds a subscription and sees it; the smoke test account then loads `/subscriptions` and does not see it
-- [ ] 4.6 After promotion, production `/subscriptions` works for the owner's account and the runbook Pass entry is recorded
+- [x] 4.4 Hosted dashboard shows `categories` (8 starter rows) and `subscriptions` with RLS enabled after `db push`
+- [x] 4.5 On the preview, the owner's account adds a subscription and sees it; the smoke test account then loads `/subscriptions` and does not see it
+- [x] 4.6 After promotion, production `/subscriptions` works for the owner's account and the runbook Pass entry is recorded
