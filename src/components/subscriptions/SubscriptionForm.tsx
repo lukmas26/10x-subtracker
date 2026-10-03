@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Banknote, Coins, FolderPlus, Repeat, Save, Tag, Tags } from "lucide-react";
-import { FormField } from "@/components/auth/FormField";
-import { ServerError } from "@/components/auth/ServerError";
-import { SubmitButton } from "@/components/auth/SubmitButton";
-import { SelectField } from "@/components/subscriptions/SelectField";
+import { FormField } from "@/components/form/FormField";
+import { ServerError } from "@/components/form/ServerError";
+import { SubmitButton } from "@/components/form/SubmitButton";
+import { SelectField } from "@/components/form/SelectField";
 import {
   AMOUNT_PATTERN,
   CATEGORY_NAME_MAX_LENGTH,

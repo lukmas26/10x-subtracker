@@ -25,9 +25,9 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 
 - `src/lib/supabase.ts` — `createClient(headers, cookies)` builds a `@supabase/ssr` server client with cookie sessions. **Returns `null` when `SUPABASE_URL`/`SUPABASE_KEY` are unset** — both are declared `optional` in `astro.config.mjs` `env.schema`, so the app must keep working without Supabase. Every caller handles the `null` case.
 - `src/lib/config-status.ts` — reports missing config, which `src/layouts/Layout.astro` shows to users (UI copy is in Polish).
-- `src/middleware.ts` — per request, sets `context.locals.user` (or `null`) and redirects anonymous users from any path starting with an entry in `PROTECTED_ROUTES` to `/auth/signin`.
+- `src/middleware.ts` — per request, sets `context.locals.user` (or `null`) and `context.locals.supabase` (the request's client, or `null`; data pages and routes reuse it instead of calling `createClient` again), and redirects anonymous users from any path starting with an entry in `PROTECTED_ROUTES` to `/auth/signin`.
 - `src/pages/api/auth/{signin,signup,signout}.ts` — `POST` handlers that read `formData()` and respond with redirects; errors go back as `?error=<message>` on the auth page, not as JSON.
-- Pages: `src/pages/auth/*.astro` render React forms from `src/components/auth/`; `src/pages/dashboard.astro` is the protected example.
+- Pages: `src/pages/auth/*.astro` render React forms from `src/components/auth/`, built from the shared form primitives in `src/components/form/` (`FormField`, `SelectField`, `ServerError`, `SubmitButton`); `src/pages/dashboard.astro` is the protected example.
 
 `scripts/smoke.mjs` (with its matcher `scripts/smoke-match.mjs`) encodes the expected behavior of this flow (status codes, redirect targets, cookies) — update them when changing auth routes.
 

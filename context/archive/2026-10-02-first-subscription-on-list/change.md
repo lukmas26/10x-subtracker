@@ -1,10 +1,10 @@
 ---
 change_id: first-subscription-on-list
 title: Add the first subscription and show the subscription list
-status: implemented
+status: archived
 created: 2026-10-02
 updated: 2026-10-03
-archived_at: null
+archived_at: 2026-10-03T05:52:20Z
 ---
 
 ## Notes

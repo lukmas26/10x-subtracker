@@ -2,19 +2,19 @@
 import Layout from "@/layouts/Layout.astro";
 import Topbar from "@/components/Topbar.astro";
 import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
-import { createClient } from "@/lib/supabase";
-import { listCategories, listSubscriptions } from "@/lib/services/subscriptions";
+import { displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
 import type { CategoryDTO, SubscriptionListItemDTO } from "@/types";
 
 const saved = Astro.url.searchParams.get("saved") === "1";
-const error = Astro.url.searchParams.get("error");
+// Only messages the app itself produces are shown; a crafted ?error= link gets a generic message.
+const error = displayableError(Astro.url.searchParams.get("error"));
 
 let categories: CategoryDTO[] = [];
 let subscriptions: SubscriptionListItemDTO[] = [];
 let loadError: string | null = null;
 
 // A null client means Supabase is not configured: Layout shows the config banner, the page shows an empty state.
-const supabase = createClient(Astro.request.headers, Astro.cookies);
+const supabase = Astro.locals.supabase;
 if (supabase) {
   try {
     [categories, subscriptions] = await Promise.all([listCategories(supabase), listSubscriptions(supabase)]);
