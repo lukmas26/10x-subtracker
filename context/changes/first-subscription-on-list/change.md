@@ -1,9 +1,9 @@
 ---
 change_id: first-subscription-on-list
 title: Add the first subscription and show the subscription list
-status: plan_reviewed
+status: implementing
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-03
 archived_at: null
 ---
 

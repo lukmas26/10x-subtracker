@@ -3,7 +3,7 @@ project: SubTracker
 version: 1
 status: draft
 created: 2026-09-28
-updated: 2026-10-02
+updated: 2026-10-03
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -42,7 +42,7 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 | ID   | Change ID                          | Outcome (user can …)                                                                     | Prerequisites | PRD refs                                                                                              | Status   |
 | ---- | ---------------------------------- | ---------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- | -------- |
 | F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | done |
-| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | planning |
+| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | in-progress |
 | S-02 | edit-subscription                  | correct an existing subscription without risking data loss                               | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                            | proposed |
 | S-03 | delete-subscription                | delete a subscription they no longer pay for                                             | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                              | proposed |
 | S-04 | spending-summary                   | see the monthly and yearly total of all their subscriptions                              | S-01          | FR-006                                                                                                | proposed |
@@ -101,7 +101,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - ~~One currency for all amounts (e.g. PLN), or a currency per subscription?~~ — Resolved 2026-10-02: each subscription carries its own currency, limited to PLN, EUR and USD (default PLN).
   - Where does the initial category list come from, given that the admin-curated shared catalog (FR-005) is parked? — Owner: user. Block: no (default: a short starter list + the user's own categories).
 - **Risk:** The first table holding financial data and the first row-level access policies are born here — a cross-account isolation bug is the most expensive possible bug, so the slice must explicitly verify that a second account cannot see someone else's subscriptions.
-- **Status:** planning
+- **Status:** in-progress
 
 ### S-02: User edits a subscription
 

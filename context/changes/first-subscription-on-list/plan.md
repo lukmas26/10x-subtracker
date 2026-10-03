@@ -361,15 +361,15 @@ Additive only (new tables, policies, grants, starter rows); safe to apply while 
 
 #### Automated
 
-- [ ] 1.1 Migration applies on a clean local DB: `npx supabase db reset`
-- [ ] 1.2 Generated types are current: re-running the type generation produces no diff in `src/db/database.types.ts`
-- [ ] 1.3 RLS check passes against local Supabase: `npm run test:rls`
-- [ ] 1.4 Lint passes: `npm run lint`
-- [ ] 1.5 Type check passes: `npx astro check`
+- [x] 1.1 Migration applies on a clean local DB: `npx supabase db reset`
+- [x] 1.2 Generated types are current: re-running the type generation produces no diff in `src/db/database.types.ts`
+- [x] 1.3 RLS check passes against local Supabase: `npm run test:rls`
+- [x] 1.4 Lint passes: `npm run lint`
+- [x] 1.5 Type check passes: `npx astro check`
 
 #### Manual
 
-- [ ] 1.6 In local Studio (or `psql`), `categories` shows the 8 starter rows with `user_id` null and both tables show RLS enabled with only the listed policies
+- [x] 1.6 In local Studio (or `psql`), `categories` shows the 8 starter rows with `user_id` null and both tables show RLS enabled with only the listed policies
 
 ### Phase 2: Service, API and /subscriptions page
 
