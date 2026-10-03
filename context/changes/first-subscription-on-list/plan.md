@@ -361,33 +361,33 @@ Additive only (new tables, policies, grants, starter rows); safe to apply while 
 
 #### Automated
 
-- [x] 1.1 Migration applies on a clean local DB: `npx supabase db reset`
-- [x] 1.2 Generated types are current: re-running the type generation produces no diff in `src/db/database.types.ts`
-- [x] 1.3 RLS check passes against local Supabase: `npm run test:rls`
-- [x] 1.4 Lint passes: `npm run lint`
-- [x] 1.5 Type check passes: `npx astro check`
+- [x] 1.1 Migration applies on a clean local DB: `npx supabase db reset` — fa0260b
+- [x] 1.2 Generated types are current: re-running the type generation produces no diff in `src/db/database.types.ts` — fa0260b
+- [x] 1.3 RLS check passes against local Supabase: `npm run test:rls` — fa0260b
+- [x] 1.4 Lint passes: `npm run lint` — fa0260b
+- [x] 1.5 Type check passes: `npx astro check` — fa0260b
 
 #### Manual
 
-- [x] 1.6 In local Studio (or `psql`), `categories` shows the 8 starter rows with `user_id` null and both tables show RLS enabled with only the listed policies
+- [x] 1.6 In local Studio (or `psql`), `categories` shows the 8 starter rows with `user_id` null and both tables show RLS enabled with only the listed policies — fa0260b
 
 ### Phase 2: Service, API and /subscriptions page
 
 #### Automated
 
-- [ ] 2.1 Lint passes: `npm run lint`
-- [ ] 2.2 Type check passes: `npx astro check`
-- [ ] 2.3 Build passes: `npm run build`
-- [ ] 2.4 Existing local smoke still passes 8/8 against `npm run preview` + local Supabase: `npm run smoke`
+- [x] 2.1 Lint passes: `npm run lint`
+- [x] 2.2 Type check passes: `npx astro check`
+- [x] 2.3 Build passes: `npm run build`
+- [x] 2.4 Existing local smoke still passes 8/8 against `npm run preview` + local Supabase: `npm run smoke`
 
 #### Manual
 
-- [ ] 2.5 Signed in locally: adding "Netflix", `49,99`, PLN, monthly, Streaming shows "Subscription saved" and the row `49.99 PLN · monthly · Streaming` at the top
-- [ ] 2.6 Choosing "+ New category…" with `Video` creates and uses it; adding another with `video` reuses the same category (appears once in the select)
-- [ ] 2.7 Empty name, `0`, `abc`, `1.999` are blocked client-side with field errors; a crafted bad post (e.g. curl with `currency=GBP`) returns to the page with a visible error and writes nothing
-- [ ] 2.8 Anonymous `/subscriptions` redirects to `/auth/signin`; a second local account sees an empty list
-- [ ] 2.9 Page is usable at ~375px width (no horizontal scroll, form controls reachable)
-- [ ] 2.10 A new category named `S%` is created as its own category and does not reuse "Streaming"
+- [x] 2.5 Signed in locally: adding "Netflix", `49,99`, PLN, monthly, Streaming shows "Subscription saved" and the row `49.99 PLN · monthly · Streaming` at the top
+- [x] 2.6 Choosing "+ New category…" with `Video` creates and uses it; adding another with `video` reuses the same category (appears once in the select)
+- [x] 2.7 Empty name, `0`, `abc`, `1.999` are blocked client-side with field errors; a crafted bad post (e.g. curl with `currency=GBP`) returns to the page with a visible error and writes nothing
+- [x] 2.8 Anonymous `/subscriptions` redirects to `/auth/signin`; a second local account sees an empty list
+- [x] 2.9 Page is usable at ~375px width (no horizontal scroll, form controls reachable)
+- [x] 2.10 A new category named `S%` is created as its own category and does not reuse "Streaming"
 
 ### Phase 3: Smoke coverage for add and cross-account isolation
 
