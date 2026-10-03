@@ -406,12 +406,12 @@ Additive only (new tables, policies, grants, starter rows); safe to apply while 
 
 #### Automated
 
-- [x] 4.1 Preview remote smoke passes 10/10: `BASE_URL=<preview-url> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`
-- [x] 4.2 Production remote smoke passes 9/9: `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote`
-- [x] 4.3 Lint passes: `npm run lint`
+- [x] 4.1 Preview remote smoke passes 10/10: `BASE_URL=<preview-url> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` — 2b10769
+- [x] 4.2 Production remote smoke passes 9/9: `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote` — 2b10769
+- [x] 4.3 Lint passes: `npm run lint` — 2b10769
 
 #### Manual
 
-- [x] 4.4 Hosted dashboard shows `categories` (8 starter rows) and `subscriptions` with RLS enabled after `db push`
-- [x] 4.5 On the preview, the owner's account adds a subscription and sees it; the smoke test account then loads `/subscriptions` and does not see it
-- [x] 4.6 After promotion, production `/subscriptions` works for the owner's account and the runbook Pass entry is recorded
+- [x] 4.4 Hosted dashboard shows `categories` (8 starter rows) and `subscriptions` with RLS enabled after `db push` — 2b10769
+- [x] 4.5 On the preview, the owner's account adds a subscription and sees it; the smoke test account then loads `/subscriptions` and does not see it — 2b10769
+- [x] 4.6 After promotion, production `/subscriptions` works for the owner's account and the runbook Pass entry is recorded — 2b10769
