@@ -1,0 +1,68 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
+import { createClient } from "@/lib/supabase";
+import { listCategories, listSubscriptions } from "@/lib/services/subscriptions";
+import type { CategoryDTO, SubscriptionListItemDTO } from "@/types";
+
+const saved = Astro.url.searchParams.get("saved") === "1";
+const error = Astro.url.searchParams.get("error");
+
+let categories: CategoryDTO[] = [];
+let subscriptions: SubscriptionListItemDTO[] = [];
+let loadError: string | null = null;
+
+// A null client means Supabase is not configured: Layout shows the config banner, the page shows an empty state.
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+if (supabase) {
+  try {
+    [categories, subscriptions] = await Promise.all([listCategories(supabase), listSubscriptions(supabase)]);
+  } catch {
+    loadError = "Could not load your subscriptions. Please refresh the page.";
+  }
+}
+---
+
+<Layout title="Subscriptions">
+  <div class="bg-cosmic min-h-screen w-full p-4 sm:p-8">
+    <Topbar />
+
+    <main class="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <section class="rounded-2xl border border-white/10 bg-white/10 p-5 text-white backdrop-blur-xl sm:p-8">
+        <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
+          Add a subscription
+        </h1>
+        {saved && (
+          <p
+            role="status"
+            class="mb-4 rounded-lg border border-green-500/30 bg-green-900/30 px-3 py-2 text-sm text-green-300"
+          >
+            Subscription saved
+          </p>
+        )}
+        <SubscriptionForm categories={categories} serverError={error} client:load />
+      </section>
+
+      <section class="rounded-2xl border border-white/10 bg-white/10 p-5 text-white backdrop-blur-xl sm:p-8">
+        <h2 class="mb-4 text-lg font-semibold text-blue-100">Your subscriptions</h2>
+        {loadError ? (
+          <p class="rounded-lg border border-red-500/30 bg-red-900/30 px-3 py-2 text-sm text-red-300">{loadError}</p>
+        ) : subscriptions.length === 0 ? (
+          <p class="text-sm text-blue-100/60">No subscriptions yet — add your first one above.</p>
+        ) : (
+          <ul class="divide-y divide-white/10">
+            {subscriptions.map((s) => (
+              <li class="py-3">
+                <p class="font-medium break-words text-white">{s.name}</p>
+                <p class="text-sm break-words text-blue-100/70">
+                  {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
+  </div>
+</Layout>

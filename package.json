@@ -11,8 +11,10 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "smoke": "node scripts/smoke.mjs",
-    "test:smoke": "node --test \"scripts/*.test.mjs\"",
     "smoke:remote": "node --env-file=.env.smoke scripts/smoke.mjs",
+    "test:smoke": "node --test \"scripts/*.test.mjs\"",
+    "test:rls": "node scripts/rls-check.mjs",
+    "db:types": "supabase gen types typescript --local > src/db/database.types.ts",
     "prepare": "husky"
   },
   "dependencies": {

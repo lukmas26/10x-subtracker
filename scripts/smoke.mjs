@@ -25,8 +25,13 @@ if (expectAccess && !CF_ACCESS_CLIENT_ID) {
 }
 
 const remote = Boolean(SMOKE_EMAIL);
-const email = remote ? SMOKE_EMAIL : `smoke-${Date.now()}@example.com`;
+const runId = Date.now();
+const email = remote ? SMOKE_EMAIL : `smoke-${runId}@example.com`;
 const password = remote ? SMOKE_PASSWORD : "Smoke-Test-Passw0rd!";
+// Second account for the isolation check (local mode only); distinct from the first account's email.
+const secondEmail = `smoke-${runId}-b@example.com`;
+// Alphanumerics and hyphens only, so HTML escaping cannot affect the body match.
+const subscriptionName = `Smoke-Sub-${runId}`;
 const accessHeaders = CF_ACCESS_CLIENT_ID
   ? { "CF-Access-Client-Id": CF_ACCESS_CLIENT_ID, "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET }
   : {};
@@ -59,7 +64,7 @@ async function request(path, { method = "GET", form } = {}) {
     body: form ? new URLSearchParams(form).toString() : undefined,
   });
   storeCookies(response);
-  return { status: response.status, location: response.headers.get("location") ?? "" };
+  return { status: response.status, location: response.headers.get("location") ?? "", body: await response.text() };
 }
 
 // No Access headers, no cookie jar (read or write): a stale CF_Authorization cookie must not make this pass.
@@ -81,12 +86,57 @@ const signinSteps = [
   ],
 ];
 
+const subscriptionForm = { name: subscriptionName, currency: "EUR", cycle: "yearly", category_id: "__new__" };
+
+const addSubscriptionSteps = [
+  [
+    "add subscription rejects invalid amount",
+    () =>
+      request("/api/subscriptions", {
+        method: "POST",
+        form: { ...subscriptionForm, amount: "abc", new_category: "Smoke" },
+      }),
+    { status: 302, path: "/subscriptions", error: true },
+  ],
+  [
+    "add subscription saves",
+    () =>
+      request("/api/subscriptions", {
+        method: "POST",
+        form: { ...subscriptionForm, amount: "49.99", new_category: "Smoke" },
+      }),
+    { status: 302, path: "/subscriptions" },
+  ],
+  ["list shows added subscription", () => request("/subscriptions"), { status: 200, bodyIncludes: subscriptionName }],
+];
+
+// Sign-out has already expired the first account's session cookies, so the shared jar now holds only B's.
+const secondAccountSteps = [
+  [
+    "second account signs up",
+    () => request("/api/auth/signup", { method: "POST", form: { email: secondEmail, password } }),
+    { status: 302, path: "/auth/confirm-email" },
+  ],
+  [
+    "second account signs in",
+    () => request("/api/auth/signin", { method: "POST", form: { email: secondEmail, password } }),
+    { status: 302, path: "/" },
+  ],
+  [
+    "second account does not see first account's subscription",
+    () => request("/subscriptions"),
+    // B is a fresh account: require the rendered empty state, so an error page cannot pass vacuously.
+    { status: 200, bodyIncludes: "No subscriptions yet", bodyExcludes: subscriptionName },
+  ],
+];
+
 const steps = [
   ...(expectAccess
     ? [["preview blocks anonymous request", () => anonymousRequest("/"), { check: blocksAnonymous }]]
     : []),
   ["home renders", () => request("/"), { status: 200 }],
   ["dashboard redirects anonymous user", () => request("/dashboard"), { status: 302, path: "/auth/signin" }],
+  ["subscriptions redirects anonymous user", () => request("/subscriptions"), { status: 302, path: "/auth/signin" }],
   ...(remote
     ? []
     : [
@@ -98,8 +148,12 @@ const steps = [
       ]),
   ...signinSteps,
   ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
+  ["subscriptions renders for signed-in user", () => request("/subscriptions"), { status: 200 }],
+  // Remote mode is read-only for subscriptions: it never writes to a hosted environment.
+  ...(remote ? [] : addSubscriptionSteps),
   ["signout clears session", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],
   ["dashboard redirects after signout", () => request("/dashboard"), { status: 302, path: "/auth/signin" }],
+  ...(remote ? [] : secondAccountSteps),
 ];
 
 console.log(`mode: ${remote ? "remote" : "local"}  BASE_URL: ${BASE_URL}${expectAccess ? "  (expecting Access)" : ""}`);
