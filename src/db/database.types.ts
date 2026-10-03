@@ -61,7 +61,9 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "create_subscription":
+{ Args: { "p_amount": number,"p_category_id"?: string,"p_currency": string,"p_cycle": string,"p_name": string,"p_new_category"?: string }; Returns: string
+                           }
           }
           Enums: {
             [_ in never]: never

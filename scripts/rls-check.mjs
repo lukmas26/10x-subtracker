@@ -11,6 +11,19 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   process.exit(1);
 }
 
+// Enforce "local only": against hosted Supabase each run would leave two users in the shared database.
+const LOCAL_HOSTS = ["127.0.0.1", "localhost", "[::1]"];
+let host = "";
+try {
+  host = new URL(SUPABASE_URL).hostname;
+} catch {
+  // Fall through: an unparseable URL is not a local one.
+}
+if (!LOCAL_HOSTS.includes(host)) {
+  console.error(`rls-check: refusing to run against "${host || SUPABASE_URL}" — local Supabase only.`);
+  process.exit(1);
+}
+
 const password = "Rls-Check-Passw0rd!";
 const runId = Date.now();
 let failures = 0;
@@ -20,6 +33,9 @@ function newClient() {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
   });
 }
+
+// Postgres insufficient_privilege: what PostgREST returns when an RLS policy rejects a write.
+const RLS_DENIED = "42501";
 
 function check(name, ok, detail) {
   if (!ok) failures += 1;
@@ -88,7 +104,12 @@ check(
 );
 
 // B cannot write rows owned by A, attach to A's category, or create a starter category.
+// Each must be refused by RLS itself (42501), not by some unrelated constraint.
 const starterId = bCats.data?.[0]?.id;
+if (!starterId) {
+  console.error("rls-check: no starter category visible to B, cannot continue.");
+  process.exit(1);
+}
 
 const bAsA = await b.client
   .from("subscriptions")
@@ -101,19 +122,23 @@ const bAsA = await b.client
     user_id: a.userId,
   })
   .select();
-check("B cannot insert a subscription with user_id = A", Boolean(bAsA.error), describe(bAsA));
+check("B cannot insert a subscription with user_id = A", bAsA.error?.code === RLS_DENIED, describe(bAsA));
 
 const bInACategory = await b.client
   .from("subscriptions")
   .insert({ name: "RLS B in A category", amount: 1, currency: "PLN", cycle: "monthly", category_id: aCategoryId })
   .select();
-check("B cannot insert a subscription with A's category_id", Boolean(bInACategory.error), describe(bInACategory));
+check(
+  "B cannot insert a subscription with A's category_id",
+  bInACategory.error?.code === RLS_DENIED,
+  describe(bInACategory),
+);
 
 const bStarter = await b.client
   .from("categories")
   .insert({ name: `RLS starter ${runId}`, user_id: null })
   .select();
-check("B cannot insert a category with user_id null", Boolean(bStarter.error), describe(bStarter));
+check("B cannot insert a category with user_id null", bStarter.error?.code === RLS_DENIED, describe(bStarter));
 
 // B cannot modify A's subscription: no grant/policy yet, so either a permission error or 0 affected rows.
 const bUpdate = await b.client.from("subscriptions").update({ name: "hijacked" }).eq("id", aSubscriptionId).select();
@@ -143,6 +168,29 @@ check("anon sees 0 subscriptions", Boolean(anonSubs.error) || anonSubs.data.leng
 
 const anonCats = await anon.from("categories").select("id");
 check("anon sees 0 categories", Boolean(anonCats.error) || anonCats.data.length === 0, describe(anonCats));
+
+// create_subscription RPC: one call is one transaction, and it runs with the caller's RLS.
+const rpcArgs = { p_name: "RLS rpc sub", p_currency: "PLN", p_cycle: "monthly" };
+
+const orphanName = `RLS orphan ${runId}`;
+const aFailedSave = await a.client.rpc("create_subscription", { ...rpcArgs, p_amount: 0, p_new_category: orphanName });
+check("A's failed save (amount 0) is rejected", Boolean(aFailedSave.error), describe(aFailedSave));
+const orphan = await a.client.from("categories").select("id").eq("name", orphanName);
+check(
+  "A's failed save leaves no orphan category (whole call rolled back)",
+  !orphan.error && orphan.data.length === 0,
+  describe(orphan),
+);
+
+const bRpcInACategory = await b.client.rpc("create_subscription", {
+  ...rpcArgs,
+  p_amount: 1,
+  p_category_id: aCategoryId,
+});
+check("B cannot save via RPC into A's category", bRpcInACategory.error?.code === RLS_DENIED, describe(bRpcInACategory));
+
+const anonRpc = await anon.rpc("create_subscription", { ...rpcArgs, p_amount: 1, p_new_category: "RLS anon" });
+check("anon cannot call create_subscription", Boolean(anonRpc.error), describe(anonRpc));
 
 if (failures > 0) {
   console.error(`rls-check: ${failures} check(s) failed.`);

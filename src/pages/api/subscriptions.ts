@@ -1,15 +1,14 @@
 import type { APIRoute } from "astro";
-import { createClient } from "@/lib/supabase";
-import { createSubscription, parseNewSubscription } from "@/lib/services/subscriptions";
+import { SUBSCRIPTION_ERRORS, createSubscription, parseNewSubscription } from "@/lib/services/subscriptions";
 
 function redirectWithError(context: Parameters<APIRoute>[0], message: string) {
   return context.redirect(`/subscriptions?error=${encodeURIComponent(message)}`);
 }
 
 export const POST: APIRoute = async (context) => {
-  const supabase = createClient(context.request.headers, context.cookies);
+  const supabase = context.locals.supabase;
   if (!supabase) {
-    return redirectWithError(context, "Supabase is not configured");
+    return redirectWithError(context, SUBSCRIPTION_ERRORS.notConfigured);
   }
 
   const user = context.locals.user;
@@ -22,7 +21,7 @@ export const POST: APIRoute = async (context) => {
     return redirectWithError(context, parsed.error);
   }
 
-  const result = await createSubscription(supabase, user.id, parsed.value);
+  const result = await createSubscription(supabase, parsed.value);
   if (!result.ok) {
     return redirectWithError(context, result.error);
   }
