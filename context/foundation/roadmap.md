@@ -42,7 +42,7 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 | ID   | Change ID                          | Outcome (user can …)                                                                     | Prerequisites | PRD refs                                                                                              | Status   |
 | ---- | ---------------------------------- | ---------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- | -------- |
 | F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | done |
-| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | in-progress |
+| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | done |
 | S-02 | edit-subscription                  | correct an existing subscription without risking data loss                               | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                            | proposed |
 | S-03 | delete-subscription                | delete a subscription they no longer pay for                                             | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                              | proposed |
 | S-04 | spending-summary                   | see the monthly and yearly total of all their subscriptions                              | S-01          | FR-006                                                                                                | proposed |
@@ -101,7 +101,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - ~~One currency for all amounts (e.g. PLN), or a currency per subscription?~~ — Resolved 2026-10-02: each subscription carries its own currency, limited to PLN, EUR and USD (default PLN).
   - Where does the initial category list come from, given that the admin-curated shared catalog (FR-005) is parked? — Owner: user. Block: no (default: a short starter list + the user's own categories).
 - **Risk:** The first table holding financial data and the first row-level access policies are born here — a cross-account isolation bug is the most expensive possible bug, so the slice must explicitly verify that a second account cannot see someone else's subscriptions.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-02: User edits a subscription
 
@@ -200,3 +200,4 @@ The PRD has no open questions (all three were resolved on 2026-09-19). The quest
 ## Done
 
 - **F-01: (foundation) deployment previews are not publicly accessible (or point at a separate database), and the smoke test can run the full sign-up → sign-in → protected page round trip against the production database without letting wrong redirects pass.** — Archived 2026-10-02 → `context/archive/2026-09-30-safe-release-verification/`. Lesson: —.
+- **S-01: user can, once signed in, add a subscription (name, amount, currency — PLN, EUR or USD — monthly/yearly cycle, a category picked from a list or created on the spot) and immediately see it on their own subscription list — visible only to them.** — Archived 2026-10-03 → `context/archive/2026-10-02-first-subscription-on-list/`. Lesson: —.
