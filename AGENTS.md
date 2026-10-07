@@ -54,3 +54,7 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 
 @`.github/workflows/ci.yml`
 CI needs the repo secrets
+
+## UI
+- Tokeny: src/styles/global.css (:root, .dark, @theme inline). Nowy kolor = nowy token, nigdy literał.
+- Komponenty: src/components/ui. Zanim napiszesz nowy, sprawdź ten katalog; brakujący dodaj z rejestru shadcn.
