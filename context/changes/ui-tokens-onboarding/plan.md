@@ -494,30 +494,30 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 2.1 `npm run build` passes
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 New tokens published in `@theme inline`
-- [x] 2.4 No hex in `global.css` outside the `:root`/`.dark` blocks
+- [x] 2.1 `npm run build` passes — b68e821
+- [x] 2.2 `npm run lint` passes — b68e821
+- [x] 2.3 New tokens published in `@theme inline` — b68e821
+- [x] 2.4 No hex in `global.css` outside the `:root`/`.dark` blocks — b68e821
 
 #### Manual
 
-- [x] 2.5 Pinned pages and `/subscriptions` unchanged in both toggle states
-- [x] 2.6 `tokens.md` lists every token with light and dark value and source
+- [x] 2.5 Pinned pages and `/subscriptions` unchanged in both toggle states — b68e821
+- [x] 2.6 `tokens.md` lists every token with light and dark value and source — b68e821
 
 ### Phase 3: Shared primitives on the contract
 
 #### Automated
 
-- [ ] 3.1 `npx astro check`, `npm run lint`, `npm run build` pass
-- [ ] 3.2 Scan over the 7 shared files returns 0 hits
-- [ ] 3.3 `npm run smoke` passes locally
+- [x] 3.1 `npx astro check`, `npm run lint`, `npm run build` pass
+- [x] 3.2 Scan over the 7 shared files returns 0 hits
+- [x] 3.3 `npm run smoke` passes locally
 
 #### Manual
 
-- [ ] 3.4 Invalid fields announced as invalid with their message
-- [ ] 3.5 Brand focus ring on every control in both themes
-- [ ] 3.6 Dark-pinned auth pages coherent at desktop and 375 px
-- [ ] 3.7 Config banner readable in both themes
+- [x] 3.4 Invalid fields announced as invalid with their message
+- [x] 3.5 Brand focus ring on every control in both themes
+- [x] 3.6 Dark-pinned auth pages coherent at desktop and 375 px
+- [x] 3.7 Config banner readable in both themes
 
 ### Phase 4: The `/subscriptions` view
 

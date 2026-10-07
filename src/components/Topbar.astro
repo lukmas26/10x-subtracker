@@ -1,20 +1,24 @@
 ---
 const { user } = Astro.locals;
+
+// The one link style in the Topbar (links and the sign-out button).
+const linkClass =
+  "rounded-sm text-link outline-none transition-colors hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50";
 ---
 
-<div class="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
+<div class="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
   {user ? (
     <>
-      <span class="min-w-0 truncate text-blue-100/70">{user.email}</span>
+      <span class="min-w-0 truncate">{user.email}</span>
       <div class="flex items-center gap-3">
-        <a href="/subscriptions" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/subscriptions" class:list={linkClass}>
           Subscriptions
         </a>
-        <a href="/dashboard" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/dashboard" class:list={linkClass}>
           Dashboard
         </a>
         <form method="POST" action="/api/auth/signout">
-          <button type="submit" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+          <button type="submit" class:list={linkClass}>
             Sign out
           </button>
         </form>
@@ -22,12 +26,12 @@ const { user } = Astro.locals;
     </>
   ) : (
     <>
-      <span class="text-blue-100/70">Not signed in</span>
+      <span>Not signed in</span>
       <div class="flex gap-3">
-        <a href="/auth/signin" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/auth/signin" class:list={linkClass}>
           Sign in
         </a>
-        <a href="/auth/signup" class="text-purple-300 transition-colors hover:text-purple-100 hover:underline">
+        <a href="/auth/signup" class:list={linkClass}>
           Sign up
         </a>
       </div>

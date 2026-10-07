@@ -50,6 +50,15 @@ The light theme is new, so it has no baseline. In dark, only these differ from t
 3. Topbar link hover: `hover:text-foreground` (white) instead of `hover:text-purple-100` (`Topbar.astro:10,13,17,27,30`).
 4. shadcn `Card`/`Alert` internal spacing replaces hand-rolled paddings where the difference is ≤ 4px.
 
+Added in Phase 3 (accepted by the user on 2026-10-07):
+
+5. Input/select focus: shared `focus-visible:ring-ring/50` (3px, purple-400 at 50%) plus `border-ring`, instead of a solid `ring-2 purple-400`; same ring as buttons and the theme toggle.
+6. Invalid fields: border/ring from shadcn `aria-invalid:*destructive*` instead of `red-400/60`.
+7. Placeholders and field icons: `text-muted-foreground` (blue-100/70) instead of `white/40`; labels `text-muted-foreground` instead of `blue-100/80`.
+8. Topbar: `bg-card` (white/10) instead of `white/5`; text `text-muted-foreground` instead of `white/80`.
+9. Submit button radius: `Button` default `rounded-md` (8px) instead of `rounded-lg` (10px); inputs keep `rounded-lg`.
+10. Alerts: `destructive/10` and `success/10` tints with `/30` borders instead of `red-900/30` and `green-900/30`.
+
 ## Known gap — fix in Phase 4
 
 From Phase 2 until Phase 4, `/subscriptions` is **unreadable in light** (the default). Its `bg-cosmic` wrapper is not pinned, so in light it renders slate-50 → white, while the page and Topbar still use literal `text-white`, `bg-white/10`, `border-white/10`, `text-blue-100/70`, `text-purple-300` and the `from-blue-200 to-purple-200` heading. Dark is unchanged. Accepted by the user on 2026-10-07; Phase 4 must close it and remove the `KNOWN GAP` comment in `src/pages/subscriptions.astro`.
