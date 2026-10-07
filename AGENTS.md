@@ -36,12 +36,13 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 - `npm run dev` — dev server (Astro + Cloudflare adapter, workerd runtime)
 - `npm run build` / `npm run preview` — production build and local preview of it
 - `npm run lint` / `npm run lint:fix` — ESLint with `strictTypeChecked` typescript-eslint rules (lint needs generated types: run `npx astro sync` first on a fresh checkout)
+- `npm run lint:ui` — UI literal check (`scripts/ui-literals-check.mjs`): fails with `file:line: literal` when a view in its `SCOPE` uses a palette class, hex/rgb/hsl/oklch value or arbitrary size instead of a token (see `## UI`). Runs in pre-commit (lint-staged, scoped files only) and CI.
 - `npx astro check` — type-check `.astro` + TS files (CI runs it; there is no `typecheck` script)
 - `npm run format` — Prettier (astro + tailwind plugins)
 - `npm run smoke` — dependency-free end-to-end smoke test (`scripts/smoke.mjs`) against a running server; `BASE_URL` defaults to `http://localhost:4321`. Needs a reachable Supabase. Covers the auth flow, adding a subscription, and cross-account isolation (a fresh second account must not see the first account's subscription). Run after dependency upgrades.
 - `npm run test:rls` — RLS policy check (`scripts/rls-check.mjs`): signs up two throwaway `@example.com` users through the Supabase REST API with the anon key and asserts neither can read or write the other's subscriptions/categories and anon sees nothing. Needs `SUPABASE_URL`/`SUPABASE_KEY` of a **local** Supabase; never run it against hosted. Runs in CI.
 - `npm run db:types` — regenerate `src/db/database.types.ts` from the local Supabase schema (run after every migration).
-- `npm run test:smoke` — unit tests for the smoke matcher (`scripts/*.test.mjs`, `node --test`); no server needed.
+- `npm run test:smoke` — unit tests for the smoke and UI-literal matchers (`scripts/*.test.mjs`, `node --test`); no server needed.
 - `npm run smoke:remote` — same smoke test against a hosted environment, loading `.env.smoke` (copy `.env.smoke.example`; gitignored, never commit it). `SMOKE_EMAIL`/`SMOKE_PASSWORD` select remote mode: signs in to an existing confirmed account and never signs up; it is read-only for subscriptions (checks `/subscriptions` renders, never adds one). `CF_ACCESS_CLIENT_ID`/`CF_ACCESS_CLIENT_SECRET` add Cloudflare Access service-token headers. Pass `BASE_URL` (and `SMOKE_EXPECT_ACCESS=1` to first assert anonymous requests are blocked by Access) per run, e.g. `BASE_URL=https://<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`. Half-set credential pairs exit 1 before any request.
 
 ## Environment
@@ -56,5 +57,11 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 CI needs the repo secrets
 
 ## UI
-- Tokeny: src/styles/global.css (:root, .dark, @theme inline). Nowy kolor = nowy token, nigdy literał.
-- Komponenty: src/components/ui. Zanim napiszesz nowy, sprawdź ten katalog; brakujący dodaj z rejestru shadcn.
+
+- **Two themes.** Light is the default (`:root`); dark is `.dark` on `<html>`, toggled by `ThemeToggle` (`src/components/ThemeToggle.tsx`, hook `src/components/hooks/useTheme.ts`) and stored in `localStorage.theme`. Tokens live in `src/styles/global.css` (`:root`, `.dark`, `@theme inline`). Every new colour is a new token with both a light and a dark value there, published in `@theme inline` as `--color-<name>`, and recorded with its source in `context/changes/ui-tokens-onboarding/tokens.md`. Never a literal.
+- **Role tokens** (use as `bg-*`, `text-*`, `border-*`, …): `background`, `foreground`, `card`, `card-foreground`, `popover`, `popover-foreground`, `primary`, `primary-foreground`, `muted-foreground`, `border`, `input`, `ring`, `destructive`, `success`, `link`, `background-highlight`, `heading-from`, `heading-to`. Utilities: `bg-cosmic` (page background gradient) and `text-heading` (gradient heading text).
+- **Reuse components** before writing new ones: `Card`, `Alert` (variants `default`, `destructive`, `success`), `Input` (and its `inputClassName`), `Label`, `Button` from `src/components/ui/`; form fields via `FormField`, `SelectField`, `SubmitButton`, `ServerError` from `src/components/form/`. Add a missing one with `npx shadcn@latest add <name>` and strip its `"use client"` directive.
+- **No literals in views:** no palette classes (`text-purple-300`, `bg-white/10`, …), no hex/`rgb()`/`hsl()`/`oklch()` values, no arbitrary sizes (`w-[320px]`). Use a token, or add one.
+- **Pinned dark** until change `ui-theme-other-pages` migrates them (a `dark` class on the page wrapper; they still use literals): `src/pages/dashboard.astro`, `src/pages/auth/signin.astro`, `src/pages/auth/signup.astro`, `src/pages/auth/confirm-email.astro`, `src/components/Welcome.astro`.
+- **Show new states** (default, hover, focus-visible, disabled, error, empty, loading) on `/dev/kitchen-sink` (`src/pages/dev/kitchen-sink.astro`, dev server only), which renders a light and a dark column side by side.
+- **Enforced** by `npm run lint:ui` (`scripts/ui-literals-check.mjs`; pre-commit and CI). When you clean a view onto tokens, add it to `SCOPE` at the top of that script.

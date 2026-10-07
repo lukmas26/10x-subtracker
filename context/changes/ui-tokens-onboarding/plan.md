@@ -3,6 +3,7 @@
 ## Overview
 
 Bring `/subscriptions` and the shared primitives it renders onto the design-system contract this repo already ships: values in `src/styles/global.css` (`:root` / `.dark`, published through `@theme inline`), components in `src/components/ui` (shadcn new-york). The app gets **two themes**:
+
 - **light**: the default, a light counterpart of today's look with the same purple brand.
 - **dark**: today's glass/cosmic look, moved into tokens.
 
@@ -34,7 +35,7 @@ From `research.md` (`## Summary`, `## Charges`):
 - **Other pages pinned dark.** The 5 other `bg-cosmic` pages are pinned to dark with `class="dark"` on their root wrapper and look exactly as they do today. Their migration is the separate change `ui-theme-other-pages`.
 - **Visual gate.** `/dev/kitchen-sink` (dev only; 404 in production) shows all 7 states in both themes side by side. Screenshots at desktop and 375 px are saved in the change folder.
 - **Guard.** `npm run lint:ui` fails on a literal in the scoped files and runs in CI and lint-staged. The UI section of `AGENTS.md` names the themes, the tokens, the components, the kitchen sink and the check.
-- **Dark looks as before.** In dark, `/subscriptions` looks as it does today, apart from the accepted deltas listed under *Critical Implementation Details*.
+- **Dark looks as before.** In dark, `/subscriptions` looks as it does today, apart from the accepted deltas listed under _Critical Implementation Details_.
 
 ### Key Discoveries:
 
@@ -60,6 +61,7 @@ From `research.md` (`## Summary`, `## Charges`):
 ## Implementation Approach
 
 Follow the `/10x-ui` order: **environment/library → token values → shared primitives → the one view → states/gate → guard**.
+
 - After every visual phase, re-run the hardcoded-value scan on the view's files. The count must only go down (70 → … → 0); a count that goes up is a regression.
 - From Phase 2 on, take desktop + 375 px screenshots of `/subscriptions` in **both** themes.
 
@@ -96,7 +98,7 @@ Put the components, the theme mechanism and the interim pin in place before any 
 
 **Intent**: Apply a stored dark choice before paint, and let native widgets follow the theme.
 
-**Contract**: an inline head script as described under *Critical Implementation Details* (`localStorage` key `theme`, values `light` | `dark`, default light). `color-scheme: light` on `:root` and `color-scheme: dark` on `.dark`, both in `global.css`.
+**Contract**: an inline head script as described under _Critical Implementation Details_ (`localStorage` key `theme`, values `light` | `dark`, default light). `color-scheme: light` on `:root` and `color-scheme: dark` on `.dark`, both in `global.css`.
 
 #### 3. Theme toggle
 
@@ -105,6 +107,7 @@ Put the components, the theme mechanism and the interim pin in place before any 
 **Intent**: Give every page a way to switch theme.
 
 **Contract**:
+
 - `useTheme()` returns `{ theme, toggle }`. It reads the initial theme from the `<html>` class, and `toggle` flips the class and writes `localStorage.theme` inside `try/catch`.
 - `ThemeToggle` is a shadcn `Button` (`variant="outline"`, `size="icon"`) with a lucide `Sun`/`Moon` icon, `aria-label="Toggle theme"` and `aria-pressed` set to whether dark is on.
 - `Layout` renders it once as a small fixed-position control in a corner (`client:load`), above page content, so it doesn't cover the Topbar or form controls at 375 px.
@@ -178,13 +181,13 @@ Define both palettes under role names and publish the new tokens. Components are
 
 **Contract**: new variables in both `:root` and `.dark`, each published in `@theme inline` as `--color-<name>`:
 
-| Token | light | dark |
-|---|---|---|
-| `--background-highlight` | white | `#0f1529` |
-| `--success` | green-700 | green-300 |
-| `--link` | purple-700 | purple-300 |
-| `--heading-from` | blue-700 | blue-200 |
-| `--heading-to` | purple-700 | purple-200 |
+| Token                    | light      | dark       |
+| ------------------------ | ---------- | ---------- |
+| `--background-highlight` | white      | `#0f1529`  |
+| `--success`              | green-700  | green-300  |
+| `--link`                 | purple-700 | purple-300 |
+| `--heading-from`         | blue-700   | blue-200   |
+| `--heading-to`           | purple-700 | purple-200 |
 
 #### 4. Utilities from tokens
 
@@ -294,6 +297,7 @@ Rebuild the page itself from components and tokens. From here on it follows the 
 **Intent**: Glass sections, heading, messages and list read the contract (C1–C3), so they render correctly in both themes.
 
 **Contract**:
+
 - Both sections are `Card`: glass via `bg-card` + `backdrop-blur-xl` in dark, a bordered card in light, with shape and padding as today.
 - The h1 uses `text-heading`; the h2 uses a foreground token.
 - Messages: the saved message is `<Alert variant="success" role="status">`, and the load error is `<Alert variant="destructive">` (or `ServerError`).
@@ -335,6 +339,7 @@ One page that shows every state of the view's building blocks in both themes at 
 **Intent**: Make the states the happy path never exercises (disabled, error, focus, loading, empty) visible in both themes.
 
 **Contract**: returns a 404 response unless `import.meta.env.DEV`. It renders two columns, light and dark (the dark column wrapped in `class="dark"`), each inside `bg-cosmic`, using fixture data and the real components only:
+
 - `Card` panels
 - `FormField`/`SelectField` in default, error and disabled states
 - `SubmitButton` default, disabled and `pending`
@@ -384,6 +389,7 @@ Tell the next agent where to look, and fail the build when it doesn't.
 **Intent**: Automate the `/10x-ui` hardcoded-value scan for the files this change cleaned, following the repo's dependency-free script pattern (`smoke.mjs` + `smoke-match.mjs`).
 
 **Contract**:
+
 - Exports a pure matcher (line → hits) plus a CLI.
 - The CLI checks a scope list declared at the top of the script: the 10 view files listed in Phase 4, plus `src/components/hooks/useTheme.ts` and `src/pages/dev/kitchen-sink.astro`. With file arguments (lint-staged), it checks only the arguments that are in scope.
 - On a hit, it prints `file:line: literal` and exits 1.
@@ -406,6 +412,7 @@ Tell the next agent where to look, and fail the build when it doesn't.
 **Intent**: Turn the existing two-line rule into one with concrete names and pointers.
 
 **Contract**: the section says:
+
 - there are two themes, light (default, `:root`) and dark (`.dark` on `<html>`, toggled by `ThemeToggle`, stored in `localStorage`), and every new colour is a token with both a light and a dark value in `global.css`, recorded in `tokens.md`;
 - the role tokens to use (list them);
 - which components to reuse (`Card`, `Alert` incl. `success`, `Input`, `Label`, `Button`, plus `FormField`/`SelectField`/`SubmitButton`/`ServerError`), and that missing ones are added with `npx shadcn@latest add` (strip `"use client"`);
@@ -537,25 +544,25 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 5.1 Build passes and production preview 404s `/dev/kitchen-sink`
-- [x] 5.2 Scan over the kitchen sink returns 0 hits
+- [x] 5.1 Build passes and production preview 404s `/dev/kitchen-sink` — 6effd53
+- [x] 5.2 Scan over the kitchen sink returns 0 hits — 6effd53
 
 #### Manual
 
-- [x] 5.3 7-state matrix complete in both themes
-- [x] 5.4 Contrast check in both themes
+- [x] 5.3 7-state matrix complete in both themes — 6effd53
+- [x] 5.4 Contrast check in both themes — 6effd53
 - [ ] 5.5 Screenshots saved at desktop and 375 px
 
 ### Phase 6: Make it stick
 
 #### Automated
 
-- [ ] 6.1 `npm run lint:ui` passes on the cleaned scope
-- [ ] 6.2 `npm run test:smoke` passes with matcher tests
-- [ ] 6.3 `npm run lint`, `npx astro check`, `npm run build` pass
-- [ ] 6.4 An injected literal makes `npm run lint:ui` exit 1
+- [x] 6.1 `npm run lint:ui` passes on the cleaned scope
+- [x] 6.2 `npm run test:smoke` passes with matcher tests
+- [x] 6.3 `npm run lint`, `npx astro check`, `npm run build` pass
+- [x] 6.4 An injected literal makes `npm run lint:ui` exit 1
 
 #### Manual
 
-- [ ] 6.5 Pre-commit hook blocks a staged literal
-- [ ] 6.6 `AGENTS.md` UI section reads as a complete instruction
+- [x] 6.5 Pre-commit hook blocks a staged literal
+- [x] 6.6 `AGENTS.md` UI section reads as a complete instruction
