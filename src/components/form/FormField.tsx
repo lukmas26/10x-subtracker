@@ -48,6 +48,7 @@ interface FormFieldProps {
   hint?: ReactNode;
   icon: ReactNode;
   endContent?: ReactNode;
+  disabled?: boolean;
 }
 
 export function FormField({
@@ -63,6 +64,7 @@ export function FormField({
   hint,
   icon,
   endContent,
+  disabled,
 }: FormFieldProps) {
   return (
     <div>
@@ -79,6 +81,7 @@ export function FormField({
             onChange(e.target.value);
           }}
           placeholder={placeholder}
+          disabled={disabled}
           className={fieldControlClassName}
           {...fieldErrorProps(id, error)}
         />

@@ -8,14 +8,15 @@ interface SubmitButtonProps {
   children: ReactNode;
   /** Overrides the form status, e.g. to show the pending state outside a submitting form. */
   pending?: boolean;
+  disabled?: boolean;
 }
 
-export function SubmitButton({ pendingText, icon, children, pending }: SubmitButtonProps) {
+export function SubmitButton({ pendingText, icon, children, pending, disabled }: SubmitButtonProps) {
   const status = useFormStatus();
   const isPending = pending ?? status.pending;
 
   return (
-    <Button type="submit" disabled={isPending} className="w-full">
+    <Button type="submit" disabled={isPending || disabled === true} className="w-full">
       {isPending ? (
         <span className="flex items-center gap-2">
           <span className="border-primary-foreground/30 border-t-primary-foreground size-4 animate-spin rounded-full border-2" />

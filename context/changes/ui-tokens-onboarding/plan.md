@@ -523,27 +523,27 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 4.1 Scan over the view files returns 0 hits
-- [x] 4.2 `npx astro check`, `npm run lint`, `npm run build` pass
-- [x] 4.3 `npm run smoke` passes
+- [x] 4.1 Scan over the view files returns 0 hits — 75f47d7
+- [x] 4.2 `npx astro check`, `npm run lint`, `npm run build` pass — 75f47d7
+- [x] 4.3 `npm run smoke` passes — 75f47d7
 
 #### Manual
 
-- [x] 4.4 Dark matches baseline except accepted deltas
-- [x] 4.5 Light reads as the same product
-- [x] 4.6 Empty, populated, saved and error variants correct in both themes
+- [x] 4.4 Dark matches baseline except accepted deltas — 75f47d7
+- [x] 4.5 Light reads as the same product — 75f47d7
+- [x] 4.6 Empty, populated, saved and error variants correct in both themes — 75f47d7
 
 ### Phase 5: States and visual gate
 
 #### Automated
 
-- [ ] 5.1 Build passes and production preview 404s `/dev/kitchen-sink`
-- [ ] 5.2 Scan over the kitchen sink returns 0 hits
+- [x] 5.1 Build passes and production preview 404s `/dev/kitchen-sink`
+- [x] 5.2 Scan over the kitchen sink returns 0 hits
 
 #### Manual
 
-- [ ] 5.3 7-state matrix complete in both themes
-- [ ] 5.4 Contrast check in both themes
+- [x] 5.3 7-state matrix complete in both themes
+- [x] 5.4 Contrast check in both themes
 - [ ] 5.5 Screenshots saved at desktop and 375 px
 
 ### Phase 6: Make it stick

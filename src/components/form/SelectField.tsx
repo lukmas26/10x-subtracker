@@ -18,10 +18,11 @@ interface SelectFieldProps {
   error?: string;
   icon: ReactNode;
   children: ReactNode;
+  disabled?: boolean;
 }
 
 /** Native select styled with the same token classes as `Input`; options read the popover tokens. */
-export function SelectField({ id, name, label, value, onChange, error, icon, children }: SelectFieldProps) {
+export function SelectField({ id, name, label, value, onChange, error, icon, children, disabled }: SelectFieldProps) {
   return (
     <div>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
@@ -31,6 +32,7 @@ export function SelectField({ id, name, label, value, onChange, error, icon, chi
           id={id}
           name={name ?? id}
           value={value}
+          disabled={disabled}
           onChange={(e) => {
             onChange(e.target.value);
           }}
