@@ -59,9 +59,15 @@ Added in Phase 3 (accepted by the user on 2026-10-07):
 9. Submit button radius: `Button` default `rounded-md` (8px) instead of `rounded-lg` (10px); inputs keep `rounded-lg`.
 10. Alerts: `destructive/10` and `success/10` tints with `/30` borders instead of `red-900/30` and `green-900/30`.
 
-## Known gap — fix in Phase 4
+Added in Phase 4 (accepted by the user on 2026-10-07):
 
-From Phase 2 until Phase 4, `/subscriptions` is **unreadable in light** (the default). Its `bg-cosmic` wrapper is not pinned, so in light it renders slate-50 → white, while the page and Topbar still use literal `text-white`, `bg-white/10`, `border-white/10`, `text-blue-100/70`, `text-purple-300` and the `from-blue-200 to-purple-200` heading. Dark is unchanged. Accepted by the user on 2026-10-07; Phase 4 must close it and remove the `KNOWN GAP` comment in `src/pages/subscriptions.astro`.
+11. `/subscriptions` h2 "Your subscriptions": `text-card-foreground` (white) instead of `text-blue-100`.
+12. Empty-state text: `text-muted-foreground` (blue-100/70) instead of `text-blue-100/60`.
+13. Saved/load-error alert text: the `Alert` variant's `text-success/90` / `text-destructive/90` instead of full-strength `text-green-300` / `text-red-300`.
+
+## Known gap — closed in Phase 4
+
+From Phase 2 until Phase 4, `/subscriptions` was **unreadable in light** (the default): its unpinned `bg-cosmic` wrapper rendered slate-50 → white while the page still used literal `text-white`, `bg-white/10`, `border-white/10`, `text-blue-100/70` and the `from-blue-200 to-purple-200` heading (accepted by the user on 2026-10-07). **Closed in Phase 4:** the page now renders its sections as `Card`, its messages as `Alert`, and its text from tokens, and the `KNOWN GAP` comment in `src/pages/subscriptions.astro` was removed.
 
 Other token-driven dark side effects of Phase 2, not in the accepted-deltas list above:
 

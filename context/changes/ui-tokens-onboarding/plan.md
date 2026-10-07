@@ -508,30 +508,30 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 3.1 `npx astro check`, `npm run lint`, `npm run build` pass
-- [x] 3.2 Scan over the 7 shared files returns 0 hits
-- [x] 3.3 `npm run smoke` passes locally
+- [x] 3.1 `npx astro check`, `npm run lint`, `npm run build` pass — 961789a
+- [x] 3.2 Scan over the 7 shared files returns 0 hits — 961789a
+- [x] 3.3 `npm run smoke` passes locally — 961789a
 
 #### Manual
 
-- [x] 3.4 Invalid fields announced as invalid with their message
-- [x] 3.5 Brand focus ring on every control in both themes
-- [x] 3.6 Dark-pinned auth pages coherent at desktop and 375 px
-- [x] 3.7 Config banner readable in both themes
+- [x] 3.4 Invalid fields announced as invalid with their message — 961789a
+- [x] 3.5 Brand focus ring on every control in both themes — 961789a
+- [x] 3.6 Dark-pinned auth pages coherent at desktop and 375 px — 961789a
+- [x] 3.7 Config banner readable in both themes — 961789a
 
 ### Phase 4: The `/subscriptions` view
 
 #### Automated
 
-- [ ] 4.1 Scan over the view files returns 0 hits
-- [ ] 4.2 `npx astro check`, `npm run lint`, `npm run build` pass
-- [ ] 4.3 `npm run smoke` passes
+- [x] 4.1 Scan over the view files returns 0 hits
+- [x] 4.2 `npx astro check`, `npm run lint`, `npm run build` pass
+- [x] 4.3 `npm run smoke` passes
 
 #### Manual
 
-- [ ] 4.4 Dark matches baseline except accepted deltas
-- [ ] 4.5 Light reads as the same product
-- [ ] 4.6 Empty, populated, saved and error variants correct in both themes
+- [x] 4.4 Dark matches baseline except accepted deltas
+- [x] 4.5 Light reads as the same product
+- [x] 4.6 Empty, populated, saved and error variants correct in both themes
 
 ### Phase 5: States and visual gate
 
