@@ -478,31 +478,31 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 1.1 `npx astro check` passes
-- [x] 1.2 `npm run lint` passes
-- [x] 1.3 `npm run build` passes
-- [x] 1.4 No `"use client"` in `src/`
-- [x] 1.5 `src/components/ui` contains exactly alert, button, card, input, label
+- [x] 1.1 `npx astro check` passes — 44a748b
+- [x] 1.2 `npm run lint` passes — 44a748b
+- [x] 1.3 `npm run build` passes — 44a748b
+- [x] 1.4 No `"use client"` in `src/` — 44a748b
+- [x] 1.5 `src/components/ui` contains exactly alert, button, card, input, label — 44a748b
 
 #### Manual
 
-- [x] 1.6 Default light, stored dark applied before first paint
-- [x] 1.7 Toggle keyboard-reachable with name and pressed state
-- [x] 1.8 All pages look as today in both toggle states
+- [x] 1.6 Default light, stored dark applied before first paint — 44a748b
+- [x] 1.7 Toggle keyboard-reachable with name and pressed state — 44a748b
+- [x] 1.8 All pages look as today in both toggle states — 44a748b
 
 ### Phase 2: Token values (light and dark)
 
 #### Automated
 
-- [ ] 2.1 `npm run build` passes
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 New tokens published in `@theme inline`
-- [ ] 2.4 No hex in `global.css` outside the `:root`/`.dark` blocks
+- [x] 2.1 `npm run build` passes
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 New tokens published in `@theme inline`
+- [x] 2.4 No hex in `global.css` outside the `:root`/`.dark` blocks
 
 #### Manual
 
-- [ ] 2.5 Pinned pages and `/subscriptions` unchanged in both toggle states
-- [ ] 2.6 `tokens.md` lists every token with light and dark value and source
+- [x] 2.5 Pinned pages and `/subscriptions` unchanged in both toggle states
+- [x] 2.6 `tokens.md` lists every token with light and dark value and source
 
 ### Phase 3: Shared primitives on the contract
 
