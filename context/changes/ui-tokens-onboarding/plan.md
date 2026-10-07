@@ -557,12 +557,12 @@ There is no data to migrate. Existing users have no stored theme, so they get li
 
 #### Automated
 
-- [x] 6.1 `npm run lint:ui` passes on the cleaned scope
-- [x] 6.2 `npm run test:smoke` passes with matcher tests
-- [x] 6.3 `npm run lint`, `npx astro check`, `npm run build` pass
-- [x] 6.4 An injected literal makes `npm run lint:ui` exit 1
+- [x] 6.1 `npm run lint:ui` passes on the cleaned scope — 4588e69
+- [x] 6.2 `npm run test:smoke` passes with matcher tests — 4588e69
+- [x] 6.3 `npm run lint`, `npx astro check`, `npm run build` pass — 4588e69
+- [x] 6.4 An injected literal makes `npm run lint:ui` exit 1 — 4588e69
 
 #### Manual
 
-- [x] 6.5 Pre-commit hook blocks a staged literal
-- [x] 6.6 `AGENTS.md` UI section reads as a complete instruction
+- [x] 6.5 Pre-commit hook blocks a staged literal — 4588e69
+- [x] 6.6 `AGENTS.md` UI section reads as a complete instruction — 4588e69
