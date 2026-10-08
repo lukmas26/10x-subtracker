@@ -1,10 +1,10 @@
 ---
 change_id: ui-tokens-onboarding
 title: Organize CSS styles, theme tokens and UI conventions
-status: impl_reviewed
+status: archived
 created: 2026-10-06
 updated: 2026-10-08
-archived_at: null
+archived_at: 2026-10-08T03:49:59Z
 ---
 
 ## Notes

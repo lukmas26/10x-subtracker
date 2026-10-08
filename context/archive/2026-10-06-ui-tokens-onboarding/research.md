@@ -31,7 +31,7 @@ Review and audit the current CSS approach; verify whether Tailwind and themes ar
 
 1. **No view or app component uses a semantic token class.** A search for `bg|text|border|ring-{background,foreground,primary,secondary,muted,accent,destructive,card,popover,input,ring,border}` across `src/**/*.{astro,tsx}` returned 0 matches outside `src/components/ui/button.tsx`. The tokens are consumed only by the base layer (`global.css:117-123`) and by the shadcn `Button`.
 2. **The visible theme is a hard-coded dark "cosmic/glass" palette** made of raw Tailwind palette classes (`white/10`, `blue-100/70`, `purple-300/600`, `red-*`, `green-*`) plus hex literals in `bg-cosmic` (`global.css:114`) and `Banner.astro:28-40`.
-3. **Light and dark are inverted.** `.dark` is never applied: no `class="dark"`, no `dark:` variant, and no class toggling in `src/` outside `button.tsx`. So the *light* `:root` tokens are active (white `body`, `global.css:122`), while every page paints its own dark background over it (`bg-cosmic min-h-screen`). Native controls get no `color-scheme`, and `SelectField` patches the gap with `[&>option]:bg-slate-900` (`SelectField.tsx:35`).
+3. **Light and dark are inverted.** `.dark` is never applied: no `class="dark"`, no `dark:` variant, and no class toggling in `src/` outside `button.tsx`. So the _light_ `:root` tokens are active (white `body`, `global.css:122`), while every page paints its own dark background over it (`bg-cosmic min-h-screen`). Native controls get no `color-scheme`, and `SelectField` patches the gap with `[&>option]:bg-slate-900` (`SelectField.tsx:35`).
 4. **Shared UI is copy-pasted, not componentised.** The glass panel class string appears 9 times in 6 files, the gradient heading 6 times, the purple link style 11 times, and status alerts 3 times. `src/components/ui/` holds only `button.tsx` (shadcn) and `LibBadge.astro`, which is not from shadcn and is not imported anywhere.
 5. **The one shadcn component is overridden rather than themed.** `SubmitButton` passes `bg-purple-600 hover:bg-purple-500 text-white rounded-lg` over the `default` variant (`SubmitButton.tsx:18`), so the brand colour lives in a class string, not in `--primary`.
 
@@ -64,17 +64,17 @@ On the subscriptions view all five issues are visible: the token layer and `.dar
 
 ### Subscriptions view (`src/pages/subscriptions.astro`) â€” line-by-line
 
-| Line | What | Issue |
-|---|---|---|
-| 28 | `bg-cosmic min-h-screen` wrapper | Background is a hex-literal utility (`global.css:113-115`), not a token; duplicated per page instead of living in the layout |
-| 32, 47 | `rounded-2xl border border-white/10 bg-white/10 â€¦ text-white backdrop-blur-xl` sections | Glass panel literal; same string in 5 other places (see Code References); no `Card` |
-| 33 | `bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent` h1 | Gradient heading literal; repeated in 6 places in total |
-| 37-42 | Success message `border-green-500/30 bg-green-900/30 text-green-300` | No success token; inline alert instead of a shared component |
-| 48 | `text-blue-100` h2 | Palette literal for heading text |
-| 50 | Load error `border-red-500/30 bg-red-900/30 text-red-300` | Duplicates the `ServerError.tsx:11` styling by hand instead of reusing it; ignores `--destructive` |
-| 52, 58 | `text-blue-100/60`, `text-blue-100/70` | Secondary text as literals instead of a muted-foreground token |
-| 54 | `divide-white/10` | Border literal |
-| 44 | `SubscriptionForm` island | Inherits the form-primitive issues below |
+| Line   | What                                                                                    | Issue                                                                                                                        |
+| ------ | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 28     | `bg-cosmic min-h-screen` wrapper                                                        | Background is a hex-literal utility (`global.css:113-115`), not a token; duplicated per page instead of living in the layout |
+| 32, 47 | `rounded-2xl border border-white/10 bg-white/10 â€¦ text-white backdrop-blur-xl` sections | Glass panel literal; same string in 5 other places (see Code References); no `Card`                                          |
+| 33     | `bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent` h1         | Gradient heading literal; repeated in 6 places in total                                                                      |
+| 37-42  | Success message `border-green-500/30 bg-green-900/30 text-green-300`                    | No success token; inline alert instead of a shared component                                                                 |
+| 48     | `text-blue-100` h2                                                                      | Palette literal for heading text                                                                                             |
+| 50     | Load error `border-red-500/30 bg-red-900/30 text-red-300`                               | Duplicates the `ServerError.tsx:11` styling by hand instead of reusing it; ignores `--destructive`                           |
+| 52, 58 | `text-blue-100/60`, `text-blue-100/70`                                                  | Secondary text as literals instead of a muted-foreground token                                                               |
+| 54     | `divide-white/10`                                                                       | Border literal                                                                                                               |
+| 44     | `SubscriptionForm` island                                                               | Inherits the form-primitive issues below                                                                                     |
 
 Form primitives used by the view:
 
@@ -120,13 +120,13 @@ Form primitives used by the view:
 
 ## Architecture Insights
 
-- The design system's *contract layer* (tokens + `@theme inline` + `cn` + shadcn registry) is in place and correct. The *usage layer* was built feature by feature from the starter's cosmic/glass look, with literals. The fix is to bring the views onto the contract, not to rebuild the tooling.
+- The design system's _contract layer_ (tokens + `@theme inline` + `cn` + shadcn registry) is in place and correct. The _usage layer_ was built feature by feature from the starter's cosmic/glass look, with literals. The fix is to bring the views onto the contract, not to rebuild the tooling.
 - Because the intended look is dark, the cleanest token story is one of: (a) apply `class="dark"` on `<html>` and remap the `.dark` tokens to the cosmic palette, or (b) make the cosmic palette the `:root` values and drop the unused theme. Either way, add `color-scheme: dark`, which would also remove the `SelectField` option workaround. This is a plan decision (see Open Questions).
 - Candidate charges for `/10x-ui` (3â€“5):
   1. **Missing tokens**: background (cosmic gradient), surface/glass, surface border, brand/primary (purple), muted text (blue-tinted), success, plus wiring `--destructive` into the error UI and setting `--ring` to match the brand focus.
   2. **Missing shared components**: `Card` (glass panel), `Alert` (success/error; absorbs `ServerError` and the 2 inline alerts), `Input`/`Label` (or a token-based `FormField` base shared with `SelectField`), and a page-heading style.
   3. **Accidental architecture**: `SubmitButton` overriding `Button`; `Banner.astro` outside Tailwind; `.dark` never applied; unused `LibBadge` in `ui/`; redundant Layout reset; per-page `bg-cosmic` wrapper.
-  4. *(state/accessibility)*: inputs lack `aria-invalid` / `aria-describedby`; focus rings are inconsistent.
+  4. _(state/accessibility)_: inputs lack `aria-invalid` / `aria-describedby`; focus rings are inconsistent.
 - Onboarding rule to leave for the next agent: the `AGENTS.md` UI section already states the token and component rules. It lacks the concrete token names, the "dark-only (or not)" decision, and the list of shared components to reuse.
 
 ## Historical Context (from prior changes)
@@ -153,7 +153,7 @@ _Added 2026-10-06 by `/10x-ui`. View: `/subscriptions`. Two-way audit: source â†
 
 **Pre-audit scan** (the `/10x-ui` hardcoded-value regex, run on the 9 files that render the view: `subscriptions.astro`, `SubscriptionForm.tsx`, `FormField.tsx`, `SelectField.tsx`, `ServerError.tsx`, `SubmitButton.tsx`, `Topbar.astro`, `Layout.astro`, `Banner.astro`): **70 hits**. By file: subscriptions.astro 19, Topbar 15, SelectField 11, FormField 9, Banner 9, SubmitButton 4, ServerError 3, SubscriptionForm 0, Layout 0. In the same 9 files there are **0** semantic token classes and **1** import from `@/components/ui` (`SubmitButton.tsx:3`). This is the baseline the count must drop from after each visual phase.
 
-**Agent rules:** the UI section of `AGENTS.md` (`AGENTS.md:58-60`) already says "new colour = new token, never a literal" and "check `src/components/ui` first". No rule in `AGENTS.md`/`CLAUDE.md` invites arbitrary values (searching for `arbitrary` and `w-[` found nothing). The rule is right, but it doesn't name the tokens or the shared components, so it gives an agent nothing concrete to follow (see *Make it stick* in the plan).
+**Agent rules:** the UI section of `AGENTS.md` (`AGENTS.md:58-60`) already says "new colour = new token, never a literal" and "check `src/components/ui` first". No rule in `AGENTS.md`/`CLAUDE.md` invites arbitrary values (searching for `arbitrary` and `w-[` found nothing). The rule is right, but it doesn't name the tokens or the shared components, so it gives an agent nothing concrete to follow (see _Make it stick_ in the plan).
 
 ### C1 â€” Missing tokens: the view's palette bypasses a dead, inverted token layer
 
@@ -177,7 +177,7 @@ _Added 2026-10-06 by `/10x-ui`. View: `/subscriptions`. Two-way audit: source â†
 
 - **Category:** missing shared component
 - **Evidence:**
-  - Glass panel: `subscriptions.astro:32,47`, with the same class string in 7 more places in 5 files (see research *Code References*).
+  - Glass panel: `subscriptions.astro:32,47`, with the same class string in 7 more places in 5 files (see research _Code References_).
   - Alerts: the success and error messages at `subscriptions.astro:37-42,50` hand-roll what `ServerError.tsx:11` already renders.
   - Field markup: `FormField.tsx:5-6,39-62` and `SelectField.tsx:20-43` duplicate the label, icon, input and error markup.
   - `src/components/ui/` contains only `button.tsx` and an unused `LibBadge.astro`.
@@ -206,14 +206,14 @@ _Added 2026-10-06 by `/10x-ui`. View: `/subscriptions`. Two-way audit: source â†
 
 ### Entry-point and 7-state baseline (before changes)
 
-| State | Current, on `/subscriptions` |
-|---|---|
-| default | literals only (C1) |
-| hover | Topbar links and the submit button change, through literals (C4) |
-| focus-visible | inputs: purple ring literal; button: grey `--ring` (C2) |
-| disabled | submit button only, while pending, via `Button`'s `disabled:opacity-50` |
-| error | field errors and the server error exist, but use literals and have no aria wiring (C2) |
-| empty | a real empty state exists (`subscriptions.astro:52`) |
-| loading | the page is server-rendered, so the list has no loading state; form submit shows a spinner (`SubmitButton.tsx:20-24`). A list skeleton is N/A unless loading moves to the client |
+| State         | Current, on `/subscriptions`                                                                                                                                                     |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| default       | literals only (C1)                                                                                                                                                               |
+| hover         | Topbar links and the submit button change, through literals (C4)                                                                                                                 |
+| focus-visible | inputs: purple ring literal; button: grey `--ring` (C2)                                                                                                                          |
+| disabled      | submit button only, while pending, via `Button`'s `disabled:opacity-50`                                                                                                          |
+| error         | field errors and the server error exist, but use literals and have no aria wiring (C2)                                                                                           |
+| empty         | a real empty state exists (`subscriptions.astro:52`)                                                                                                                             |
+| loading       | the page is server-rendered, so the list has no loading state; form submit shows a spinner (`SubmitButton.tsx:20-24`). A list skeleton is N/A unless loading moves to the client |
 
 Entry points: a logged-out visitor is redirected to sign-in, which works, but the destination is lost (C5). With Supabase unconfigured, `locals.user` is `null`, so the guard redirects before the page's null-client empty state can render (`middleware.ts:19-21`, `subscriptions.astro:16-24`).
