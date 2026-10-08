@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Banner from "@/components/Banner.astro";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { missingConfigs } from "@/lib/config-status";
 
 interface Props {
@@ -13,6 +14,12 @@ const { title = "10x Astro Starter" } = Astro.props;
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      // Apply a stored dark choice before first paint. Anything but "dark" (or a storage error) means light.
+      try {
+        if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark");
+      } catch {}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -34,14 +41,8 @@ const { title = "10x Astro Starter" } = Astro.props;
       </Banner>
     ))}
     <slot />
+    <div class="fixed right-4 bottom-4 z-50">
+      <ThemeToggle client:load />
+    </div>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

@@ -1,9 +1,39 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { CircleAlert } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-const inputBase =
-  "w-full rounded-lg bg-white/10 border px-3 py-2 pl-10 text-white placeholder-white/40 focus:outline-none focus:ring-2 transition-colors";
+/** Field-level additions on top of the `Input` base (room for the leading icon, size, glass surface). */
+export const fieldControlClassName = "h-auto rounded-lg bg-card py-2 pl-10 text-base md:text-base dark:bg-card";
+
+export const fieldIconClassName =
+  "pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground";
+
+export function fieldErrorId(id: string) {
+  return `${id}-error`;
+}
+
+/** `aria-invalid` / `aria-describedby` for a control whose error is rendered by `FieldError`. */
+export function fieldErrorProps(id: string, error?: string) {
+  return error ? { "aria-invalid": true, "aria-describedby": fieldErrorId(id) } : {};
+}
+
+export function FieldLabel({ htmlFor, children }: { htmlFor: string; children: ReactNode }) {
+  return (
+    <Label htmlFor={htmlFor} className="text-muted-foreground mb-1 leading-5 font-normal">
+      {children}
+    </Label>
+  );
+}
+
+export function FieldError({ id, message }: { id: string; message: string }) {
+  return (
+    <p id={fieldErrorId(id)} className="text-destructive mt-1 flex items-center gap-1 text-xs">
+      <CircleAlert className="size-3" aria-hidden="true" />
+      {message}
+    </p>
+  );
+}
 
 interface FormFieldProps {
   id: string;
@@ -18,6 +48,7 @@ interface FormFieldProps {
   hint?: ReactNode;
   icon: ReactNode;
   endContent?: ReactNode;
+  disabled?: boolean;
 }
 
 export function FormField({
@@ -33,15 +64,14 @@ export function FormField({
   hint,
   icon,
   endContent,
+  disabled,
 }: FormFieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm text-blue-100/80">
-        {label}
-      </label>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <div className="relative">
-        <span className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/40">{icon}</span>
-        <input
+        <span className={fieldIconClassName}>{icon}</span>
+        <Input
           id={id}
           name={name ?? id}
           type={type}
@@ -51,21 +81,13 @@ export function FormField({
             onChange(e.target.value);
           }}
           placeholder={placeholder}
-          className={cn(
-            inputBase,
-            error ? "border-red-400/60 focus:ring-red-400" : "border-white/20 focus:ring-purple-400",
-          )}
+          disabled={disabled}
+          className={fieldControlClassName}
+          {...fieldErrorProps(id, error)}
         />
         {endContent}
       </div>
-      {error ? (
-        <p className="mt-1 flex items-center gap-1 text-xs text-red-300">
-          <CircleAlert className="size-3" />
-          {error}
-        </p>
-      ) : (
-        hint
-      )}
+      {error ? <FieldError id={id} message={error} /> : hint}
     </div>
   );
 }

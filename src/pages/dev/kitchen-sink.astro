@@ -1,0 +1,122 @@
+---
+// Dev-only visual gate for change ui-tokens-onboarding: every state of the /subscriptions building
+// blocks in both themes at once. Fixture data only; production returns 404.
+import Layout from "@/layouts/Layout.astro";
+import Topbar from "@/components/Topbar.astro";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import KitchenSinkFields, { StateLabel } from "@/components/dev/KitchenSinkFields";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
+import type { SubscriptionListItemDTO } from "@/types";
+
+// Not a frontmatter `return new Response(...)`: typescript-eslint's no-misused-promises crashes on it.
+const enabled = import.meta.env.DEV;
+if (!enabled) Astro.response.status = 404;
+
+const subscriptions: SubscriptionListItemDTO[] = [
+  {
+    id: "fixture-1",
+    name: "Netflix",
+    amount: "49.99",
+    currency: "PLN",
+    cycle: "monthly",
+    categoryName: "Video",
+    createdAt: "2026-10-01T00:00:00Z",
+  },
+  {
+    id: "fixture-2",
+    name: "Spotify Family",
+    amount: "29.99",
+    currency: "PLN",
+    cycle: "monthly",
+    categoryName: "Music",
+    createdAt: "2026-10-02T00:00:00Z",
+  },
+  {
+    id: "fixture-3",
+    name: "A very long subscription name that has to wrap on a narrow screen without overflowing",
+    amount: "119.00",
+    currency: "EUR",
+    cycle: "yearly",
+    categoryName: "Productivity",
+    createdAt: "2026-10-03T00:00:00Z",
+  },
+];
+
+const columns = [
+  { theme: "light", title: "Light" },
+  { theme: "dark", title: "Dark" },
+] as const;
+
+// Same panel classes as /subscriptions.
+const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-none";
+---
+
+{enabled && (
+  <Layout title="Kitchen sink">
+    <div class="grid min-h-screen w-full grid-cols-1 md:grid-cols-2">
+      {columns.map(({ theme, title }) => (
+        <section
+          class:list={[theme === "dark" && "dark", "bg-cosmic text-foreground min-w-0 p-4 sm:p-8"]}
+          aria-label={`${title} theme`}
+        >
+          <h1 class="text-heading mb-6 text-2xl font-bold">{title}</h1>
+
+          <div class="flex flex-col gap-6">
+            <div>
+              <StateLabel>Topbar — links (hover / focus-visible by interaction)</StateLabel>
+              <Topbar />
+            </div>
+
+            <div>
+              <StateLabel>ThemeToggle — default (hover / focus-visible by interaction)</StateLabel>
+              <ThemeToggle client:load />
+            </div>
+
+            <Card className={sectionClass}>
+              <StateLabel>Card — form building blocks</StateLabel>
+              <h2 class="text-heading mb-6 text-2xl font-bold">Add a subscription</h2>
+              <KitchenSinkFields idPrefix={theme} />
+            </Card>
+
+            <Card className={sectionClass}>
+              <StateLabel>Alert — success, destructive, default</StateLabel>
+              <div class="flex flex-col gap-4">
+                <Alert variant="success" role="status">
+                  <AlertDescription>Subscription saved</AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                  <AlertDescription>Could not load your subscriptions. Please refresh the page.</AlertDescription>
+                </Alert>
+                <Alert>
+                  <AlertDescription>Default alert: neutral information.</AlertDescription>
+                </Alert>
+              </div>
+            </Card>
+
+            <Card className={sectionClass}>
+              <StateLabel>List — populated</StateLabel>
+              <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
+              <ul class="divide-border divide-y">
+                {subscriptions.map((s) => (
+                  <li class="py-3">
+                    <p class="text-card-foreground font-medium break-words">{s.name}</p>
+                    <p class="text-muted-foreground text-sm break-words">
+                      {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+
+            <Card className={sectionClass}>
+              <StateLabel>List — empty</StateLabel>
+              <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
+              <p class="text-muted-foreground text-sm">No subscriptions yet — add your first one above.</p>
+            </Card>
+          </div>
+        </section>
+      ))}
+    </div>
+  </Layout>
+)}
