@@ -522,3 +522,28 @@ Change `first-subscription-on-list`, review fixes from PR #11 (`adb9304`). It fo
 
 Lesson: `smoke:remote` cannot see write paths. When a release changes how data is written, run one
 manual write on the preview before promoting.
+
+### Pass 6 — 2026-10-08 (UI tokens, light/dark themes)
+
+Change `ui-tokens-onboarding` (UI-01, PR #14, branch `ui01-tokens-onboarding` at `98b0410`). No
+migration. It follows the runbook. **Deviation:** promoted before PR #14 was merged, with the user's
+approval, so production ran ahead of `master`.
+
+1. Local gates: `npm run lint`, `npm run test:smoke` (33/33), `npx astro check`, `npm run lint:ui`,
+   `npm run build` and local `npm run smoke` (16/16), all green. `npm run test:rls` ran in CI on
+   PR #14, which is green.
+2. No local server was running on :4321/:8787. `npm run build` + `npx wrangler versions upload`
+   produced `a319abdb-9577-469e-a39f-639f5ab95c49` (preview
+   `https://a319abdb-subtracker.lukasz-maslowski.workers.dev`).
+3. `BASE_URL=<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` gave **10/10 PASS**. No manual
+   look at the preview before promotion; smoke does not check the theme toggle or visual states.
+4. The user approved, then: `npx wrangler versions deploy a319abdb-9577-469e-a39f-639f5ab95c49@100% -y`.
+5. `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote` gave **9/9 PASS**.
+   Anonymous `/` returns `200` and `/subscriptions` returns `302` → `/auth/signin`.
+
+| Item         | Value                                                        |
+| ------------ | ------------------------------------------------------------ |
+| Live version | `a319abdb-9577-469e-a39f-639f5ab95c49` (100%)                |
+| Migration    | none                                                         |
+| Remote smoke | preview 10/10, production 9/9                                |
+| Rollback     | `npx wrangler rollback 3d3f296a-5014-4929-a97f-773005887175` |
