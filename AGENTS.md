@@ -33,6 +33,8 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 
 ## Commands
 
+**Before starting a server or running a flow against one** (`npm run dev`, `npm run preview`, `npm run smoke`, `npm run test:rls`, a browser check), check whether something already listens on the port: `netstat -ano | grep -E ':(4321|8787) .*LISTENING'` (Windows) or `lsof -iTCP:4321 -sTCP:LISTEN` (macOS/Linux). The user often runs their own dev server in another terminal; a second instance, or a reload of theirs, makes smoke fail on unrelated steps. If a process is found, **stop and ask the user** whether to reuse it, have them stop it, or use another port (`--port`, `BASE_URL`). Never kill it yourself.
+
 - `npm run dev` — dev server (Astro + Cloudflare adapter, workerd runtime)
 - `npm run build` / `npm run preview` — production build and local preview of it
 - `npm run lint` / `npm run lint:fix` — ESLint with `strictTypeChecked` typescript-eslint rules (lint needs generated types: run `npx astro sync` first on a fresh checkout)
@@ -58,7 +60,7 @@ CI needs the repo secrets
 
 ## UI
 
-- **Two themes.** Light is the default (`:root`); dark is `.dark` on `<html>`, toggled by `ThemeToggle` (`src/components/ThemeToggle.tsx`, hook `src/components/hooks/useTheme.ts`) and stored in `localStorage.theme`. Tokens live in `src/styles/global.css` (`:root`, `.dark`, `@theme inline`). Every new colour is a new token with both a light and a dark value there, published in `@theme inline` as `--color-<name>`, and recorded with its source in `context/changes/ui-tokens-onboarding/tokens.md`. Never a literal.
+- **Two themes.** Light is the default (`:root`); dark is `.dark` on `<html>`, toggled by `ThemeToggle` (`src/components/ThemeToggle.tsx`, hook `src/components/hooks/useTheme.ts`) and stored in `localStorage.theme`. Tokens live in `src/styles/global.css` (`:root`, `.dark`, `@theme inline`). Every new colour is a new token with both a light and a dark value there, published in `@theme inline` as `--color-<name>`, and recorded with its source in `context/foundation/tokens.md`. Never a literal.
 - **Role tokens** (use as `bg-*`, `text-*`, `border-*`, …): `background`, `foreground`, `card`, `card-foreground`, `popover`, `popover-foreground`, `primary`, `primary-foreground`, `muted-foreground`, `border`, `input`, `ring`, `destructive`, `success`, `link`, `background-highlight`, `heading-from`, `heading-to`. Utilities: `bg-cosmic` (page background gradient) and `text-heading` (gradient heading text).
 - **Reuse components** before writing new ones: `Card`, `Alert` (variants `default`, `destructive`, `success`), `Input` (and its `inputClassName`), `Label`, `Button` from `src/components/ui/`; form fields via `FormField`, `SelectField`, `SubmitButton`, `ServerError` from `src/components/form/`. Add a missing one with `npx shadcn@latest add <name>` and strip its `"use client"` directive.
 - **No literals in views:** no palette classes (`text-purple-300`, `bg-white/10`, …), no hex/`rgb()`/`hsl()`/`oklch()` values, no arbitrary sizes (`w-[320px]`). Use a token, or add one.

@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Token values and their sources: context/changes/ui-tokens-onboarding/tokens.md */
+/* Token values and their sources: context/foundation/tokens.md */
 :root {
   color-scheme: light;
   --radius: 0.625rem;

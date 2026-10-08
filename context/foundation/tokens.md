@@ -65,12 +65,12 @@ Added in Phase 4 (accepted by the user on 2026-10-07):
 12. Empty-state text: `text-muted-foreground` (blue-100/70) instead of `text-blue-100/60`.
 13. Saved/load-error alert text: the `Alert` variant's `text-success/90` / `text-destructive/90` instead of full-strength `text-green-300` / `text-red-300`.
 
+Token-driven side effects of Phase 2 (accepted by the user on 2026-10-08, impl-review F5):
+
+14. `Button` focus ring (`ring-ring/50`) is purple-400 at 50% instead of grey (C2's intent).
+15. `body` outside the `bg-cosmic` wrapper is `#0a0e1a` instead of `oklch(0.145 0 0)`.
+16. `ThemeToggle` outline border is white/20 instead of white/15.
+
 ## Known gap — closed in Phase 4
 
 From Phase 2 until Phase 4, `/subscriptions` was **unreadable in light** (the default): its unpinned `bg-cosmic` wrapper rendered slate-50 → white while the page still used literal `text-white`, `bg-white/10`, `border-white/10`, `text-blue-100/70` and the `from-blue-200 to-purple-200` heading (accepted by the user on 2026-10-07). **Closed in Phase 4:** the page now renders its sections as `Card`, its messages as `Alert`, and its text from tokens, and the `KNOWN GAP` comment in `src/pages/subscriptions.astro` was removed.
-
-Other token-driven dark side effects of Phase 2, not in the accepted-deltas list above:
-
-- `Button` focus ring (`ring-ring/50`) is purple-400 at 50% instead of grey (C2's intent).
-- `body` outside the `bg-cosmic` wrapper is `#0a0e1a` instead of `oklch(0.145 0 0)`.
-- `ThemeToggle` outline border is white/20 instead of white/15.

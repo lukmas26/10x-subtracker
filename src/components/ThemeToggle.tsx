@@ -15,7 +15,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       type="button"
       variant="outline"
       size="icon"
-      aria-label="Toggle theme"
+      aria-label="Dark theme"
       aria-pressed={isDark}
       onClick={toggle}
       className={className}

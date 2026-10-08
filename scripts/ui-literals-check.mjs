@@ -1,5 +1,10 @@
 // UI literal check: fails when a scoped view uses a hardcoded colour or size instead of a token.
-// Zero dependencies on purpose. The regex is the `/10x-ui` hardcoded-value scan.
+// Zero dependencies on purpose. The regex starts from the `/10x-ui` hardcoded-value scan and widens
+// it: it also catches decoration/accent/caret/placeholder/ring-offset palette classes and arbitrary
+// em/vh/vw/% and negative values, which that scan misses.
+// Known false positive: the hex pattern also hits non-colour `#` strings such as `href="#bad"` or
+// `&#123;`, comments included. When a newly scoped view trips it, rename the anchor or teach the
+// matcher a colour context.
 // Usage: `npm run lint:ui` checks the whole scope; with file arguments (lint-staged) it checks
 // only the arguments that are in scope and ignores the rest.
 
@@ -27,7 +32,7 @@ export const SCOPE = [
 const PALETTE =
   "slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black";
 const LITERAL = new RegExp(
-  String.raw`#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|oklch\(|-\[[0-9.]+(px|rem)\]|\b(bg|text|border|ring|outline|from|via|to|fill|stroke|shadow|divide)-(` +
+  String.raw`#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|oklch\(|-\[-?[0-9.]+(px|rem|em|vh|vw|%)\]|\b(bg|text|border|ring-offset|ring|outline|decoration|accent|caret|placeholder|from|via|to|fill|stroke|shadow|divide)-(` +
     PALETTE +
     String.raw`)\b`,
   "g",

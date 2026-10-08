@@ -19,6 +19,28 @@ test("arbitrary length is a hit", () => {
   assert.deepEqual(findLiterals('<div class="w-[320px] h-[2.5rem]">'), ["-[320px]", "-[2.5rem]"]);
 });
 
+test("arbitrary em, vh, vw and % are hits", () => {
+  assert.deepEqual(findLiterals('<div class="w-[12em] h-[50vh] max-w-[80vw] w-[50%]">'), [
+    "-[12em]",
+    "-[50vh]",
+    "-[80vw]",
+    "-[50%]",
+  ]);
+});
+
+test("negative arbitrary value is a hit", () => {
+  assert.deepEqual(findLiterals('<div class="top-[-12px]">'), ["-[-12px]"]);
+});
+
+test("decoration, accent, caret, placeholder and ring-offset palette classes are hits", () => {
+  assert.deepEqual(
+    findLiterals(
+      '<input class="decoration-pink-500 accent-blue-600 caret-white placeholder-gray-400 ring-offset-black">',
+    ),
+    ["decoration-pink", "accent-blue", "caret-white", "placeholder-gray", "ring-offset-black"],
+  );
+});
+
 test("oklch and rgba are hits", () => {
   assert.deepEqual(findLiterals("oklch(1 0 0) rgba(0,0,0,.5)"), ["oklch(", "rgba("]);
 });
