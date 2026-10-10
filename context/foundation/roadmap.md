@@ -3,7 +3,7 @@ project: SubTracker
 version: 1
 status: draft
 created: 2026-09-28
-updated: 2026-10-03
+updated: 2026-10-10
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -39,25 +39,25 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 
 ## At a glance
 
-| ID   | Change ID                          | Outcome (user can …)                                                                     | Prerequisites | PRD refs                                                                                              | Status   |
-| ---- | ---------------------------------- | ---------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- | -------- |
-| F-01 | safe-release-verification          | (foundation) releases carrying financial data can be safely verified before promotion   | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                   | done |
-| S-01 | first-subscription-on-list         | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | done |
-| S-02 | edit-subscription                  | correct an existing subscription without risking data loss                               | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                            | proposed |
-| S-03 | delete-subscription                | delete a subscription they no longer pay for                                             | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                              | proposed |
-| S-04 | spending-summary                   | see the monthly and yearly total of all their subscriptions                              | S-01          | FR-006                                                                                                | proposed |
-| S-05 | duplicate-category-recommendation  | see a savings recommendation for a duplicated category next to the summary               | S-01, S-04    | US-02, FR-007                                                                                         | blocked  |
-| S-06 | dismiss-recommendation             | dismiss a recommendation so that it does not come back                                   | S-05          | US-02, FR-007                                                                                         | proposed |
+| ID   | Change ID                         | Outcome (user can …)                                                                      | Prerequisites | PRD refs                                                                                                               | Status   |
+| ---- | --------------------------------- | ----------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | -------- |
+| F-01 | safe-release-verification         | (foundation) releases carrying financial data can be safely verified before promotion     | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                                    | done     |
+| S-01 | first-subscription-on-list        | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | done     |
+| S-02 | edit-subscription                 | correct an existing subscription without risking data loss                                | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                                             | planning |
+| S-03 | delete-subscription               | delete a subscription they no longer pay for                                              | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                                               | proposed |
+| S-04 | spending-summary                  | see the monthly and yearly total of all their subscriptions                               | S-01          | FR-006                                                                                                                 | proposed |
+| S-05 | duplicate-category-recommendation | see a savings recommendation for a duplicated category next to the summary                | S-01, S-04    | US-02, FR-007                                                                                                          | blocked  |
+| S-06 | dismiss-recommendation            | dismiss a recommendation so that it does not come back                                    | S-05          | US-02, FR-007                                                                                                          | proposed |
 
 ## Streams
 
 Navigation aid — groups items that share a Prerequisites chain. Canonical ordering still lives in the dependency graph below; this table is the proposed reading order across parallel tracks.
 
-| Stream | Theme                   | Chain                    | Note                                                                                   |
-| ------ | ----------------------- | ------------------------ | -------------------------------------------------------------------------------------- |
-| A      | Safe releases           | `F-01`                   | Standalone track, parallel to everything; must close before S-01's first promotion.    |
-| B      | Subscription register   | `S-01` → `S-02` → `S-03` | North star at the head; S-02 and S-03 can run in parallel once S-01 lands.             |
-| C      | Summary and savings     | `S-04` → `S-05` → `S-06` | Joins Stream B at S-01; S-05 waits on the savings-rule decision.                       |
+| Stream | Theme                 | Chain                    | Note                                                                                |
+| ------ | --------------------- | ------------------------ | ----------------------------------------------------------------------------------- |
+| A      | Safe releases         | `F-01`                   | Standalone track, parallel to everything; must close before S-01's first promotion. |
+| B      | Subscription register | `S-01` → `S-02` → `S-03` | North star at the head; S-02 and S-03 can run in parallel once S-01 lands.          |
+| C      | Summary and savings   | `S-04` → `S-05` → `S-06` | Joins Stream B at S-01; S-05 waits on the savings-rule decision.                    |
 
 ## Baseline
 
@@ -113,7 +113,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The main risk is a partial write on a dropped connection; the slice is small, so it is easy to verify against exactly that.
-- **Status:** proposed
+- **Status:** planning
 
 ### S-03: User deletes a subscription
 
@@ -168,15 +168,15 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Backlog Handoff
 
-| Roadmap ID | Change ID                         | Suggested issue title                                            | Ready for `/10x-plan` | Notes |
-| ---------- | --------------------------------- | ---------------------------------------------------------------- | --------------------- | ----- |
-| F-01       | safe-release-verification         | Safe release verification: protected previews + full smoke test  | yes                   | #1 — Run `/10x-plan safe-release-verification`; must close before S-01 is promoted |
-| S-01       | first-subscription-on-list        | Add the first subscription and show the subscription list        | yes                   | #2 — Run `/10x-plan first-subscription-on-list` |
-| S-02       | edit-subscription                 | Edit a subscription                                              | no                    | #3 — Waits on S-01 |
-| S-03       | delete-subscription               | Delete a subscription                                            | no                    | #4 — Waits on S-01 |
-| S-04       | spending-summary                  | Spending summary (monthly and yearly total)                      | no                    | #5 — Waits on S-01 |
-| S-05       | duplicate-category-recommendation | Savings recommendation for a duplicated category                 | no                    | #6 — Blocked: rule for naming the subscription and computing savings |
-| S-06       | dismiss-recommendation            | Dismiss a recommendation                                         | no                    | #7 — Waits on S-05 |
+| Roadmap ID | Change ID                         | Suggested issue title                                           | Ready for `/10x-plan` | Notes                                                                              |
+| ---------- | --------------------------------- | --------------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------- |
+| F-01       | safe-release-verification         | Safe release verification: protected previews + full smoke test | yes                   | #1 — Run `/10x-plan safe-release-verification`; must close before S-01 is promoted |
+| S-01       | first-subscription-on-list        | Add the first subscription and show the subscription list       | yes                   | #2 — Run `/10x-plan first-subscription-on-list`                                    |
+| S-02       | edit-subscription                 | Edit a subscription                                             | no                    | #3 — Waits on S-01                                                                 |
+| S-03       | delete-subscription               | Delete a subscription                                           | no                    | #4 — Waits on S-01                                                                 |
+| S-04       | spending-summary                  | Spending summary (monthly and yearly total)                     | no                    | #5 — Waits on S-01                                                                 |
+| S-05       | duplicate-category-recommendation | Savings recommendation for a duplicated category                | no                    | #6 — Blocked: rule for naming the subscription and computing savings               |
+| S-06       | dismiss-recommendation            | Dismiss a recommendation                                        | no                    | #7 — Waits on S-05                                                                 |
 
 ## Open Roadmap Questions
 
