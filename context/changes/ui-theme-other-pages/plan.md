@@ -454,7 +454,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 - [ ] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass
 - [ ] 4.2 Production build returns 404 for `/dev/kitchen-sink`
-- [x] 4.3 No "Pinned dark" in `AGENTS.md`
+- [x] 4.3 No "Pinned dark" in `AGENTS.md` — c06d0fd
 
 #### Manual
 
