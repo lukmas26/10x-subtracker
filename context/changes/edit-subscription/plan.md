@@ -345,7 +345,7 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Manual
 
-- [ ] 1.6 Migration reviewed: grant is column-level, policy has both `using` and `with check`, RPC raises when no row is updated
+- [x] 1.6 Migration reviewed: grant is column-level, policy has both `using` and `with check`, RPC raises when no row is updated
 
 ### Phase 2: Service, API route and edit page
 
@@ -359,11 +359,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Manual
 
-- [ ] 2.6 Edit link opens the edit page with every field prefilled and the stored category selected
-- [ ] 2.7 Changing fields (incl. currency and a new category on the spot) saves and shows "Subscription updated" with the new values in the same list position
-- [ ] 2.8 Invalid input is caught client-side; a server-side rejection lands on the edit page with the error and the stored values
-- [ ] 2.9 An unknown or another account's id redirects to the list with "Subscription not found."
-- [ ] 2.10 Layout, Edit link focus-visible state and both themes look right on desktop and phone width
+- [x] 2.6 Edit link opens the edit page with every field prefilled and the stored category selected
+- [x] 2.7 Changing fields (incl. currency and a new category on the spot) saves and shows "Subscription updated" with the new values in the same list position
+- [x] 2.8 Invalid input is caught client-side; a server-side rejection lands on the edit page with the error and the stored values
+- [x] 2.9 An unknown or another account's id redirects to the list with "Subscription not found."
+- [x] 2.10 Layout, Edit link focus-visible state and both themes look right on desktop and phone width
 
 ### Phase 3: Smoke coverage
 
@@ -375,7 +375,7 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Manual
 
-- [ ] 3.4 Smoke output lists every new step as PASS and a deliberately broken expectation fails as expected
+- [x] 3.4 Smoke output lists every new step as PASS and a deliberately broken expectation fails as expected
 
 ### Phase 4: Hosted rollout and live verification
 
