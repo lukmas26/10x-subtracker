@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { blocksAnonymous, matches } from "./smoke-match.mjs";
+import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
 
 const BASE = "http://localhost:4321";
 const home = { status: 302, path: "/" };
@@ -124,4 +124,32 @@ test("access: 302 to an app path or look-alike host is not blocked", () => {
     false,
   );
   assert.equal(blocksAnonymous({ status: 302, location: "" }, PREVIEW), false);
+});
+
+test("body lists: every include must be present", () => {
+  const expected = { status: 200, bodyIncludes: ["Smoke-Edit-1", "59.99 USD"] };
+  assert.equal(matches({ status: 200, location: "", body: "Smoke-Edit-1 59.99 USD" }, expected, BASE), true);
+  assert.equal(matches({ status: 200, location: "", body: "Smoke-Edit-1 49.99 EUR" }, expected, BASE), false);
+});
+
+test("body lists: any exclude present fails", () => {
+  const expected = { status: 200, bodyExcludes: ["Smoke-Sub-1", "Smoke-Edit-1"] };
+  assert.equal(matches({ status: 200, location: "", body: "empty" }, expected, BASE), true);
+  assert.equal(matches({ status: 200, location: "", body: "x Smoke-Edit-1 x" }, expected, BASE), false);
+});
+
+const SUB_ID = "0b7c6a8e-3f1d-4c2a-9e5b-1a2b3c4d5e6f";
+
+test("extractEditPath returns the first edit link", () => {
+  const body = `<a href="/subscriptions/${SUB_ID}/edit" aria-label="Edit A">Edit</a><a href="/subscriptions/${SUB_ID.replace("0b", "ff")}/edit">`;
+  assert.equal(extractEditPath(body), `/subscriptions/${SUB_ID}/edit`);
+});
+
+test("extractEditPath returns null when there is no edit link", () => {
+  assert.equal(extractEditPath('<a href="/subscriptions">Back</a>'), null);
+});
+
+test("extractEditPath ignores non-uuid ids", () => {
+  assert.equal(extractEditPath('<a href="/subscriptions/abc/edit">Edit</a>'), null);
+  assert.equal(extractEditPath(`<a href="/subscriptions/${SUB_ID}x/edit">Edit</a>`), null);
 });

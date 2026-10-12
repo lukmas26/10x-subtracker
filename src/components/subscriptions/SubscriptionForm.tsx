@@ -21,19 +21,40 @@ const NEW_CATEGORY = "__new__";
 
 const CYCLE_LABELS: Record<Cycle, string> = { monthly: "Monthly", yearly: "Yearly" };
 
+/** Stored values to prefill the form with when editing; omitted when adding. */
+interface InitialValues {
+  name: string;
+  amount: string;
+  currency: Currency;
+  cycle: Cycle;
+  categoryId: string;
+}
+
 interface Props {
   categories: CategoryDTO[];
   serverError?: string | null;
+  initial?: InitialValues;
+  /** Where the form posts; the add route unless editing. */
+  action?: string;
+  submitLabel?: string;
+  pendingText?: string;
 }
 
 type Errors = Partial<Record<"name" | "amount" | "category" | "newCategory", string>>;
 
-export default function SubscriptionForm({ categories, serverError }: Props) {
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState<Currency>("PLN");
-  const [cycle, setCycle] = useState<Cycle>("monthly");
-  const [categoryId, setCategoryId] = useState("");
+export default function SubscriptionForm({
+  categories,
+  serverError,
+  initial,
+  action = "/api/subscriptions",
+  submitLabel = "Add subscription",
+  pendingText = "Saving...",
+}: Props) {
+  const [name, setName] = useState(initial?.name ?? "");
+  const [amount, setAmount] = useState(initial?.amount ?? "");
+  const [currency, setCurrency] = useState<Currency>(initial?.currency ?? "PLN");
+  const [cycle, setCycle] = useState<Cycle>(initial?.cycle ?? "monthly");
+  const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
   const [newCategory, setNewCategory] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
@@ -84,7 +105,7 @@ export default function SubscriptionForm({ categories, serverError }: Props) {
   }
 
   return (
-    <form method="POST" action="/api/subscriptions" className="space-y-4" onSubmit={handleSubmit} noValidate>
+    <form method="POST" action={action} className="space-y-4" onSubmit={handleSubmit} noValidate>
       <FormField
         id="name"
         label="Name"
@@ -185,8 +206,8 @@ export default function SubscriptionForm({ categories, serverError }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText="Saving..." icon={<Save className="size-4" />}>
-        Add subscription
+      <SubmitButton pendingText={pendingText} icon={<Save className="size-4" />}>
+        {submitLabel}
       </SubmitButton>
     </form>
   );

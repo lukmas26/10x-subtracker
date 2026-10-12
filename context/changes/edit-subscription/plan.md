@@ -337,45 +337,45 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up`
-- [ ] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit
-- [ ] 1.3 Policy check passes, including the new update cases: `npm run test:rls`
-- [ ] 1.4 Type check passes: `npx astro check`
-- [ ] 1.5 Lint passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up` — ef7ebab
+- [x] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit — ef7ebab
+- [x] 1.3 Policy check passes, including the new update cases: `npm run test:rls` — ef7ebab
+- [x] 1.4 Type check passes: `npx astro check` — ef7ebab
+- [x] 1.5 Lint passes: `npm run lint` — ef7ebab
 
 #### Manual
 
-- [ ] 1.6 Migration reviewed: grant is column-level, policy has both `using` and `with check`, RPC raises when no row is updated
+- [x] 1.6 Migration reviewed: grant is column-level, policy has both `using` and `with check`, RPC raises when no row is updated
 
 ### Phase 2: Service, API route and edit page
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui`
-- [ ] 2.4 Build succeeds: `npm run build`
-- [ ] 2.5 Existing smoke still passes: `npm run smoke`
+- [x] 2.1 Type check passes: `npx astro check` — bf2af9e
+- [x] 2.2 Lint passes: `npm run lint` — bf2af9e
+- [x] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui` — bf2af9e
+- [x] 2.4 Build succeeds: `npm run build` — bf2af9e
+- [x] 2.5 Existing smoke still passes: `npm run smoke` — bf2af9e
 
 #### Manual
 
-- [ ] 2.6 Edit link opens the edit page with every field prefilled and the stored category selected
-- [ ] 2.7 Changing fields (incl. currency and a new category on the spot) saves and shows "Subscription updated" with the new values in the same list position
-- [ ] 2.8 Invalid input is caught client-side; a server-side rejection lands on the edit page with the error and the stored values
-- [ ] 2.9 An unknown or another account's id redirects to the list with "Subscription not found."
-- [ ] 2.10 Layout, Edit link focus-visible state and both themes look right on desktop and phone width
+- [x] 2.6 Edit link opens the edit page with every field prefilled and the stored category selected
+- [x] 2.7 Changing fields (incl. currency and a new category on the spot) saves and shows "Subscription updated" with the new values in the same list position
+- [x] 2.8 Invalid input is caught client-side; a server-side rejection lands on the edit page with the error and the stored values
+- [x] 2.9 An unknown or another account's id redirects to the list with "Subscription not found."
+- [x] 2.10 Layout, Edit link focus-visible state and both themes look right on desktop and phone width
 
 ### Phase 3: Smoke coverage
 
 #### Automated
 
-- [ ] 3.1 Matcher unit tests pass: `npm run test:smoke`
-- [ ] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke`
-- [ ] 3.3 Lint passes: `npm run lint`
+- [x] 3.1 Matcher unit tests pass: `npm run test:smoke` — 5f65042
+- [x] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke` — 5f65042
+- [x] 3.3 Lint passes: `npm run lint` — 5f65042
 
 #### Manual
 
-- [ ] 3.4 Smoke output lists every new step as PASS and a deliberately broken expectation fails as expected
+- [x] 3.4 Smoke output lists every new step as PASS and a deliberately broken expectation fails as expected
 
 ### Phase 4: Hosted rollout and live verification
 

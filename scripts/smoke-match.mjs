@@ -3,7 +3,7 @@
 
 /**
  * @param {{ status: number, location: string, body?: string }} actual
- * @param {{ status: number, path?: string, error?: boolean, bodyIncludes?: string, bodyExcludes?: string }} expected
+ * @param {{ status: number, path?: string, error?: boolean, bodyIncludes?: string | string[], bodyExcludes?: string | string[] }} expected
  * @param {string} baseUrl
  * @returns {boolean}
  */
@@ -37,16 +37,28 @@ function matchesRedirect(location, expected, baseUrl) {
 
 /**
  * A body expectation with no body to check fails rather than passing vacuously.
+ * Each of `bodyIncludes` / `bodyExcludes` is one string or a list; every entry must hold.
  * @param {string | undefined} body
- * @param {{ bodyIncludes?: string, bodyExcludes?: string }} expected
+ * @param {{ bodyIncludes?: string | string[], bodyExcludes?: string | string[] }} expected
  * @returns {boolean}
  */
 function matchesBody(body, expected) {
   if (expected.bodyIncludes === undefined && expected.bodyExcludes === undefined) return true;
   if (typeof body !== "string") return false;
-  if (expected.bodyIncludes !== undefined && !body.includes(expected.bodyIncludes)) return false;
-  if (expected.bodyExcludes !== undefined && body.includes(expected.bodyExcludes)) return false;
-  return true;
+  const includes = [expected.bodyIncludes ?? []].flat();
+  const excludes = [expected.bodyExcludes ?? []].flat();
+  return includes.every((text) => body.includes(text)) && !excludes.some((text) => body.includes(text));
+}
+
+const EDIT_HREF = /href="(\/subscriptions\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/edit)"/i;
+
+/**
+ * The first subscription edit path linked from a rendered page, e.g. "/subscriptions/<uuid>/edit".
+ * @param {string} body
+ * @returns {string | null}
+ */
+export function extractEditPath(body) {
+  return EDIT_HREF.exec(body)?.[1] ?? null;
 }
 
 /**
