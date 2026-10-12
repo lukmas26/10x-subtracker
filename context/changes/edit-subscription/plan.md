@@ -337,11 +337,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up`
-- [ ] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit
-- [ ] 1.3 Policy check passes, including the new update cases: `npm run test:rls`
-- [ ] 1.4 Type check passes: `npx astro check`
-- [ ] 1.5 Lint passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up`
+- [x] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit
+- [x] 1.3 Policy check passes, including the new update cases: `npm run test:rls`
+- [x] 1.4 Type check passes: `npx astro check`
+- [x] 1.5 Lint passes: `npm run lint`
 
 #### Manual
 

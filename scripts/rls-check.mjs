@@ -140,7 +140,7 @@ const bStarter = await b.client
   .select();
 check("B cannot insert a category with user_id null", bStarter.error?.code === RLS_DENIED, describe(bStarter));
 
-// B cannot modify A's subscription: no grant/policy yet, so either a permission error or 0 affected rows.
+// B cannot modify or delete A's subscription: the update policy hides A's row (0 rows), delete has no grant yet.
 const bUpdate = await b.client.from("subscriptions").update({ name: "hijacked" }).eq("id", aSubscriptionId).select();
 check(
   "B updating A's subscription affects 0 rows",
@@ -191,6 +191,101 @@ check("B cannot save via RPC into A's category", bRpcInACategory.error?.code ===
 
 const anonRpc = await anon.rpc("create_subscription", { ...rpcArgs, p_amount: 1, p_new_category: "RLS anon" });
 check("anon cannot call create_subscription", Boolean(anonRpc.error), describe(anonRpc));
+
+// update_subscription RPC and the update policy: only the owner can change a row, the owner itself is
+// immutable, the category must be visible to the owner, and a failed call changes nothing.
+const NOT_FOUND = "P0002";
+const aRow = () =>
+  a.client
+    .from("subscriptions")
+    .select("name, amount, currency, cycle, category_id, user_id")
+    .eq("id", aSubscriptionId);
+const sameRow = (res, expected) =>
+  !res.error && res.data.length === 1 && Object.entries(expected).every(([key, value]) => res.data[0][key] === value);
+
+const edited = { name: "RLS A edited", amount: 19.5, currency: "EUR", cycle: "yearly", category_id: starterId };
+const aOwnUpdate = await a.client.rpc("update_subscription", {
+  p_id: aSubscriptionId,
+  p_name: ` ${edited.name} `,
+  p_amount: edited.amount,
+  p_currency: edited.currency,
+  p_cycle: edited.cycle,
+  p_category_id: starterId,
+});
+check(
+  "A updates its own subscription via RPC",
+  !aOwnUpdate.error && aOwnUpdate.data === aSubscriptionId,
+  describe(aOwnUpdate),
+);
+const aAfterOwn = await aRow();
+check("A reads back the new values", sameRow(aAfterOwn, { ...edited, user_id: a.userId }), describe(aAfterOwn));
+
+const updateArgs = { p_id: aSubscriptionId, p_name: "hijacked", p_amount: 1, p_currency: "PLN", p_cycle: "monthly" };
+
+const bRpcUpdate = await b.client.rpc("update_subscription", { ...updateArgs, p_category_id: starterId });
+check(
+  "B's RPC update of A's subscription fails as not found",
+  bRpcUpdate.error?.code === NOT_FOUND,
+  describe(bRpcUpdate),
+);
+
+const bPatch = await b.client.from("subscriptions").update({ name: "hijacked" }).eq("id", aSubscriptionId).select();
+check(
+  "B's direct PATCH of A's subscription affects 0 rows",
+  !bPatch.error && bPatch.data.length === 0,
+  describe(bPatch),
+);
+
+const aAfterB = await aRow();
+check("A's subscription is unchanged after B's attempts", sameRow(aAfterB, edited), describe(aAfterB));
+
+const aOwner = await a.client.from("subscriptions").update({ user_id: b.userId }).eq("id", aSubscriptionId).select();
+check("A cannot change user_id of its subscription", aOwner.error?.code === RLS_DENIED, describe(aOwner));
+
+const bCategory = await b.client
+  .from("categories")
+  .insert({ name: `RLS B ${runId}`, user_id: b.userId })
+  .select()
+  .single();
+check("B creates a private category", !bCategory.error, describe(bCategory));
+const bCategoryId = bCategory.data?.id;
+
+const aRpcIntoB = await a.client.rpc("update_subscription", { ...updateArgs, p_category_id: bCategoryId });
+check(
+  "A cannot move its subscription into B's category via RPC",
+  aRpcIntoB.error?.code === RLS_DENIED,
+  describe(aRpcIntoB),
+);
+
+const aPatchIntoB = await a.client
+  .from("subscriptions")
+  .update({ category_id: bCategoryId })
+  .eq("id", aSubscriptionId)
+  .select();
+check(
+  "A cannot move its subscription into B's category via PATCH",
+  aPatchIntoB.error?.code === RLS_DENIED,
+  describe(aPatchIntoB),
+);
+
+const editOrphanName = `RLS edit orphan ${runId}`;
+const aFailedUpdate = await a.client.rpc("update_subscription", {
+  ...updateArgs,
+  p_amount: 0,
+  p_new_category: editOrphanName,
+});
+check("A's failed update (amount 0) is rejected", Boolean(aFailedUpdate.error), describe(aFailedUpdate));
+const editOrphan = await a.client.from("categories").select("id").eq("name", editOrphanName);
+check(
+  "A's failed update creates no category (whole call rolled back)",
+  !editOrphan.error && editOrphan.data.length === 0,
+  describe(editOrphan),
+);
+const aAfterFailed = await aRow();
+check("A's subscription is unchanged after the failed update", sameRow(aAfterFailed, edited), describe(aAfterFailed));
+
+const anonUpdate = await anon.rpc("update_subscription", { ...updateArgs, p_category_id: starterId });
+check("anon cannot call update_subscription", Boolean(anonUpdate.error), describe(anonUpdate));
 
 if (failures > 0) {
   console.error(`rls-check: ${failures} check(s) failed.`);
