@@ -369,9 +369,9 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [x] 3.1 Matcher unit tests pass: `npm run test:smoke`
-- [x] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke`
-- [x] 3.3 Lint passes: `npm run lint`
+- [x] 3.1 Matcher unit tests pass: `npm run test:smoke` — 5f65042
+- [x] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke` — 5f65042
+- [x] 3.3 Lint passes: `npm run lint` — 5f65042
 
 #### Manual
 
