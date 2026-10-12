@@ -36,9 +36,23 @@ Unchanged shadcn neutral values: `--secondary*`, `--muted`, `--accent*`, `--char
 | `--heading-from`         | blue-700 `oklch(48.8% 0.243 264.376)`   | blue-200 `oklch(88.2% 0.059 254.128)`   | `from-blue-200`, `subscriptions.astro:33`                                  |
 | `--heading-to`           | purple-700 `oklch(49.6% 0.265 301.924)` | purple-200 `oklch(90.2% 0.063 306.703)` | `to-purple-200`, `subscriptions.astro:33`                                  |
 
+## Decoration tokens (ui-theme-other-pages)
+
+Dark-only landing decoration. The light value is `transparent`, so the orbs and stars disappear in light at the token layer, with no `dark:` class in the markup.
+
+| Token              | Light (`:root`) | Dark (`.dark`)                                         | Source (dark literal it replaces)                      |
+| ------------------ | --------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| `--glow-primary`   | `transparent`   | purple-500 at 20% `oklch(62.7% 0.265 303.9 / 20%)`     | `bg-purple-500/20`, `Welcome.astro:8` (pre-change)     |
+| `--glow-secondary` | `transparent`   | blue-500 at 15% `oklch(62.3% 0.214 259.815 / 15%)`     | `bg-blue-500/15`, `Welcome.astro:9` (pre-change)       |
+| `--glow-tertiary`  | `transparent`   | indigo-400 at 10% `oklch(67.3% 0.182 276.935 / 10%)`   | `bg-indigo-400/10`, `Welcome.astro:10` (pre-change)    |
+| `--star`           | `transparent`   | white `oklch(1 0 0)` (layer opacity set by `bg-starfield`) | `rgba(255,255,255,…)` dots, `Welcome.astro:15` (pre-change) |
+
+Blur values (plain `@theme`, not colours): `--blur-glow-sm: 100px`, `--blur-glow: 120px`, `--blur-glow-lg: 140px` → `blur-glow-sm`, `blur-glow`, `blur-glow-lg`; they replace `blur-[100px]`, `blur-[120px]`, `blur-[140px]` (`Welcome.astro:8-10`, pre-change).
+
 ## Utilities
 
 - `bg-cosmic` — `linear-gradient(to bottom, var(--background), var(--background-highlight), var(--background))`. In dark this is exactly the old `#0a0e1a → #0f1529 → #0a0e1a`; in light a subtle slate-50 → white → slate-50.
+- `bg-starfield` — three `radial-gradient` dot layers from `--star` at 15% / 10% / 7% (`color-mix(in oklab, …)`), sizes `200px / 150px / 100px`, positions `0 0 / 40px 60px / 80px 30px`. Reproduces the inline style of `Welcome.astro:15` (pre-change); transparent in light.
 - `text-heading` — `linear-gradient(to right in oklab, var(--heading-from), var(--heading-to))` with `background-clip: text` and `color: transparent`. Replaces `bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent` (`subscriptions.astro:33` and 5 more); `in oklab` matches Tailwind 4's gradient interpolation.
 
 ## Accepted visual deltas (dark theme only)
@@ -70,6 +84,16 @@ Token-driven side effects of Phase 2 (accepted by the user on 2026-10-08, impl-r
 14. `Button` focus ring (`ring-ring/50`) is purple-400 at 50% instead of grey (C2's intent).
 15. `body` outside the `bg-cosmic` wrapper is `#0a0e1a` instead of `oklch(0.145 0 0)`.
 16. `ThemeToggle` outline border is white/20 instead of white/15.
+
+Added by ui-theme-other-pages (**pending the user's acceptance** at the final manual check; date the heading when accepted):
+
+17. Auth pages: secondary text, the sign-up password hint and the confirm-email description use `text-muted-foreground` (blue-100/70) instead of `blue-100/60`, `/50` and `/80`; dashboard secondary text likewise instead of `blue-100/80` and `/50`.
+18. Password eye icon: `text-muted-foreground` (hover `text-foreground`) instead of `white/40` (hover `white/70`), plus the shared `focus-visible:ring-3 ring-ring/50` focus ring.
+19. Auth and dashboard panels: shadcn `Card` (`bg-card`, `border`) with `panelClass`, padding kept at `p-8`; the auth links get the Topbar focus ring.
+20. Dashboard Sign out: `Button variant="outline"` (`rounded-md`, `h-9`, `input` tints) instead of the hand-rolled `rounded-lg` `white/10` button; new primary "Go to subscriptions" button and SubTracker copy.
+21. Landing heading: two-stop `text-heading` (blue-200 → purple-200), losing the pink-200 end.
+22. Landing CTAs: `buttonVariants({ size: "lg" })` (`h-10`, `rounded-md`, `text-sm`) instead of `py-3 rounded-lg text-base`; primary hover `primary/90` instead of `purple-500`; outline hover uses the `input` tint.
+23. Landing feature cards: `bg-card` (white/10) instead of `white/5`; descriptions `text-muted-foreground` (blue-100/70) instead of `blue-100/60`; new lucide icons (list, layers, lock) and SubTracker copy.
 
 ## Known gap — closed in Phase 4
 

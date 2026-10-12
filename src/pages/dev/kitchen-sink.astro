@@ -1,13 +1,17 @@
 ---
-// Dev-only visual gate for change ui-tokens-onboarding: every state of the /subscriptions building
-// blocks in both themes at once. Fixture data only; production returns 404.
+// Dev-only visual gate: every state of the app's building blocks (subscriptions, auth, dashboard,
+// landing) in both themes at once. Fixture data only; production returns 404.
+import { Layers } from "lucide-react";
 import Layout from "@/layouts/Layout.astro";
 import Topbar from "@/components/Topbar.astro";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import KitchenSinkFields, { StateLabel } from "@/components/dev/KitchenSinkFields";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { panelClass } from "@/lib/styles";
+import { cn } from "@/lib/utils";
 import type { SubscriptionListItemDTO } from "@/types";
 
 // Not a frontmatter `return new Response(...)`: typescript-eslint's no-misused-promises crashes on it.
@@ -112,6 +116,49 @@ const columns = [
               <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
               <p class="text-muted-foreground text-sm">No subscriptions yet — add your first one above.</p>
             </Card>
+
+            <Card className={cn(panelClass, "p-8")}>
+              <StateLabel>Auth panel — heading, muted text, link (hover / focus-visible by interaction)</StateLabel>
+              <h2 class="text-heading mb-6 text-center text-2xl font-bold">Sign in</h2>
+              <p class="text-muted-foreground text-center text-sm">
+                Don't have an account?{" "}
+                <a href="#sign-up" class="text-link rounded-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+                  Sign up
+                </a>
+              </p>
+            </Card>
+
+            <Card className={panelClass}>
+              <StateLabel>PasswordToggle — default (hover / focus-visible by interaction)</StateLabel>
+              <div class="border-input relative h-10 rounded-lg border">
+                <PasswordToggle visible={false} onToggle={() => undefined} />
+              </div>
+            </Card>
+
+            <Card className={panelClass}>
+              <StateLabel>Button — default, outline, size lg, disabled; link styled as a button</StateLabel>
+              <div class="flex flex-wrap gap-3">
+                <Button>Go to subscriptions</Button>
+                <Button variant="outline">Sign out</Button>
+                <Button size="lg">Sign in</Button>
+                <Button variant="outline" size="lg">Create account</Button>
+                <Button disabled>Disabled</Button>
+                <Button variant="outline" disabled>Disabled</Button>
+                <a href="#subscriptions" class={buttonVariants()}>Link as button</a>
+                <a href="#signup" class={buttonVariants({ variant: "outline", size: "lg" })}>Outline link, lg</a>
+              </div>
+            </Card>
+
+            <div>
+              <StateLabel>Landing feature card</StateLabel>
+              <Card className="gap-0 p-6 backdrop-blur-xl dark:shadow-none">
+                <Layers className="text-link mb-4" aria-hidden="true" />
+                <h3 class="text-card-foreground mb-2 text-lg font-semibold">Grouped by category</h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Pick a starter category or create your own, so duplicates are easier to spot.
+                </p>
+              </Card>
+            </div>
           </div>
         </section>
       ))}

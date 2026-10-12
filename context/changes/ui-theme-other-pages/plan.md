@@ -435,9 +435,9 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [x] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE`
+- [x] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE` — 5a707c3
 - [ ] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [x] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/`
+- [x] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/` — 5a707c3
 - [ ] 3.4 Local `npm run smoke` passes (all steps)
 
 #### Manual
@@ -454,7 +454,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 - [ ] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass
 - [ ] 4.2 Production build returns 404 for `/dev/kitchen-sink`
-- [ ] 4.3 No "Pinned dark" in `AGENTS.md`
+- [x] 4.3 No "Pinned dark" in `AGENTS.md`
 
 #### Manual
 
