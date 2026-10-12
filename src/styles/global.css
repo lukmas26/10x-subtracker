@@ -30,6 +30,11 @@
   --border: oklch(92.9% 0.013 255.508);
   --input: oklch(86.9% 0.022 252.894);
   --ring: oklch(62.7% 0.265 303.9);
+  /* Landing decoration is dark-only: transparent in light hides it at the token layer. */
+  --glow-primary: transparent;
+  --glow-secondary: transparent;
+  --glow-tertiary: transparent;
+  --star: transparent;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -70,6 +75,10 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 20%);
   --ring: oklch(71.4% 0.203 305.504);
+  --glow-primary: oklch(62.7% 0.265 303.9 / 20%);
+  --glow-secondary: oklch(62.3% 0.214 259.815 / 15%);
+  --glow-tertiary: oklch(67.3% 0.182 276.935 / 10%);
+  --star: oklch(1 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -113,6 +122,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-glow-primary: var(--glow-primary);
+  --color-glow-secondary: var(--glow-secondary);
+  --color-glow-tertiary: var(--glow-tertiary);
+  --color-star: var(--star);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -128,6 +141,13 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Landing orb blurs (were blur-[100px] / blur-[120px] / blur-[140px]). */
+@theme {
+  --blur-glow-sm: 100px;
+  --blur-glow: 120px;
+  --blur-glow-lg: 140px;
+}
+
 @utility bg-cosmic {
   background-image: linear-gradient(to bottom, var(--background), var(--background-highlight), var(--background));
 }
@@ -136,6 +156,22 @@
   background-image: linear-gradient(to right in oklab, var(--heading-from), var(--heading-to));
   background-clip: text;
   color: transparent;
+}
+
+/* Landing star field: three dot layers from --star (transparent in light). */
+@utility bg-starfield {
+  background-image:
+    radial-gradient(circle, color-mix(in oklab, var(--star) 15%, transparent) 1px, transparent 1px),
+    radial-gradient(circle, color-mix(in oklab, var(--star) 10%, transparent) 1px, transparent 1px),
+    radial-gradient(circle, color-mix(in oklab, var(--star) 7%, transparent) 1px, transparent 1px);
+  background-size:
+    200px 200px,
+    150px 150px,
+    100px 100px;
+  background-position:
+    0 0,
+    40px 60px,
+    80px 30px;
 }
 
 @layer base {

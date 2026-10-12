@@ -420,7 +420,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [x] 2.1 `npm run lint:ui` passes with `dashboard.astro` in `SCOPE`
+- [x] 2.1 `npm run lint:ui` passes with `dashboard.astro` in `SCOPE` — 6afd50c
 - [ ] 2.2 `npm run lint`, `npx astro check` and `npm run build` pass
 - [ ] 2.3 Local `npm run smoke` passes (all steps)
 
@@ -435,9 +435,9 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [ ] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE`
+- [x] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE`
 - [ ] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [ ] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/`
+- [x] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/`
 - [ ] 3.4 Local `npm run smoke` passes (all steps)
 
 #### Manual

@@ -34,6 +34,8 @@ export const SCOPE = [
   "src/components/auth/SignInForm.tsx",
   "src/components/auth/SignUpForm.tsx",
   "src/pages/dashboard.astro",
+  "src/components/Welcome.astro",
+  "src/pages/index.astro",
 ];
 
 const PALETTE =
