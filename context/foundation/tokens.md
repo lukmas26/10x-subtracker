@@ -40,11 +40,11 @@ Unchanged shadcn neutral values: `--secondary*`, `--muted`, `--accent*`, `--char
 
 Dark-only landing decoration. The light value is `transparent`, so the orbs and stars disappear in light at the token layer, with no `dark:` class in the markup.
 
-| Token              | Light (`:root`) | Dark (`.dark`)                                         | Source (dark literal it replaces)                      |
-| ------------------ | --------------- | ------------------------------------------------------ | ------------------------------------------------------ |
-| `--glow-primary`   | `transparent`   | purple-500 at 20% `oklch(62.7% 0.265 303.9 / 20%)`     | `bg-purple-500/20`, `Welcome.astro:8` (pre-change)     |
-| `--glow-secondary` | `transparent`   | blue-500 at 15% `oklch(62.3% 0.214 259.815 / 15%)`     | `bg-blue-500/15`, `Welcome.astro:9` (pre-change)       |
-| `--glow-tertiary`  | `transparent`   | indigo-400 at 10% `oklch(67.3% 0.182 276.935 / 10%)`   | `bg-indigo-400/10`, `Welcome.astro:10` (pre-change)    |
+| Token              | Light (`:root`) | Dark (`.dark`)                                             | Source (dark literal it replaces)                           |
+| ------------------ | --------------- | ---------------------------------------------------------- | ----------------------------------------------------------- |
+| `--glow-primary`   | `transparent`   | purple-500 at 20% `oklch(62.7% 0.265 303.9 / 20%)`         | `bg-purple-500/20`, `Welcome.astro:8` (pre-change)          |
+| `--glow-secondary` | `transparent`   | blue-500 at 15% `oklch(62.3% 0.214 259.815 / 15%)`         | `bg-blue-500/15`, `Welcome.astro:9` (pre-change)            |
+| `--glow-tertiary`  | `transparent`   | indigo-400 at 10% `oklch(67.3% 0.182 276.935 / 10%)`       | `bg-indigo-400/10`, `Welcome.astro:10` (pre-change)         |
 | `--star`           | `transparent`   | white `oklch(1 0 0)` (layer opacity set by `bg-starfield`) | `rgba(255,255,255,…)` dots, `Welcome.astro:15` (pre-change) |
 
 Blur values (plain `@theme`, not colours): `--blur-glow-sm: 100px`, `--blur-glow: 120px`, `--blur-glow-lg: 140px` → `blur-glow-sm`, `blur-glow`, `blur-glow-lg`; they replace `blur-[100px]`, `blur-[120px]`, `blur-[140px]` (`Welcome.astro:8-10`, pre-change).

@@ -27,7 +27,10 @@ const content = isAutoConfirmed
       <div class="mb-4 text-5xl">{content.emoji}</div>
       <h1 class="text-heading mb-3 text-2xl font-bold">{content.heading}</h1>
       <p class="text-muted-foreground mb-6">{content.description}</p>
-      <a href="/auth/signin" class="text-link self-center rounded-sm text-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+      <a
+        href="/auth/signin"
+        class="text-link self-center rounded-sm text-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+      >
         {content.linkText}
       </a>
     </Card>

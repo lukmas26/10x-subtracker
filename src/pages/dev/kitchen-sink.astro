@@ -122,7 +122,10 @@ const columns = [
               <h2 class="text-heading mb-6 text-center text-2xl font-bold">Sign in</h2>
               <p class="text-muted-foreground text-center text-sm">
                 Don't have an account?{" "}
-                <a href="#sign-up" class="text-link rounded-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+                <a
+                  href="#sign-up"
+                  class="text-link rounded-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                >
                   Sign up
                 </a>
               </p>
@@ -141,11 +144,19 @@ const columns = [
                 <Button>Go to subscriptions</Button>
                 <Button variant="outline">Sign out</Button>
                 <Button size="lg">Sign in</Button>
-                <Button variant="outline" size="lg">Create account</Button>
+                <Button variant="outline" size="lg">
+                  Create account
+                </Button>
                 <Button disabled>Disabled</Button>
-                <Button variant="outline" disabled>Disabled</Button>
-                <a href="#subscriptions" class={buttonVariants()}>Link as button</a>
-                <a href="#signup" class={buttonVariants({ variant: "outline", size: "lg" })}>Outline link, lg</a>
+                <Button variant="outline" disabled>
+                  Disabled
+                </Button>
+                <a href="#subscriptions" class:list={buttonVariants()}>
+                  Link as button
+                </a>
+                <a href="#signup" class:list={buttonVariants({ variant: "outline", size: "lg" })}>
+                  Outline link, lg
+                </a>
               </div>
             </Card>
 

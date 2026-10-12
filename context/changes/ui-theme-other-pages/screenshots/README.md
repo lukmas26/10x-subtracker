@@ -8,17 +8,17 @@ Note: the light column is only light while the page itself is light. Take the ki
 
 **Not captured yet (2026-10-12).** Implementation ran without a browser tool, and the user does all manual checks at the end. The dark baseline was **not** taken before Phase 1. Take it from the pre-change commit `187299d` (for example a throwaway worktree on that commit, served on its own port), not from this branch. Plan checks 1.9, 2.7, 3.9 and 4.6 stay open until these files are added.
 
-| File                                                             | What it shows                                                                       | Status     |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------- |
-| `baseline/<page>-dark-{desktop,375}.png`                         | `/`, `/auth/signin`, `/auth/signup`, `/auth/confirm-email`, `/dashboard` at `187299d` | to capture |
-| `signin-{light,dark}-{desktop,375}.png`                          | `/auth/signin`                                                                      | to capture |
-| `signup-{light,dark}-{desktop,375}.png`                          | `/auth/signup`                                                                      | to capture |
-| `confirm-email-{light,dark}-{desktop,375}.png`                   | `/auth/confirm-email` (dev variant)                                                 | to capture |
-| `dashboard-{light,dark}-{desktop,375}.png`                       | `/dashboard`, signed in                                                             | to capture |
-| `landing-{light,dark}-{desktop,375}.png`                         | `/`                                                                                 | to capture |
-| `kitchen-sink-desktop.png`, `kitchen-sink-375.png`               | Kitchen sink, global theme light (full page)                                        | to capture |
-| `focus-visible-light.png`, `focus-visible-dark.png`              | Crops: an auth link, `PasswordToggle`, the dashboard buttons and a landing CTA      | to capture |
-| `hover.png`                                                      | Crop: hover on the same targets                                                     | to capture |
+| File                                                | What it shows                                                                         | Status     |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------- |
+| `baseline/<page>-dark-{desktop,375}.png`            | `/`, `/auth/signin`, `/auth/signup`, `/auth/confirm-email`, `/dashboard` at `187299d` | to capture |
+| `signin-{light,dark}-{desktop,375}.png`             | `/auth/signin`                                                                        | to capture |
+| `signup-{light,dark}-{desktop,375}.png`             | `/auth/signup`                                                                        | to capture |
+| `confirm-email-{light,dark}-{desktop,375}.png`      | `/auth/confirm-email` (dev variant)                                                   | to capture |
+| `dashboard-{light,dark}-{desktop,375}.png`          | `/dashboard`, signed in                                                               | to capture |
+| `landing-{light,dark}-{desktop,375}.png`            | `/`                                                                                   | to capture |
+| `kitchen-sink-desktop.png`, `kitchen-sink-375.png`  | Kitchen sink, global theme light (full page)                                          | to capture |
+| `focus-visible-light.png`, `focus-visible-dark.png` | Crops: an auth link, `PasswordToggle`, the dashboard buttons and a landing CTA        | to capture |
+| `hover.png`                                         | Crop: hover on the same targets                                                       | to capture |
 
 ## 7-state matrix (new blocks)
 

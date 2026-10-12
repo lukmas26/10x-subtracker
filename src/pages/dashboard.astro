@@ -18,9 +18,13 @@ const { user } = Astro.locals;
       <p class="text-muted-foreground mt-2 text-sm">Your subscriptions live on the Subscriptions page.</p>
       <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
         <!-- buttonVariants, not `Button asChild`: Astro wraps React children in <astro-slot>, which Slot cannot merge into. -->
-        <a href="/subscriptions" class={buttonVariants()}>Go to subscriptions</a>
+        <a href="/subscriptions" class:list={buttonVariants()}>
+          Go to subscriptions
+        </a>
         <form method="POST" action="/api/auth/signout">
-          <Button type="submit" variant="outline" className="w-full">Sign out</Button>
+          <Button type="submit" variant="outline" className="w-full">
+            Sign out
+          </Button>
         </form>
       </div>
     </Card>

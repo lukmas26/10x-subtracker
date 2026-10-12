@@ -15,7 +15,10 @@ const error = Astro.url.searchParams.get("error");
       <SignInForm serverError={error} client:load />
       <p class="text-muted-foreground mt-4 text-center text-sm">
         Don't have an account?{" "}
-        <a href="/auth/signup" class="text-link rounded-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">
+        <a
+          href="/auth/signup"
+          class="text-link rounded-sm outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
           Sign up
         </a>
       </p>
