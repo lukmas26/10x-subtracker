@@ -11,6 +11,7 @@ import {
   type CategoryDTO,
   type Currency,
   type Cycle,
+  type SubscriptionEditDTO,
   type SubscriptionListItemDTO,
 } from "@/types";
 
@@ -30,7 +31,10 @@ export interface NewSubscriptionInput {
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
-/** Every message the add-subscription flow can show; `/subscriptions` displays `?error=` only if it is one of these. */
+/**
+ * Every message the add and edit flows can show; `/subscriptions` and the edit page display `?error=`
+ * only if it is one of these.
+ */
 export const SUBSCRIPTION_ERRORS = {
   notConfigured: "Supabase is not configured",
   nameRequired: "Name is required.",
@@ -42,6 +46,7 @@ export const SUBSCRIPTION_ERRORS = {
   categoryTooLong: `Category name must be at most ${String(CATEGORY_NAME_MAX_LENGTH)} characters.`,
   chooseCategory: "Choose a category.",
   save: "Could not save the subscription. Please try again.",
+  notFound: "Subscription not found.",
 } as const;
 
 const KNOWN_ERRORS: ReadonlySet<string> = new Set(Object.values(SUBSCRIPTION_ERRORS));
@@ -53,6 +58,11 @@ export function displayableError(raw: string | null): string | null {
   return KNOWN_ERRORS.has(raw) ? raw : UNKNOWN_ERROR;
 }
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Whether a route parameter can be a subscription id at all; anything else is treated as not found. */
+export function isSubscriptionId(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
 
 function field(form: FormData, key: string): string {
   const value = form.get(key);
@@ -137,6 +147,61 @@ export async function createSubscription(
     return { ok: false, error: SUBSCRIPTION_ERRORS.save };
   }
   return { ok: true };
+}
+
+// Postgres no_data_found: raised by update_subscription when no row of the caller's matched the id.
+const NOT_FOUND_CODE = "P0002";
+
+/**
+ * Saves an edit of the signed-in user's subscription. One RPC call, one transaction: reusing or
+ * creating the category and updating the row succeed or fail together, so a failed save leaves the
+ * stored subscription unchanged. Another account's id is indistinguishable from a missing one (RLS).
+ */
+export async function updateSubscription(
+  supabase: Client,
+  id: string,
+  input: NewSubscriptionInput,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!input.newCategory && !input.categoryId) return { ok: false, error: SUBSCRIPTION_ERRORS.chooseCategory };
+
+  const { error } = await supabase.rpc("update_subscription", {
+    p_id: id,
+    p_name: input.name,
+    // Same amount and category mapping as createSubscription (see the comments there).
+    p_amount: Number(input.amount),
+    p_currency: input.currency,
+    p_cycle: input.cycle,
+    ...(input.newCategory ? { p_new_category: input.newCategory } : { p_category_id: input.categoryId ?? undefined }),
+  });
+  if (error) {
+    if (error.code === NOT_FOUND_CODE) return { ok: false, error: SUBSCRIPTION_ERRORS.notFound };
+    logDbError("update subscription", error);
+    return { ok: false, error: SUBSCRIPTION_ERRORS.save };
+  }
+  return { ok: true };
+}
+
+/** One of the current user's subscriptions (RLS scopes the rows), or null when there is no such row. */
+export async function getSubscription(supabase: Client, id: string): Promise<SubscriptionEditDTO | null> {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    // amount is cast to text in PostgREST so the exact decimal never passes through a float.
+    .select("id, name, amount:amount::text, currency, cycle, category_id")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) {
+    logDbError("get subscription", error);
+    throw new Error("Could not load the subscription.");
+  }
+  if (!data) return null;
+  return {
+    id: data.id,
+    name: data.name,
+    amount: data.amount,
+    currency: data.currency as Currency,
+    cycle: data.cycle as Cycle,
+    categoryId: data.category_id,
+  };
 }
 
 /** The current user's subscriptions (RLS scopes the rows), newest first. */

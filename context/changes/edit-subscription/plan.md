@@ -337,11 +337,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up`
-- [x] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit
-- [x] 1.3 Policy check passes, including the new update cases: `npm run test:rls`
-- [x] 1.4 Type check passes: `npx astro check`
-- [x] 1.5 Lint passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly on local Supabase without wiping it: `npx supabase migration up` — ef7ebab
+- [x] 1.2 Generated types are current: `npm run db:types` leaves no diff after the commit — ef7ebab
+- [x] 1.3 Policy check passes, including the new update cases: `npm run test:rls` — ef7ebab
+- [x] 1.4 Type check passes: `npx astro check` — ef7ebab
+- [x] 1.5 Lint passes: `npm run lint` — ef7ebab
 
 #### Manual
 
@@ -351,11 +351,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui`
-- [ ] 2.4 Build succeeds: `npm run build`
-- [ ] 2.5 Existing smoke still passes: `npm run smoke`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui`
+- [x] 2.4 Build succeeds: `npm run build`
+- [x] 2.5 Existing smoke still passes: `npm run smoke`
 
 #### Manual
 
