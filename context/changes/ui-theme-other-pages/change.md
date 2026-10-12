@@ -1,7 +1,7 @@
 ---
 change_id: ui-theme-other-pages
 title: Migrate dashboard, auth and landing pages to tokens and both themes
-status: implementing
+status: implemented
 created: 2026-10-06
 updated: 2026-10-12
 archived_at: null
