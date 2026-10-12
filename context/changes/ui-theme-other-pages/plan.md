@@ -404,7 +404,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 #### Automated
 
 - [x] 1.1 `npm run lint:ui` passes with the six new `SCOPE` entries — d89ef98
-- [x] 1.2 `npm run lint`, `npx astro check` and `npm run build` pass
+- [x] 1.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
 - [x] 1.3 No `dark bg-cosmic` and no "Pinned dark" in the three auth pages — d89ef98
 - [ ] 1.4 Local `npm run smoke` passes (all steps)
 
@@ -421,7 +421,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 #### Automated
 
 - [x] 2.1 `npm run lint:ui` passes with `dashboard.astro` in `SCOPE` — 6afd50c
-- [x] 2.2 `npm run lint`, `npx astro check` and `npm run build` pass
+- [x] 2.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
 - [ ] 2.3 Local `npm run smoke` passes (all steps)
 
 #### Manual
@@ -436,7 +436,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 #### Automated
 
 - [x] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE` — 5a707c3
-- [x] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass
+- [x] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
 - [x] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/` — 5a707c3
 - [ ] 3.4 Local `npm run smoke` passes (all steps)
 
@@ -452,8 +452,8 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [x] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass
-- [x] 4.2 Production build returns 404 for `/dev/kitchen-sink`
+- [x] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass — bda176f
+- [x] 4.2 Production build returns 404 for `/dev/kitchen-sink` — bda176f
 - [x] 4.3 No "Pinned dark" in `AGENTS.md` — c06d0fd
 
 #### Manual
