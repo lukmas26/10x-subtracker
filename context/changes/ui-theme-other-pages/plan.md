@@ -403,9 +403,9 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [ ] 1.1 `npm run lint:ui` passes with the six new `SCOPE` entries
+- [x] 1.1 `npm run lint:ui` passes with the six new `SCOPE` entries
 - [ ] 1.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [ ] 1.3 No `dark bg-cosmic` and no "Pinned dark" in the three auth pages
+- [x] 1.3 No `dark bg-cosmic` and no "Pinned dark" in the three auth pages
 - [ ] 1.4 Local `npm run smoke` passes (all steps)
 
 #### Manual
