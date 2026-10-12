@@ -351,11 +351,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui`
-- [x] 2.4 Build succeeds: `npm run build`
-- [x] 2.5 Existing smoke still passes: `npm run smoke`
+- [x] 2.1 Type check passes: `npx astro check` — bf2af9e
+- [x] 2.2 Lint passes: `npm run lint` — bf2af9e
+- [x] 2.3 UI literal check passes with the new page in scope: `npm run lint:ui` — bf2af9e
+- [x] 2.4 Build succeeds: `npm run build` — bf2af9e
+- [x] 2.5 Existing smoke still passes: `npm run smoke` — bf2af9e
 
 #### Manual
 
@@ -369,9 +369,9 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [ ] 3.1 Matcher unit tests pass: `npm run test:smoke`
-- [ ] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke`
-- [ ] 3.3 Lint passes: `npm run lint`
+- [x] 3.1 Matcher unit tests pass: `npm run test:smoke`
+- [x] 3.2 Local smoke passes with the new edit and isolation steps: `npm run smoke`
+- [x] 3.3 Lint passes: `npm run lint`
 
 #### Manual
 
