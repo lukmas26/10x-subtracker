@@ -1,28 +1,28 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { panelClass } from "@/lib/styles";
+import { cn } from "@/lib/utils";
 
 const { user } = Astro.locals;
 ---
 
 <Layout title="Dashboard">
-  <!-- Pinned dark until change ui-theme-other-pages migrates this page to tokens. -->
-  <div class="dark bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl">
-      <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-        Dashboard
-      </h1>
-      <p class="text-blue-100/80">
-        Welcome, <span class="font-semibold text-white">{user?.email}</span>
+  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
+    <Card className={cn(panelClass, "p-8 text-center")}>
+      <h1 class="text-heading mb-4 text-3xl font-bold">Dashboard</h1>
+      <p class="text-muted-foreground">
+        Welcome, <span class="text-card-foreground font-semibold">{user?.email}</span>
       </p>
-      <p class="mt-2 text-sm text-blue-100/50">This page is only for authenticated users.</p>
-      <form method="POST" action="/api/auth/signout" class="mt-6">
-        <button
-          type="submit"
-          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
-        >
-          Sign out
-        </button>
-      </form>
-    </div>
+      <p class="text-muted-foreground mt-2 text-sm">Your subscriptions live on the Subscriptions page.</p>
+      <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <!-- buttonVariants, not `Button asChild`: Astro wraps React children in <astro-slot>, which Slot cannot merge into. -->
+        <a href="/subscriptions" class={buttonVariants()}>Go to subscriptions</a>
+        <form method="POST" action="/api/auth/signout">
+          <Button type="submit" variant="outline" className="w-full">Sign out</Button>
+        </form>
+      </div>
+    </Card>
   </div>
 </Layout>
