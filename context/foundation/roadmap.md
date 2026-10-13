@@ -3,7 +3,7 @@ project: SubTracker
 version: 1
 status: draft
 created: 2026-09-28
-updated: 2026-10-12
+updated: 2026-10-13
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -39,15 +39,15 @@ People who pay by card for many recurring subscriptions lose track of them: amou
 
 ## At a glance
 
-| ID   | Change ID                         | Outcome (user can …)                                                                      | Prerequisites | PRD refs                                                                                                               | Status      |
-| ---- | --------------------------------- | ----------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- |
-| F-01 | safe-release-verification         | (foundation) releases carrying financial data can be safely verified before promotion     | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                                    | done        |
-| S-01 | first-subscription-on-list        | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | done        |
-| S-02 | edit-subscription                 | correct an existing subscription without risking data loss                                | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                                             | in-progress |
-| S-03 | delete-subscription               | delete a subscription they no longer pay for                                              | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                                               | proposed    |
-| S-04 | spending-summary                  | see the monthly and yearly total of all their subscriptions                               | S-01          | FR-006                                                                                                                 | proposed    |
-| S-05 | duplicate-category-recommendation | see a savings recommendation for a duplicated category next to the summary                | S-01, S-04    | US-02, FR-007                                                                                                          | blocked     |
-| S-06 | dismiss-recommendation            | dismiss a recommendation so that it does not come back                                    | S-05          | US-02, FR-007                                                                                                          | proposed    |
+| ID   | Change ID                         | Outcome (user can …)                                                                      | Prerequisites | PRD refs                                                                                                               | Status   |
+| ---- | --------------------------------- | ----------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | -------- |
+| F-01 | safe-release-verification         | (foundation) releases carrying financial data can be safely verified before promotion     | —             | FR-001, NFR (financial data privacy), Success Criteria → Guardrails                                                    | done     |
+| S-01 | first-subscription-on-list        | add a first subscription (name, amount, currency, cycle, category) and see it on the list | —             | US-01, FR-001, FR-002, NFR (financial data privacy), NFR (fast action confirmation), NFR (desktop and mobile browsers) | done     |
+| S-02 | edit-subscription                 | correct an existing subscription without risking data loss                                | S-01          | FR-003, NFR (no data loss), NFR (fast action confirmation)                                                             | done     |
+| S-03 | delete-subscription               | delete a subscription they no longer pay for                                              | S-01          | FR-004, Success Criteria → Guardrails (no data loss without user action)                                               | proposed |
+| S-04 | spending-summary                  | see the monthly and yearly total of all their subscriptions                               | S-01          | FR-006                                                                                                                 | proposed |
+| S-05 | duplicate-category-recommendation | see a savings recommendation for a duplicated category next to the summary                | S-01, S-04    | US-02, FR-007                                                                                                          | blocked  |
+| S-06 | dismiss-recommendation            | dismiss a recommendation so that it does not come back                                    | S-05          | US-02, FR-007                                                                                                          | proposed |
 
 ## Streams
 
@@ -113,7 +113,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** The main risk is a partial write on a dropped connection; the slice is small, so it is easy to verify against exactly that.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-03: User deletes a subscription
 
@@ -201,3 +201,4 @@ The PRD has no open questions (all three were resolved on 2026-09-19). The quest
 
 - **F-01: (foundation) deployment previews are not publicly accessible (or point at a separate database), and the smoke test can run the full sign-up → sign-in → protected page round trip against the production database without letting wrong redirects pass.** — Archived 2026-10-02 → `context/archive/2026-09-30-safe-release-verification/`. Lesson: —.
 - **S-01: user can, once signed in, add a subscription (name, amount, currency — PLN, EUR or USD — monthly/yearly cycle, a category picked from a list or created on the spot) and immediately see it on their own subscription list — visible only to them.** — Archived 2026-10-03 → `context/archive/2026-10-02-first-subscription-on-list/`. Lesson: —.
+- **S-02: user can change the name, amount, cycle, or category of an existing subscription and see a save confirmation, and a failed save does not wipe the previous data.** — Archived 2026-10-13 → `context/archive/2026-10-10-edit-subscription/`. Lesson: —.
