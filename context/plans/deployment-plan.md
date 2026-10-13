@@ -547,3 +547,33 @@ approval, so production ran ahead of `master`.
 | Migration    | none                                                         |
 | Remote smoke | preview 10/10, production 9/9                                |
 | Rollback     | `npx wrangler rollback 3d3f296a-5014-4929-a97f-773005887175` |
+
+### Pass 7 — 2026-10-13 (edit a subscription; second schema migration)
+
+Change `edit-subscription` (S-02, PRs #17 and #18), released from `master` at `69e4439` after both
+were merged. It follows the runbook. The release also carries `ui-theme-other-pages` (UI-02, PR #15),
+which reached `master` after Pass 6 and had not been released on its own.
+
+1. Local gates on `master`: `npm run lint`, `npm run test:smoke` (38/38), `npx astro check`,
+   `npm run test:rls` (local Supabase, incl. the new update cases) and local `npm run smoke` (23/23;
+   the edit steps raised it from 16). :4321 was taken by another worktree's dev server, so the local
+   smoke ran on :4322.
+2. The user ran `npx supabase db push` from the linked checkout, applying the additive
+   `20261010120000_update_subscription.sql` (column-level update grant, update policy,
+   `update_subscription` RPC) before the upload. `npm run build` + `npx wrangler versions upload`
+   produced `da6362e0-1fe6-47aa-8bc5-d3b0c131d6c4` (preview
+   `https://da6362e0-subtracker.lukasz-maslowski.workers.dev`).
+3. `BASE_URL=<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` gave **10/10 PASS**. The user was
+   asked to edit a real subscription on the preview (shared hosted database) before approving.
+4. The user approved ("go"), then: `npx wrangler versions deploy da6362e0-1fe6-47aa-8bc5-d3b0c131d6c4@100% -y`.
+5. `BASE_URL=https://subtracker.lukasz-maslowski.workers.dev npm run smoke:remote` gave **9/9 PASS**.
+   Anonymous `/` returns `200`.
+
+| Item         | Value                                                        |
+| ------------ | ------------------------------------------------------------ |
+| Live version | `da6362e0-1fe6-47aa-8bc5-d3b0c131d6c4` (100%)                |
+| Migration    | `20261010120000_update_subscription.sql` (additive)          |
+| Remote smoke | preview 10/10, production 9/9                                |
+| Rollback     | `npx wrangler rollback a319abdb-9577-469e-a39f-639f5ab95c49` |
+
+Rolling the Worker back leaves the migration in place; the unused function and policy are harmless.
