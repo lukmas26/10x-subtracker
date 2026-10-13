@@ -410,7 +410,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Manual
 
-- [ ] 1.5 Dark auth pages match the baseline except listed deltas
+- [x] 1.5 Dark auth pages match the baseline except listed deltas — e558d63
 - [ ] 1.6 Light auth pages read as the same product at desktop and 375 px
 - [ ] 1.7 Eye icon visible in both themes with a focus ring on Tab
 - [ ] 1.8 `/subscriptions` unchanged after the panel-class extraction
@@ -426,7 +426,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Manual
 
-- [ ] 2.4 Dark dashboard matches the baseline except listed deltas and agreed copy
+- [x] 2.4 Dark dashboard matches the baseline except listed deltas and agreed copy — e558d63
 - [ ] 2.5 Light dashboard readable at desktop and 375 px
 - [ ] 2.6 "Go to subscriptions" and Sign out work, with a focus ring on Tab
 - [ ] 2.7 Dashboard screenshots saved
@@ -442,7 +442,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Manual
 
-- [ ] 3.5 Dark landing matches the baseline except listed deltas and agreed copy
+- [x] 3.5 Dark landing matches the baseline except listed deltas and agreed copy — e558d63
 - [ ] 3.6 Light landing has no decoration and is readable at desktop and 375 px
 - [ ] 3.7 Landing wording approved or adjusted
 - [ ] 3.8 Theme toggle visibly changes all five pages
