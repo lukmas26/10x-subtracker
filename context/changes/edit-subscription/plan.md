@@ -386,6 +386,6 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Manual
 
-- [x] 4.3 `npx supabase db push` applied the migration on hosted before the version upload
+- [x] 4.3 `npx supabase db push` applied the migration on hosted before the version upload — 4745f37
 - [x] 4.4 A real subscription edited on the preview shows the new values and the confirmation — 4745f37
-- [x] 4.5 Next Pass recorded in `context/plans/deployment-plan.md` and AGENTS.md updated
+- [x] 4.5 Next Pass recorded in `context/plans/deployment-plan.md` and AGENTS.md updated — 4745f37
