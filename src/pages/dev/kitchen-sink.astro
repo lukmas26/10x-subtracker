@@ -10,7 +10,7 @@ import KitchenSinkFields, { StateLabel } from "@/components/dev/KitchenSinkField
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { panelClass } from "@/lib/styles";
+import { featureCardClass, panelClass } from "@/lib/styles";
 import { cn } from "@/lib/utils";
 import type { SubscriptionListItemDTO } from "@/types";
 
@@ -162,7 +162,7 @@ const columns = [
 
             <div>
               <StateLabel>Landing feature card</StateLabel>
-              <Card className="gap-0 p-6 backdrop-blur-xl dark:shadow-none">
+              <Card className={featureCardClass}>
                 <Layers className="text-link mb-4" aria-hidden="true" />
                 <h3 class="text-card-foreground mb-2 text-lg font-semibold">Grouped by category</h3>
                 <p class="text-muted-foreground text-sm leading-relaxed">

@@ -8,13 +8,11 @@ const isAutoConfirmed = import.meta.env.DEV;
 
 const content = isAutoConfirmed
   ? {
-      emoji: "✅",
       heading: "Registration successful",
       description: "Your account has been created. You can now sign in.",
       linkText: "Go to sign in",
     }
   : {
-      emoji: "📧",
       heading: "Check your email",
       description: "We've sent a confirmation link to your email address. Click it to activate your account.",
       linkText: "Back to sign in",
@@ -24,7 +22,6 @@ const content = isAutoConfirmed
 <Layout title={content.heading}>
   <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
     <Card className={cn(panelClass, "w-full max-w-sm p-8 text-center")}>
-      <div class="mb-4 text-5xl">{content.emoji}</div>
       <h1 class="text-heading mb-3 text-2xl font-bold">{content.heading}</h1>
       <p class="text-muted-foreground mb-6">{content.description}</p>
       <a

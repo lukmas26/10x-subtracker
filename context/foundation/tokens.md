@@ -95,6 +95,7 @@ Added by ui-theme-other-pages (accepted by the user on 2026-10-13):
 22. Landing CTAs: `buttonVariants({ size: "lg" })` (`h-10`, `rounded-md`, `text-sm`) instead of `py-3 rounded-lg text-base`; primary hover `primary/90` instead of `purple-500`; outline hover uses the `input` tint.
 23. Landing feature cards: `bg-card` (white/10) instead of `white/5`; descriptions `text-muted-foreground` (blue-100/70) instead of `blue-100/60`; new lucide icons (list, layers, lock) and SubTracker copy.
 24. Landing hero copy: heading "SubTracker" instead of "10x Astro Starter", a new tagline, and CTA labels "Sign in" / "Create account" instead of "Sign In" / "Sign Up" (wording approved at plan check 3.7); the default page `<title>` in `Layout.astro` is "SubTracker".
+25. Confirm-email: the decorative emoji above the heading (✅ in dev, 📧 in production) is removed (impl-review F5, 2026-10-13).
 
 ## Known gap — closed in Phase 4
 
