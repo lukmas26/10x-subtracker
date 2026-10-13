@@ -5,13 +5,15 @@ import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
+import { SUBSCRIPTION_ERRORS, displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
 import type { CategoryDTO, SubscriptionListItemDTO } from "@/types";
 
 const saved = Astro.url.searchParams.get("saved") === "1";
 const updated = Astro.url.searchParams.get("updated") === "1";
 // Only messages the app itself produces are shown; a crafted ?error= link gets a generic message.
 const error = displayableError(Astro.url.searchParams.get("error"));
+// "Not found" comes from an edit link, not from the add form: show it with the list, not under the form.
+const notFound = error === SUBSCRIPTION_ERRORS.notFound;
 
 let categories: CategoryDTO[] = [];
 let subscriptions: SubscriptionListItemDTO[] = [];
@@ -43,17 +45,21 @@ const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-
             <AlertDescription>Subscription saved</AlertDescription>
           </Alert>
         )}
-        <SubscriptionForm categories={categories} serverError={error} client:load />
+        <SubscriptionForm categories={categories} serverError={notFound ? null : error} client:load />
       </Card>
-
-      {updated && (
-        <Alert variant="success" role="status">
-          <AlertDescription>Subscription updated</AlertDescription>
-        </Alert>
-      )}
 
       <Card className={sectionClass}>
         <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
+        {updated && (
+          <Alert variant="success" role="status" className="mb-4">
+            <AlertDescription>Subscription updated</AlertDescription>
+          </Alert>
+        )}
+        {notFound && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{SUBSCRIPTION_ERRORS.notFound}</AlertDescription>
+          </Alert>
+        )}
         {loadError ? (
           <Alert variant="destructive">
             <AlertDescription>{loadError}</AlertDescription>
