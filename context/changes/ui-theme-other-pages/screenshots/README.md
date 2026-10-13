@@ -6,11 +6,11 @@ Note: the light column is only light while the page itself is light. Take the ki
 
 ## Files
 
-**Not captured yet (2026-10-12).** Implementation ran without a browser tool, and the user does all manual checks at the end. The dark baseline was **not** taken before Phase 1. Take it from the pre-change commit `187299d` (for example a throwaway worktree on that commit, served on its own port), not from this branch. Plan checks 1.9, 2.7, 3.9 and 4.6 stay open until these files are added.
+Implementation ran without a browser tool, and the user does all manual checks at the end. The dark baseline was **not** taken before Phase 1; it was captured on 2026-10-13 by the user from the pre-change commit `187299d` (a throwaway worktree served on port 4330). Desktop shots are viewport captures (`signup`, `dashboard`) or 1920 px browser-window captures with the browser UI visible (`landing`, `signin`, `confirm-email`); none is full page. The 375 px shots are DevTools device-mode captures. The dashboard was signed in as a throwaway account (`test@email.com`); forms are empty. Plan checks 1.9, 2.7, 3.9 and 4.6 stay open until the remaining files are added.
 
 | File                                                | What it shows                                                                         | Status     |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------- |
-| `baseline/<page>-dark-{desktop,375}.png`            | `/`, `/auth/signin`, `/auth/signup`, `/auth/confirm-email`, `/dashboard` at `187299d` | to capture |
+| `baseline/<page>-dark-{desktop,375}.png`            | `/`, `/auth/signin`, `/auth/signup`, `/auth/confirm-email`, `/dashboard` at `187299d` | captured   |
 | `signin-{light,dark}-{desktop,375}.png`             | `/auth/signin`                                                                        | to capture |
 | `signup-{light,dark}-{desktop,375}.png`             | `/auth/signup`                                                                        | to capture |
 | `confirm-email-{light,dark}-{desktop,375}.png`      | `/auth/confirm-email` (dev variant)                                                   | to capture |
