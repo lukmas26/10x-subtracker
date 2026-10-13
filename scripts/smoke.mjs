@@ -117,6 +117,9 @@ let editPath = null;
 const editPagePath = () => editPath ?? "/subscriptions/not-captured/edit";
 const saveEditPath = () => `/api${editPagePath().replace(/\/edit$/, "")}`;
 const notFound = { status: 302, path: "/subscriptions", error: true };
+// Without a captured edit path the fallback id is "not found" too, so isolation steps would pass vacuously.
+const notFoundForCaptured = () =>
+  editPath ? notFound : { check: () => false, describe: "an edit path captured by 'list links to edit page'" };
 
 const editForm = { name: editedName, currency: "USD", cycle: "yearly", category_id: "__new__", new_category: "Smoke" };
 
@@ -163,11 +166,11 @@ const secondAccountSteps = [
     () => request("/api/auth/signin", { method: "POST", form: { email: secondEmail, password } }),
     { status: 302, path: "/" },
   ],
-  ["second account cannot open first account's edit page", () => request(editPagePath()), notFound],
+  ["second account cannot open first account's edit page", () => request(editPagePath()), notFoundForCaptured],
   [
     "second account cannot save first account's subscription",
     () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: "Smoke-Hijack", amount: "1" } }),
-    notFound,
+    notFoundForCaptured,
   ],
   [
     "second account does not see first account's subscription",
