@@ -412,7 +412,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 - [x] 1.5 Dark auth pages match the baseline except listed deltas — e558d63
 - [x] 1.6 Light auth pages read as the same product at desktop and 375 px — 1e47a93
-- [ ] 1.7 Eye icon visible in both themes with a focus ring on Tab
+- [x] 1.7 Eye icon visible in both themes with a focus ring on Tab — 7e7641c
 - [ ] 1.8 `/subscriptions` unchanged after the panel-class extraction
 - [ ] 1.9 Auth page screenshots saved
 
@@ -428,7 +428,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 - [x] 2.4 Dark dashboard matches the baseline except listed deltas and agreed copy — e558d63
 - [x] 2.5 Light dashboard readable at desktop and 375 px — 1e47a93
-- [ ] 2.6 "Go to subscriptions" and Sign out work, with a focus ring on Tab
+- [x] 2.6 "Go to subscriptions" and Sign out work, with a focus ring on Tab — 7e7641c
 - [ ] 2.7 Dashboard screenshots saved
 
 ### Phase 3: Landing page
