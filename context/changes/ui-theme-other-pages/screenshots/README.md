@@ -24,15 +24,15 @@ Implementation ran without a browser tool, and the user does all manual checks a
 
 Kitchen-sink block names are the state labels printed on the page.
 
-| State         | Light                                                                                                                                                                       | Dark                           |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| default       | `kitchen-sink-*`: "Auth panel", "PasswordToggle — default", "Button — default, outline, size lg, disabled; link styled as a button", "Landing feature card"; per-page shots | same blocks in the dark column |
-| hover         | `hover.png` (interaction on the auth link, `PasswordToggle`, buttons, button links)                                                                                         | same, on the dark column       |
-| focus-visible | `focus-visible-light.png`                                                                                                                                                   | `focus-visible-dark.png`       |
-| disabled      | `kitchen-sink-*`: the two disabled `Button`s. `PasswordToggle` and links: **N/A**, they are never disabled                                                                  | same blocks in the dark column |
-| error         | **N/A** for the new blocks: none of them shows an error. Form errors are the existing "FormField — error" / "ServerError" blocks                                            | N/A (same reason)              |
-| empty         | **N/A**: the new blocks are static content with no list or data                                                                                                             | N/A (same reason)              |
-| loading       | **N/A**: the new blocks are static links and buttons; the submit pending state is the existing "SubmitButton — pending (loading)" block                                     | N/A (same reason)              |
+| State         | Light                                                                                                                                                                                                               | Dark                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| default       | Checked live on the kitchen sink (plan check 4.4): "Auth panel", "PasswordToggle — default", "Button — default, outline, size lg, disabled; link styled as a button", "Landing feature card"; and on the five pages | same blocks in the dark column |
+| hover         | Checked live (plan check 4.4): the auth link, `PasswordToggle`, buttons, button links                                                                                                                               | same, on the dark column       |
+| focus-visible | Checked live with Tab (plan checks 1.7, 2.6, 4.4)                                                                                                                                                                   | same, in dark                  |
+| disabled      | Checked live on the kitchen sink (plan check 4.4): the two disabled `Button`s. `PasswordToggle` and links: **N/A**, they are never disabled                                                                         | same blocks in the dark column |
+| error         | **N/A** for the new blocks: none of them shows an error. Form errors are the existing "FormField — error" / "ServerError" blocks                                                                                    | N/A (same reason)              |
+| empty         | **N/A**: the new blocks are static content with no list or data                                                                                                                                                     | N/A (same reason)              |
+| loading       | **N/A**: the new blocks are static links and buttons; the submit pending state is the existing "SubmitButton — pending (loading)" block                                                                             | N/A (same reason)              |
 
 ## Contrast check
 

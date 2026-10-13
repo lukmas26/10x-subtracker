@@ -464,3 +464,5 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 - [x] 4.7 `tokens.md` delta list complete and accepted — 54c9cc6
 
 > **Deliberately skipped (2026-10-13):** 1.9, 2.7, 3.9 and 4.6 stay `[ ]`. The user decided not to capture the post-change screenshots; every view and state was checked live on the dev server instead (1.5–1.8, 2.4–2.6, 3.5–3.8, 4.4, 4.5), against the committed dark baseline in `screenshots/baseline/` (e558d63). See `screenshots/README.md`.
+
+> **Deviation (recorded at impl-review F2, 2026-10-13):** wherever this plan says `Button asChild` wrapping a link (Phase 2 dashboard link, Phase 3 landing CTAs, Phase 4 kitchen-sink link block), the code uses `class:list={buttonVariants(...)}` on the `<a>` instead, because Astro wraps React children in `<astro-slot>`, which `Slot` cannot merge into. Same look and semantics; the rule is in `AGENTS.md` `## UI`.
