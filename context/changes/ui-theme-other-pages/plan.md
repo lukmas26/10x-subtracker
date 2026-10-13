@@ -413,7 +413,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 - [x] 1.5 Dark auth pages match the baseline except listed deltas — e558d63
 - [x] 1.6 Light auth pages read as the same product at desktop and 375 px — 1e47a93
 - [x] 1.7 Eye icon visible in both themes with a focus ring on Tab — 7e7641c
-- [ ] 1.8 `/subscriptions` unchanged after the panel-class extraction
+- [x] 1.8 `/subscriptions` unchanged after the panel-class extraction — 7569d42
 - [ ] 1.9 Auth page screenshots saved
 
 ### Phase 2: Dashboard
