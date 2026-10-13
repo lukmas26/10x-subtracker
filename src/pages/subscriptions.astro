@@ -5,6 +5,7 @@ import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { panelClass } from "@/lib/styles";
 import { SUBSCRIPTION_ERRORS, displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
 import type { CategoryDTO, SubscriptionListItemDTO } from "@/types";
 
@@ -28,9 +29,6 @@ if (supabase) {
     loadError = "Could not load your subscriptions. Please refresh the page.";
   }
 }
-
-// Glass panel in dark (bg-card + blur), bordered white card with a shadow in light; shape and padding as before.
-const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-none";
 ---
 
 <Layout title="Subscriptions">
@@ -38,7 +36,7 @@ const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-
     <Topbar />
 
     <main class="mx-auto flex w-full max-w-2xl flex-col gap-6">
-      <Card className={sectionClass}>
+      <Card className={panelClass}>
         <h1 class="text-heading mb-6 text-2xl font-bold">Add a subscription</h1>
         {saved && (
           <Alert variant="success" role="status" className="mb-4">
@@ -48,7 +46,7 @@ const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-
         <SubscriptionForm categories={categories} serverError={notFound ? null : error} client:load />
       </Card>
 
-      <Card className={sectionClass}>
+      <Card className={panelClass}>
         <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
         {updated && (
           <Alert variant="success" role="status" className="mb-4">

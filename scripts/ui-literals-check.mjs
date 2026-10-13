@@ -28,6 +28,15 @@ export const SCOPE = [
   "src/components/hooks/useTheme.ts",
   "src/pages/dev/kitchen-sink.astro",
   "src/components/dev/KitchenSinkFields.tsx",
+  "src/pages/auth/signin.astro",
+  "src/pages/auth/signup.astro",
+  "src/pages/auth/confirm-email.astro",
+  "src/components/auth/PasswordToggle.tsx",
+  "src/components/auth/SignInForm.tsx",
+  "src/components/auth/SignUpForm.tsx",
+  "src/pages/dashboard.astro",
+  "src/components/Welcome.astro",
+  "src/pages/index.astro",
 ];
 
 const PALETTE =

@@ -403,62 +403,66 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Automated
 
-- [ ] 1.1 `npm run lint:ui` passes with the six new `SCOPE` entries
-- [ ] 1.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [ ] 1.3 No `dark bg-cosmic` and no "Pinned dark" in the three auth pages
-- [ ] 1.4 Local `npm run smoke` passes (all steps)
+- [x] 1.1 `npm run lint:ui` passes with the six new `SCOPE` entries — d89ef98
+- [x] 1.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
+- [x] 1.3 No `dark bg-cosmic` and no "Pinned dark" in the three auth pages — d89ef98
+- [x] 1.4 Local `npm run smoke` passes (all steps) — b3a00a6
 
 #### Manual
 
-- [ ] 1.5 Dark auth pages match the baseline except listed deltas
-- [ ] 1.6 Light auth pages read as the same product at desktop and 375 px
-- [ ] 1.7 Eye icon visible in both themes with a focus ring on Tab
-- [ ] 1.8 `/subscriptions` unchanged after the panel-class extraction
+- [x] 1.5 Dark auth pages match the baseline except listed deltas — e558d63
+- [x] 1.6 Light auth pages read as the same product at desktop and 375 px — 1e47a93
+- [x] 1.7 Eye icon visible in both themes with a focus ring on Tab — 7e7641c
+- [x] 1.8 `/subscriptions` unchanged after the panel-class extraction — 7569d42
 - [ ] 1.9 Auth page screenshots saved
 
 ### Phase 2: Dashboard
 
 #### Automated
 
-- [ ] 2.1 `npm run lint:ui` passes with `dashboard.astro` in `SCOPE`
-- [ ] 2.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [ ] 2.3 Local `npm run smoke` passes (all steps)
+- [x] 2.1 `npm run lint:ui` passes with `dashboard.astro` in `SCOPE` — 6afd50c
+- [x] 2.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
+- [x] 2.3 Local `npm run smoke` passes (all steps) — b3a00a6
 
 #### Manual
 
-- [ ] 2.4 Dark dashboard matches the baseline except listed deltas and agreed copy
-- [ ] 2.5 Light dashboard readable at desktop and 375 px
-- [ ] 2.6 "Go to subscriptions" and Sign out work, with a focus ring on Tab
+- [x] 2.4 Dark dashboard matches the baseline except listed deltas and agreed copy — e558d63
+- [x] 2.5 Light dashboard readable at desktop and 375 px — 1e47a93
+- [x] 2.6 "Go to subscriptions" and Sign out work, with a focus ring on Tab — 7e7641c
 - [ ] 2.7 Dashboard screenshots saved
 
 ### Phase 3: Landing page
 
 #### Automated
 
-- [ ] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE`
-- [ ] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass
-- [ ] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/`
-- [ ] 3.4 Local `npm run smoke` passes (all steps)
+- [x] 3.1 `npm run lint:ui` passes with `Welcome.astro` and `index.astro` in `SCOPE` — 5a707c3
+- [x] 3.2 `npm run lint`, `npx astro check` and `npm run build` pass — bda176f
+- [x] 3.3 No `style=`, `rgba(` or "Pinned dark" in `Welcome.astro`; no `dark bg-cosmic` in `src/` — 5a707c3
+- [x] 3.4 Local `npm run smoke` passes (all steps) — b3a00a6
 
 #### Manual
 
-- [ ] 3.5 Dark landing matches the baseline except listed deltas and agreed copy
-- [ ] 3.6 Light landing has no decoration and is readable at desktop and 375 px
-- [ ] 3.7 Landing wording approved or adjusted
-- [ ] 3.8 Theme toggle visibly changes all five pages
+- [x] 3.5 Dark landing matches the baseline except listed deltas and agreed copy — e558d63
+- [x] 3.6 Light landing has no decoration and is readable at desktop and 375 px — 1e47a93
+- [x] 3.7 Landing wording approved or adjusted — 54c9cc6
+- [x] 3.8 Theme toggle visibly changes all five pages — b222c7a
 - [ ] 3.9 Landing screenshots saved
 
 ### Phase 4: States, visual gate and rule
 
 #### Automated
 
-- [ ] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass
-- [ ] 4.2 Production build returns 404 for `/dev/kitchen-sink`
-- [ ] 4.3 No "Pinned dark" in `AGENTS.md`
+- [x] 4.1 `npm run lint:ui`, `npm run lint`, `npx astro check`, `npm run build` and `npm run test:smoke` pass — bda176f
+- [x] 4.2 Production build returns 404 for `/dev/kitchen-sink` — bda176f
+- [x] 4.3 No "Pinned dark" in `AGENTS.md` — c06d0fd
 
 #### Manual
 
-- [ ] 4.4 7-state matrix complete in both themes for the new blocks
-- [ ] 4.5 Contrast check in both themes on all five pages and the kitchen sink
+- [x] 4.4 7-state matrix complete in both themes for the new blocks — d50404d
+- [x] 4.5 Contrast check in both themes on all five pages and the kitchen sink — d50404d
 - [ ] 4.6 All listed screenshots present in `screenshots/`
-- [ ] 4.7 `tokens.md` delta list complete and accepted
+- [x] 4.7 `tokens.md` delta list complete and accepted — 54c9cc6
+
+> **Deliberately skipped (2026-10-13):** 1.9, 2.7, 3.9 and 4.6 stay `[ ]`. The user decided not to capture the post-change screenshots; every view and state was checked live on the dev server instead (1.5–1.8, 2.4–2.6, 3.5–3.8, 4.4, 4.5), against the committed dark baseline in `screenshots/baseline/` (e558d63). See `screenshots/README.md`.
+
+> **Deviation (recorded at impl-review F2, 2026-10-13):** wherever this plan says `Button asChild` wrapping a link (Phase 2 dashboard link, Phase 3 landing CTAs, Phase 4 kitchen-sink link block), the code uses `class:list={buttonVariants(...)}` on the `<a>` instead, because Astro wraps React children in `<astro-slot>`, which `Slot` cannot merge into. Same look and semantics; the rule is in `AGENTS.md` `## UI`.

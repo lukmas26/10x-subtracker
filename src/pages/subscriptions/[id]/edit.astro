@@ -5,6 +5,7 @@ import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { panelClass } from "@/lib/styles";
 import {
   SUBSCRIPTION_ERRORS,
   displayableError,
@@ -43,10 +44,6 @@ if (supabase) {
 } else {
   loadError = SUBSCRIPTION_ERRORS.notConfigured;
 }
-
-// Same panel as /subscriptions. Replace with the shared panelClass from src/lib/styles.ts once
-// ui-theme-other-pages has added it (whichever change merges second does the swap).
-const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-none";
 ---
 
 <Layout title="Edit subscription">
@@ -54,7 +51,7 @@ const sectionClass = "gap-0 rounded-2xl p-5 backdrop-blur-xl sm:p-8 dark:shadow-
     <Topbar />
 
     <main class="mx-auto flex w-full max-w-2xl flex-col gap-6">
-      <Card className={sectionClass}>
+      <Card className={panelClass}>
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
           <h1 class="text-heading text-2xl font-bold">Edit subscription</h1>
           <a href="/subscriptions" class:list={buttonVariants({ variant: "outline", size: "sm" })}>
