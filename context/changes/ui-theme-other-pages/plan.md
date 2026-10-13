@@ -445,7 +445,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 - [x] 3.5 Dark landing matches the baseline except listed deltas and agreed copy — e558d63
 - [x] 3.6 Light landing has no decoration and is readable at desktop and 375 px — 1e47a93
 - [ ] 3.7 Landing wording approved or adjusted
-- [ ] 3.8 Theme toggle visibly changes all five pages
+- [x] 3.8 Theme toggle visibly changes all five pages — b222c7a
 - [ ] 3.9 Landing screenshots saved
 
 ### Phase 4: States, visual gate and rule
