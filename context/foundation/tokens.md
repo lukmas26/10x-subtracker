@@ -85,7 +85,7 @@ Token-driven side effects of Phase 2 (accepted by the user on 2026-10-08, impl-r
 15. `body` outside the `bg-cosmic` wrapper is `#0a0e1a` instead of `oklch(0.145 0 0)`.
 16. `ThemeToggle` outline border is white/20 instead of white/15.
 
-Added by ui-theme-other-pages (**pending the user's acceptance** at the final manual check; date the heading when accepted):
+Added by ui-theme-other-pages (accepted by the user on 2026-10-13):
 
 17. Auth pages: secondary text, the sign-up password hint and the confirm-email description use `text-muted-foreground` (blue-100/70) instead of `blue-100/60`, `/50` and `/80`; dashboard secondary text likewise instead of `blue-100/80` and `/50`.
 18. Password eye icon: `text-muted-foreground` (hover `text-foreground`) instead of `white/40` (hover `white/70`), plus the shared `focus-visible:ring-3 ring-ring/50` focus ring.
@@ -94,7 +94,7 @@ Added by ui-theme-other-pages (**pending the user's acceptance** at the final ma
 21. Landing heading: two-stop `text-heading` (blue-200 → purple-200), losing the pink-200 end.
 22. Landing CTAs: `buttonVariants({ size: "lg" })` (`h-10`, `rounded-md`, `text-sm`) instead of `py-3 rounded-lg text-base`; primary hover `primary/90` instead of `purple-500`; outline hover uses the `input` tint.
 23. Landing feature cards: `bg-card` (white/10) instead of `white/5`; descriptions `text-muted-foreground` (blue-100/70) instead of `blue-100/60`; new lucide icons (list, layers, lock) and SubTracker copy.
-24. Landing hero copy: heading "SubTracker" instead of "10x Astro Starter", a new tagline, and CTA labels "Sign in" / "Create account" instead of "Sign In" / "Sign Up" (wording subject to plan check 3.7); the default page `<title>` in `Layout.astro` is "SubTracker".
+24. Landing hero copy: heading "SubTracker" instead of "10x Astro Starter", a new tagline, and CTA labels "Sign in" / "Create account" instead of "Sign In" / "Sign Up" (wording approved at plan check 3.7); the default page `<title>` in `Layout.astro` is "SubTracker".
 
 ## Known gap — closed in Phase 4
 

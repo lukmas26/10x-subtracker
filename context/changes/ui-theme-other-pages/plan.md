@@ -444,7 +444,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 - [x] 3.5 Dark landing matches the baseline except listed deltas and agreed copy — e558d63
 - [x] 3.6 Light landing has no decoration and is readable at desktop and 375 px — 1e47a93
-- [ ] 3.7 Landing wording approved or adjusted
+- [x] 3.7 Landing wording approved or adjusted — 54c9cc6
 - [x] 3.8 Theme toggle visibly changes all five pages — b222c7a
 - [ ] 3.9 Landing screenshots saved
 
@@ -461,4 +461,4 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 - [ ] 4.4 7-state matrix complete in both themes for the new blocks
 - [ ] 4.5 Contrast check in both themes on all five pages and the kitchen sink
 - [ ] 4.6 All listed screenshots present in `screenshots/`
-- [ ] 4.7 `tokens.md` delta list complete and accepted
+- [x] 4.7 `tokens.md` delta list complete and accepted — 54c9cc6
