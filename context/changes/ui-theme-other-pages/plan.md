@@ -462,3 +462,5 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 - [x] 4.5 Contrast check in both themes on all five pages and the kitchen sink — d50404d
 - [ ] 4.6 All listed screenshots present in `screenshots/`
 - [x] 4.7 `tokens.md` delta list complete and accepted — 54c9cc6
+
+> **Deliberately skipped (2026-10-13):** 1.9, 2.7, 3.9 and 4.6 stay `[ ]`. The user decided not to capture the post-change screenshots; every view and state was checked live on the dev server instead (1.5–1.8, 2.4–2.6, 3.5–3.8, 4.4, 4.5), against the committed dark baseline in `screenshots/baseline/` (e558d63). See `screenshots/README.md`.
