@@ -6,7 +6,7 @@ Note: the light column is only light while the page itself is light. Take the ki
 
 ## Files
 
-Implementation ran without a browser tool, and the user does all manual checks at the end. The dark baseline was **not** taken before Phase 1; it was captured on 2026-10-13 by the user from the pre-change commit `187299d` (a throwaway worktree served on port 4330). Desktop shots are viewport captures (`signup`, `dashboard`) or 1920 px browser-window captures with the browser UI visible (`landing`, `signin`, `confirm-email`); none is full page. The 375 px shots are DevTools device-mode captures. The dashboard was signed in as a throwaway account (`test@email.com`); forms are empty. Plan checks 1.9, 2.7, 3.9 and 4.6 stay open until the remaining files are added.
+Implementation ran without a browser tool, and the user does all manual checks at the end. The dark baseline was **not** taken before Phase 1; it was captured on 2026-10-13 by the user from the pre-change commit `187299d` (a throwaway worktree served on port 4330). Desktop shots are viewport captures (`signup`, `dashboard`) or 1920 px browser-window captures with the browser UI visible (`landing`, `signin`, `confirm-email`); none is full page. The 375 px shots are DevTools device-mode captures. The dashboard was signed in as a throwaway account (`test@email.com`); forms are empty. The user decided on 2026-10-13 not to capture the post-change screenshots; the states were checked live on the dev server instead (plan checks 4.4 and 4.5). Plan checks 1.9, 2.7, 3.9 and 4.6 therefore stay open.
 
 | File                                                | What it shows                                                                         | Status     |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------- |
@@ -36,6 +36,6 @@ Kitchen-sink block names are the state labels printed on the page.
 
 ## Contrast check
 
-To do by the user, in both themes on all five pages and the kitchen sink: body text, muted text, link, the eye icon, both button variants and the focus ring.
+Done by the user on 2026-10-13, in both themes on all five pages and the kitchen sink: body text, muted text, link, the eye icon, both button variants and the focus ring. Result: OK.
 
-Light-value adjustments made after the check: none yet. Any adjustment is recorded here and mirrored in `../../../foundation/tokens.md`.
+Light-value adjustments made after the check: none. Any adjustment is recorded here and mirrored in `../../../foundation/tokens.md`.

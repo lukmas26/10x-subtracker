@@ -458,7 +458,7 @@ No data or schema changes. Deploy through the usual release runbook (`context/pl
 
 #### Manual
 
-- [ ] 4.4 7-state matrix complete in both themes for the new blocks
-- [ ] 4.5 Contrast check in both themes on all five pages and the kitchen sink
+- [x] 4.4 7-state matrix complete in both themes for the new blocks — d50404d
+- [x] 4.5 Contrast check in both themes on all five pages and the kitchen sink — d50404d
 - [ ] 4.6 All listed screenshots present in `screenshots/`
 - [x] 4.7 `tokens.md` delta list complete and accepted — 54c9cc6
