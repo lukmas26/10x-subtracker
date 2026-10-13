@@ -381,11 +381,11 @@ Additive: a column-level grant, one policy and one function. No data changes. Mu
 
 #### Automated
 
-- [x] 4.1 Remote smoke passes on the protected preview: `BASE_URL=https://<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote`
-- [x] 4.2 Remote smoke passes on production after promotion: `BASE_URL=https://<production> npm run smoke:remote`
+- [x] 4.1 Remote smoke passes on the protected preview: `BASE_URL=https://<preview> SMOKE_EXPECT_ACCESS=1 npm run smoke:remote` — 4745f37
+- [x] 4.2 Remote smoke passes on production after promotion: `BASE_URL=https://<production> npm run smoke:remote` — 4745f37
 
 #### Manual
 
 - [x] 4.3 `npx supabase db push` applied the migration on hosted before the version upload
-- [x] 4.4 A real subscription edited on the preview shows the new values and the confirmation
+- [x] 4.4 A real subscription edited on the preview shows the new values and the confirmation — 4745f37
 - [x] 4.5 Next Pass recorded in `context/plans/deployment-plan.md` and AGENTS.md updated

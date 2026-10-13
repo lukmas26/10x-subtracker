@@ -1,9 +1,9 @@
 ---
 change_id: edit-subscription
 title: Edit a subscription
-status: impl_reviewed
+status: implemented
 created: 2026-10-10
-updated: 2026-10-12
+updated: 2026-10-13
 archived_at: null
 ---
 
