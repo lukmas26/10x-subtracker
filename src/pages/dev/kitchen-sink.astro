@@ -87,6 +87,12 @@ const columns = [
                 <Alert variant="success" role="status">
                   <AlertDescription>Subscription saved</AlertDescription>
                 </Alert>
+                <Alert variant="success" role="status">
+                  <AlertDescription>Subscription updated</AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                  <AlertDescription>Subscription not found.</AlertDescription>
+                </Alert>
                 <Alert variant="destructive">
                   <AlertDescription>Could not load your subscriptions. Please refresh the page.</AlertDescription>
                 </Alert>
@@ -97,18 +103,37 @@ const columns = [
             </Card>
 
             <Card className={panelClass}>
-              <StateLabel>List — populated</StateLabel>
+              <StateLabel>List — populated (Edit link: hover / focus-visible by interaction)</StateLabel>
               <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
               <ul class="divide-border divide-y">
                 {subscriptions.map((s) => (
-                  <li class="py-3">
-                    <p class="text-card-foreground font-medium break-words">{s.name}</p>
-                    <p class="text-muted-foreground text-sm break-words">
-                      {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
-                    </p>
+                  <li class="flex items-center gap-3 py-3">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-card-foreground font-medium break-words">{s.name}</p>
+                      <p class="text-muted-foreground text-sm break-words">
+                        {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
+                      </p>
+                    </div>
+                    <a
+                      href="#edit"
+                      aria-label={`Edit ${s.name}`}
+                      class:list={buttonVariants({ variant: "outline", size: "sm" })}
+                    >
+                      Edit
+                    </a>
                   </li>
                 ))}
               </ul>
+            </Card>
+
+            <Card className={panelClass}>
+              <StateLabel>Edit page — header (Cancel: hover / focus-visible by interaction)</StateLabel>
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <h2 class="text-heading text-2xl font-bold">Edit subscription</h2>
+                <a href="#cancel" class:list={buttonVariants({ variant: "outline", size: "sm" })}>
+                  Cancel
+                </a>
+              </div>
             </Card>
 
             <Card className={panelClass}>

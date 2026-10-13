@@ -63,6 +63,9 @@ isOneToOne: false
           Functions: {
             "create_subscription":
 { Args: { "p_amount": number,"p_category_id"?: string,"p_currency": string,"p_cycle": string,"p_name": string,"p_new_category"?: string }; Returns: string
+                           },
+"update_subscription":
+{ Args: { "p_amount": number,"p_category_id"?: string,"p_currency": string,"p_cycle": string,"p_id": string,"p_name": string,"p_new_category"?: string }; Returns: string
                            }
           }
           Enums: {

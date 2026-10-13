@@ -141,6 +141,12 @@ export default function KitchenSinkFields({ idPrefix }: Props) {
           </SubmitButton>
         </form>
         <form>
+          <StateLabel>SubmitButton — default (edit label)</StateLabel>
+          <SubmitButton pendingText="Saving..." icon={<Save className="size-4" />}>
+            Save changes
+          </SubmitButton>
+        </form>
+        <form>
           <StateLabel>SubmitButton — disabled</StateLabel>
           <SubmitButton pendingText="Saving..." icon={<Save className="size-4" />} disabled>
             Add subscription

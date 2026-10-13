@@ -15,6 +15,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 // Views cleaned onto the design-system contract. Add a view here once it uses only tokens.
 export const SCOPE = [
   "src/pages/subscriptions.astro",
+  "src/pages/subscriptions/[id]/edit.astro",
   "src/components/subscriptions/SubscriptionForm.tsx",
   "src/components/form/FormField.tsx",
   "src/components/form/SelectField.tsx",

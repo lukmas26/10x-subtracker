@@ -70,6 +70,16 @@ const astroConfig = defineConfig({
   },
 });
 
+// The no-misused-promises `returns` check crashes on a top-level `return Astro.redirect(...)` in frontmatter
+// ("Expected node to have a parent"). Off only for pages that redirect that way; the rest of the rule stays on.
+// Add a page here when it needs a frontmatter redirect.
+const astroRedirectPagesConfig = defineConfig({
+  files: ["src/pages/subscriptions/*/edit.astro"],
+  rules: {
+    "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: { attributes: false, returns: false } }],
+  },
+});
+
 const scriptsConfig = defineConfig({
   files: ["scripts/**/*.mjs"],
   extends: [tseslint.configs.disableTypeChecked],
@@ -86,6 +96,7 @@ export default defineConfig(
   eslintPluginAstro.configs["flat/recommended"],
   eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   astroConfig,
+  astroRedirectPagesConfig,
   scriptsConfig,
   eslintPluginPrettier,
 );

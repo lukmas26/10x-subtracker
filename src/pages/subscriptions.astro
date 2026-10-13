@@ -3,14 +3,18 @@ import Layout from "@/layouts/Layout.astro";
 import Topbar from "@/components/Topbar.astro";
 import SubscriptionForm from "@/components/subscriptions/SubscriptionForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { panelClass } from "@/lib/styles";
-import { displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
+import { SUBSCRIPTION_ERRORS, displayableError, listCategories, listSubscriptions } from "@/lib/services/subscriptions";
 import type { CategoryDTO, SubscriptionListItemDTO } from "@/types";
 
 const saved = Astro.url.searchParams.get("saved") === "1";
+const updated = Astro.url.searchParams.get("updated") === "1";
 // Only messages the app itself produces are shown; a crafted ?error= link gets a generic message.
 const error = displayableError(Astro.url.searchParams.get("error"));
+// "Not found" comes from an edit link, not from the add form: show it with the list, not under the form.
+const notFound = error === SUBSCRIPTION_ERRORS.notFound;
 
 let categories: CategoryDTO[] = [];
 let subscriptions: SubscriptionListItemDTO[] = [];
@@ -39,11 +43,21 @@ if (supabase) {
             <AlertDescription>Subscription saved</AlertDescription>
           </Alert>
         )}
-        <SubscriptionForm categories={categories} serverError={error} client:load />
+        <SubscriptionForm categories={categories} serverError={notFound ? null : error} client:load />
       </Card>
 
       <Card className={panelClass}>
         <h2 class="text-card-foreground mb-4 text-lg font-semibold">Your subscriptions</h2>
+        {updated && (
+          <Alert variant="success" role="status" className="mb-4">
+            <AlertDescription>Subscription updated</AlertDescription>
+          </Alert>
+        )}
+        {notFound && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{SUBSCRIPTION_ERRORS.notFound}</AlertDescription>
+          </Alert>
+        )}
         {loadError ? (
           <Alert variant="destructive">
             <AlertDescription>{loadError}</AlertDescription>
@@ -53,11 +67,20 @@ if (supabase) {
         ) : (
           <ul class="divide-border divide-y">
             {subscriptions.map((s) => (
-              <li class="py-3">
-                <p class="text-card-foreground font-medium break-words">{s.name}</p>
-                <p class="text-muted-foreground text-sm break-words">
-                  {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
-                </p>
+              <li class="flex items-center gap-3 py-3">
+                <div class="min-w-0 flex-1">
+                  <p class="text-card-foreground font-medium break-words">{s.name}</p>
+                  <p class="text-muted-foreground text-sm break-words">
+                    {s.amount} {s.currency} · {s.cycle} · {s.categoryName}
+                  </p>
+                </div>
+                <a
+                  href={`/subscriptions/${s.id}/edit`}
+                  aria-label={`Edit ${s.name}`}
+                  class:list={buttonVariants({ variant: "outline", size: "sm" })}
+                >
+                  Edit
+                </a>
               </li>
             ))}
           </ul>

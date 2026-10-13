@@ -3,7 +3,7 @@
 // Remote mode (existing confirmed account, no sign-up): set SMOKE_EMAIL + SMOKE_PASSWORD, optionally
 // CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET and SMOKE_EXPECT_ACCESS=1 (see `npm run smoke:remote`).
 
-import { blocksAnonymous, matches } from "./smoke-match.mjs";
+import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:4321";
 const { SMOKE_EMAIL, SMOKE_PASSWORD, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET, SMOKE_EXPECT_ACCESS } = process.env;
@@ -32,6 +32,7 @@ const password = remote ? SMOKE_PASSWORD : "Smoke-Test-Passw0rd!";
 const secondEmail = `smoke-${runId}-b@example.com`;
 // Alphanumerics and hyphens only, so HTML escaping cannot affect the body match.
 const subscriptionName = `Smoke-Sub-${runId}`;
+const editedName = `Smoke-Edit-${runId}`;
 const accessHeaders = CF_ACCESS_CLIENT_ID
   ? { "CF-Access-Client-Id": CF_ACCESS_CLIENT_ID, "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET }
   : {};
@@ -110,6 +111,49 @@ const addSubscriptionSteps = [
   ["list shows added subscription", () => request("/subscriptions"), { status: 200, bodyIncludes: subscriptionName }],
 ];
 
+// Captured from the rendered list by "list links to edit page"; later steps target this subscription.
+let editPath = null;
+// Paths for steps that run after the capture: an expectation given as a function is resolved at run time.
+const editPagePath = () => editPath ?? "/subscriptions/not-captured/edit";
+const saveEditPath = () => `/api${editPagePath().replace(/\/edit$/, "")}`;
+const notFound = { status: 302, path: "/subscriptions", error: true };
+// Without a captured edit path the fallback id is "not found" too, so isolation steps would pass vacuously.
+const notFoundForCaptured = () =>
+  editPath ? notFound : { check: () => false, describe: "an edit path captured by 'list links to edit page'" };
+
+const editForm = { name: editedName, currency: "USD", cycle: "yearly", category_id: "__new__", new_category: "Smoke" };
+
+const editSubscriptionSteps = [
+  [
+    "list links to edit page",
+    async () => {
+      const actual = await request("/subscriptions");
+      editPath = extractEditPath(actual.body);
+      return actual;
+    },
+    {
+      check: (actual) => actual.status === 200 && editPath !== null,
+      describe: 'status 200 and an href="/subscriptions/<uuid>/edit" link',
+    },
+  ],
+  ["edit page renders prefilled", () => request(editPagePath()), { status: 200, bodyIncludes: subscriptionName }],
+  [
+    "edit rejects invalid amount",
+    () => request(saveEditPath(), { method: "POST", form: { ...editForm, amount: "abc" } }),
+    () => ({ status: 302, path: editPagePath(), error: true }),
+  ],
+  [
+    "edit saves",
+    () => request(saveEditPath(), { method: "POST", form: { ...editForm, amount: "59.99" } }),
+    { status: 302, path: "/subscriptions" },
+  ],
+  [
+    "list shows edited subscription",
+    () => request("/subscriptions"),
+    { status: 200, bodyIncludes: [editedName, "59.99 USD"], bodyExcludes: subscriptionName },
+  ],
+];
+
 // Sign-out has already expired the first account's session cookies, so the shared jar now holds only B's.
 const secondAccountSteps = [
   [
@@ -122,11 +166,17 @@ const secondAccountSteps = [
     () => request("/api/auth/signin", { method: "POST", form: { email: secondEmail, password } }),
     { status: 302, path: "/" },
   ],
+  ["second account cannot open first account's edit page", () => request(editPagePath()), notFoundForCaptured],
+  [
+    "second account cannot save first account's subscription",
+    () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: "Smoke-Hijack", amount: "1" } }),
+    notFoundForCaptured,
+  ],
   [
     "second account does not see first account's subscription",
     () => request("/subscriptions"),
     // B is a fresh account: require the rendered empty state, so an error page cannot pass vacuously.
-    { status: 200, bodyIncludes: "No subscriptions yet", bodyExcludes: subscriptionName },
+    { status: 200, bodyIncludes: "No subscriptions yet", bodyExcludes: [subscriptionName, editedName] },
   ],
 ];
 
@@ -150,7 +200,7 @@ const steps = [
   ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
   ["subscriptions renders for signed-in user", () => request("/subscriptions"), { status: 200 }],
   // Remote mode is read-only for subscriptions: it never writes to a hosted environment.
-  ...(remote ? [] : addSubscriptionSteps),
+  ...(remote ? [] : [...addSubscriptionSteps, ...editSubscriptionSteps]),
   ["signout clears session", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],
   ["dashboard redirects after signout", () => request("/dashboard"), { status: 302, path: "/auth/signin" }],
   ...(remote ? [] : secondAccountSteps),
@@ -159,14 +209,15 @@ const steps = [
 console.log(`mode: ${remote ? "remote" : "local"}  BASE_URL: ${BASE_URL}${expectAccess ? "  (expecting Access)" : ""}`);
 
 let failed = 0;
-for (const [name, run, expected] of steps) {
+for (const [name, run, expectation] of steps) {
   const actual = await run();
+  const expected = typeof expectation === "function" ? expectation() : expectation;
   const ok = expected.check ? expected.check(actual, BASE_URL) : matches(actual, expected, BASE_URL);
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}  -> ${actual.status} ${actual.location}`);
   if (!ok) {
     failed++;
     console.log(
-      `      expected ${expected.check ? "401/403 or 302 to *.cloudflareaccess.com" : JSON.stringify(expected)}`,
+      `      expected ${expected.check ? (expected.describe ?? "401/403 or 302 to *.cloudflareaccess.com") : JSON.stringify(expected)}`,
     );
   }
 }

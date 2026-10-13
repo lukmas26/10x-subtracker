@@ -24,6 +24,17 @@ export interface SubscriptionListItemDTO {
   createdAt: string;
 }
 
+/** One subscription as stored, for prefilling the edit form. */
+export interface SubscriptionEditDTO {
+  id: string;
+  name: string;
+  /** Exact decimal string as stored (e.g. "49.99"); never converted to a float. */
+  amount: string;
+  currency: Currency;
+  cycle: Cycle;
+  categoryId: string;
+}
+
 // Validation limits shared by the server (src/lib/services/subscriptions.ts) and the form island.
 // Kept here (no server-only imports) so the client bundle can use them safely.
 export const SUBSCRIPTION_NAME_MAX_LENGTH = 100;
