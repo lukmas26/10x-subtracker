@@ -1,10 +1,10 @@
 ---
 change_id: edit-subscription
 title: Edit a subscription
-status: implemented
+status: archived
 created: 2026-10-10
 updated: 2026-10-13
-archived_at: null
+archived_at: 2026-10-13T04:27:14Z
 ---
 
 ## Notes
