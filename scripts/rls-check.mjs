@@ -36,6 +36,8 @@ function newClient() {
 
 // Postgres insufficient_privilege: what PostgREST returns when an RLS policy rejects a write.
 const RLS_DENIED = "42501";
+// Postgres check_violation: what a CHECK constraint (e.g. amount > 0) raises inside a write.
+const CHECK_VIOLATION = "23514";
 
 function check(name, ok, detail) {
   if (!ok) failures += 1;
@@ -140,20 +142,11 @@ const bStarter = await b.client
   .select();
 check("B cannot insert a category with user_id null", bStarter.error?.code === RLS_DENIED, describe(bStarter));
 
-// B cannot modify or delete A's subscription: the update policy hides A's row (0 rows), delete has no grant yet.
-const bUpdate = await b.client.from("subscriptions").update({ name: "hijacked" }).eq("id", aSubscriptionId).select();
-check(
-  "B updating A's subscription affects 0 rows",
-  Boolean(bUpdate.error) || bUpdate.data.length === 0,
-  describe(bUpdate),
-);
-
+// B cannot delete A's subscription: there is no delete grant yet, so the request is refused outright (42501).
+// When a delete feature adds the grant, this check must become "0 rows and A unchanged".
+// (B's update of A's row is covered by the direct-PATCH check further down.)
 const bDelete = await b.client.from("subscriptions").delete().eq("id", aSubscriptionId).select();
-check(
-  "B deleting A's subscription affects 0 rows",
-  Boolean(bDelete.error) || bDelete.data.length === 0,
-  describe(bDelete),
-);
+check("B cannot delete A's subscription (no delete grant)", bDelete.error?.code === RLS_DENIED, describe(bDelete));
 
 const aSubs = await a.client.from("subscriptions").select("id, name");
 check(
@@ -162,19 +155,24 @@ check(
   describe(aSubs),
 );
 
-// An unauthenticated client sees nothing (no grant to anon: a permission error also counts as nothing).
+// An unauthenticated client sees nothing: anon has no grant, so every read is refused (42501).
 const anonSubs = await anon.from("subscriptions").select("id");
-check("anon sees 0 subscriptions", Boolean(anonSubs.error) || anonSubs.data.length === 0, describe(anonSubs));
+check("anon cannot read subscriptions", anonSubs.error?.code === RLS_DENIED, describe(anonSubs));
 
 const anonCats = await anon.from("categories").select("id");
-check("anon sees 0 categories", Boolean(anonCats.error) || anonCats.data.length === 0, describe(anonCats));
+check("anon cannot read categories", anonCats.error?.code === RLS_DENIED, describe(anonCats));
 
 // create_subscription RPC: one call is one transaction, and it runs with the caller's RLS.
 const rpcArgs = { p_name: "RLS rpc sub", p_currency: "PLN", p_cycle: "monthly" };
 
 const orphanName = `RLS orphan ${runId}`;
 const aFailedSave = await a.client.rpc("create_subscription", { ...rpcArgs, p_amount: 0, p_new_category: orphanName });
-check("A's failed save (amount 0) is rejected", Boolean(aFailedSave.error), describe(aFailedSave));
+// Expect the amount check itself, so the orphan check below always follows a function that actually ran.
+check(
+  "A's failed save (amount 0) is rejected by the amount check",
+  aFailedSave.error?.code === CHECK_VIOLATION,
+  describe(aFailedSave),
+);
 const orphan = await a.client.from("categories").select("id").eq("name", orphanName);
 check(
   "A's failed save leaves no orphan category (whole call rolled back)",
@@ -190,7 +188,7 @@ const bRpcInACategory = await b.client.rpc("create_subscription", {
 check("B cannot save via RPC into A's category", bRpcInACategory.error?.code === RLS_DENIED, describe(bRpcInACategory));
 
 const anonRpc = await anon.rpc("create_subscription", { ...rpcArgs, p_amount: 1, p_new_category: "RLS anon" });
-check("anon cannot call create_subscription", Boolean(anonRpc.error), describe(anonRpc));
+check("anon cannot call create_subscription", anonRpc.error?.code === RLS_DENIED, describe(anonRpc));
 
 // update_subscription RPC and the update policy: only the owner can change a row, the owner itself is
 // immutable, the category must be visible to the owner, and a failed call changes nothing.
@@ -248,7 +246,11 @@ const bCategory = await b.client
   .select()
   .single();
 check("B creates a private category", !bCategory.error, describe(bCategory));
-const bCategoryId = bCategory.data?.id;
+if (bCategory.error) {
+  console.error("rls-check: setup of B's category failed, cannot continue.");
+  process.exit(1);
+}
+const bCategoryId = bCategory.data.id;
 
 const aRpcIntoB = await a.client.rpc("update_subscription", { ...updateArgs, p_category_id: bCategoryId });
 check(
@@ -274,7 +276,12 @@ const aFailedUpdate = await a.client.rpc("update_subscription", {
   p_amount: 0,
   p_new_category: editOrphanName,
 });
-check("A's failed update (amount 0) is rejected", Boolean(aFailedUpdate.error), describe(aFailedUpdate));
+// Expect the amount check itself, so the checks below always follow a function that actually ran.
+check(
+  "A's failed update (amount 0) is rejected by the amount check",
+  aFailedUpdate.error?.code === CHECK_VIOLATION,
+  describe(aFailedUpdate),
+);
 const editOrphan = await a.client.from("categories").select("id").eq("name", editOrphanName);
 check(
   "A's failed update creates no category (whole call rolled back)",
@@ -284,8 +291,36 @@ check(
 const aAfterFailed = await aRow();
 check("A's subscription is unchanged after the failed update", sameRow(aAfterFailed, edited), describe(aAfterFailed));
 
+// B saves with a new category named like A's private one: the function must create B's own category,
+// never reuse A's, which B cannot see. A failed call fails every check here (no vacuous pass).
+const bSameName = await b.client.rpc("create_subscription", {
+  ...rpcArgs,
+  p_amount: 1,
+  p_new_category: `RLS A ${runId}`,
+});
+check(
+  "B saves via RPC with a new category named like A's",
+  !bSameName.error && typeof bSameName.data === "string",
+  describe(bSameName),
+);
+const bSameNameSub = bSameName.error
+  ? bSameName
+  : await b.client.from("subscriptions").select("category_id").eq("id", bSameName.data);
+const bSameNameCategoryId = bSameNameSub.error ? undefined : bSameNameSub.data[0]?.category_id;
+const bSameNameCategory = bSameNameCategoryId
+  ? await b.client.from("categories").select("id, user_id").eq("id", bSameNameCategoryId)
+  : bSameNameSub;
+check(
+  "B's same-name save lands in B's own category, not A's",
+  !bSameNameCategory.error &&
+    bSameNameCategory.data.length === 1 &&
+    bSameNameCategory.data[0].id !== aCategoryId &&
+    bSameNameCategory.data[0].user_id === b.userId,
+  describe(bSameNameCategory),
+);
+
 const anonUpdate = await anon.rpc("update_subscription", { ...updateArgs, p_category_id: starterId });
-check("anon cannot call update_subscription", Boolean(anonUpdate.error), describe(anonUpdate));
+check("anon cannot call update_subscription", anonUpdate.error?.code === RLS_DENIED, describe(anonUpdate));
 
 if (failures > 0) {
   console.error(`rls-check: ${failures} check(s) failed.`);
