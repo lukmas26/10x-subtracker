@@ -3,6 +3,7 @@
 // Remote mode (existing confirmed account, no sign-up): set SMOKE_EMAIL + SMOKE_PASSWORD, optionally
 // CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET and SMOKE_EXPECT_ACCESS=1 (see `npm run smoke:remote`).
 
+import { ROUTES } from "./routes.mjs";
 import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:4321";
@@ -73,6 +74,42 @@ async function anonymousRequest(path) {
   const response = await fetch(BASE_URL + path, { redirect: "manual" });
   return { status: response.status, location: response.headers.get("location") ?? "" };
 }
+
+// A signed-out visitor past Access: Origin (Astro's CSRF check) and Access headers, but no cookie jar (read or
+// write), so the step exercises the app's auth check rather than the CSRF check or a leftover session.
+async function anonymousAppRequest(path, { method = "GET", form } = {}) {
+  const response = await fetch(BASE_URL + path, {
+    method,
+    redirect: "manual",
+    headers: {
+      ...accessHeaders,
+      Origin: BASE_URL,
+      ...(form ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
+    },
+    body: form ? new URLSearchParams(form).toString() : undefined,
+  });
+  return { status: response.status, location: response.headers.get("location") ?? "", body: await response.text() };
+}
+
+// One step per protected route in scripts/routes.mjs. POSTs run in local mode only: remote mode stays read-only.
+const anonymousSteps = ROUTES.filter((route) => route.access === "protected")
+  .filter((route) => route.method === "GET" || !remote)
+  .map((route) => [
+    `anonymous ${route.method} ${route.path} redirects to signin`,
+    () => anonymousAppRequest(route.path, { method: route.method, form: route.form }),
+    route.anonymous,
+  ]);
+
+// Route matching must not be bypassable by case: a 404 or the signin redirect is fine, a rendered page is not.
+const caseProbeStep = [
+  "anonymous GET /Subscriptions does not render",
+  () => anonymousAppRequest("/Subscriptions"),
+  {
+    check: (actual, baseUrl) =>
+      actual.status === 404 || matches(actual, { status: 302, path: "/auth/signin" }, baseUrl),
+    describe: "404, or 302 exactly to /auth/signin",
+  },
+];
 
 const signinSteps = [
   [
@@ -185,8 +222,8 @@ const steps = [
     ? [["preview blocks anonymous request", () => anonymousRequest("/"), { check: blocksAnonymous }]]
     : []),
   ["home renders", () => request("/"), { status: 200 }],
-  ["dashboard redirects anonymous user", () => request("/dashboard"), { status: 302, path: "/auth/signin" }],
-  ["subscriptions redirects anonymous user", () => request("/subscriptions"), { status: 302, path: "/auth/signin" }],
+  ...anonymousSteps,
+  caseProbeStep,
   ...(remote
     ? []
     : [

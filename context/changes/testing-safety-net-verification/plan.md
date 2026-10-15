@@ -372,24 +372,24 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 1.1 `npm run test:rls` passes against local Supabase with no any-error-only assertion left
-- [x] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run test:rls` passes against local Supabase with no any-error-only assertion left — 2dcfcf6
+- [x] 1.2 `npm run lint` passes — 2dcfcf6
 
 #### Manual
 
-- [x] 1.3 Run output shows the same-name category check as PASS with B's own category
+- [x] 1.3 Run output shows the same-name category check as PASS with B's own category — 2dcfcf6
 
 ### Phase 2: Route inventory and anonymous coverage
 
 #### Automated
 
-- [ ] 2.1 `npm run test:smoke` passes, including `routes.test.mjs`
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe
+- [x] 2.1 `npm run test:smoke` passes, including `routes.test.mjs`
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe
 
 #### Manual
 
-- [ ] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed
+- [x] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed
 
 ### Phase 3: Harden smoke assertions
 
