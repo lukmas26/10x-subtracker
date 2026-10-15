@@ -5,15 +5,24 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npx astro sync
@@ -28,13 +37,14 @@ jobs:
 
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
         with:
           version: 2.118.0
       - run: npm ci
@@ -57,7 +67,12 @@ jobs:
       - name: Run smoke test against production preview
         run: |
           npm run preview -- --port 4321 &
-          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:4321/ && break; sleep 1; done
+          up=0
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:4321/ && { up=1; break; }; sleep 1; done
+          if [ "$up" -ne 1 ]; then
+            echo "::error::Preview did not start: http://localhost:4321/ did not answer within 60 s"
+            exit 1
+          fi
           BASE_URL=http://localhost:4321 npm run smoke
       - if: always()
         run: supabase stop --no-backup
