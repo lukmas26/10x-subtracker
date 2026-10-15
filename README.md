@@ -22,7 +22,7 @@ i [`context/foundation/infrastructure.md`](context/foundation/infrastructure.md)
 
 ## Wymagania
 
-- Node 22.14.0 (`.nvmrc`)
+- Node 22.23.3 (`.nvmrc`)
 - Docker — tylko jeśli chcesz uruchomić lokalne Supabase
 
 ## Start
