@@ -407,21 +407,21 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 4.1 After reverts, no stray changes or temporary migrations remain
-- [x] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database
+- [x] 4.1 After reverts, no stray changes or temporary migrations remain — 64523ff
+- [x] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database — 64523ff
 
 #### Manual
 
-- [x] 4.3 Every catalogue row has an observed FAIL line and is marked reverted
-- [x] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5
+- [x] 4.3 Every catalogue row has an observed FAIL line and is marked reverted — 64523ff
+- [x] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5 — 64523ff
 
 ### Phase 5: Cookbook and docs
 
 #### Automated
 
-- [ ] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged
-- [ ] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md`
+- [x] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged
+- [x] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md`
 
 #### Manual
 
-- [ ] 5.3 A reader can add an access check for a new route by following §6.1 alone
+- [x] 5.3 A reader can add an access check for a new route by following §6.1 alone
