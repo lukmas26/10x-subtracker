@@ -419,9 +419,9 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged
-- [x] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md`
+- [x] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged — 1476ff0
+- [x] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md` — 1476ff0
 
 #### Manual
 
-- [x] 5.3 A reader can add an access check for a new route by following §6.1 alone
+- [x] 5.3 A reader can add an access check for a new route by following §6.1 alone — 1476ff0
