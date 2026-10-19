@@ -361,21 +361,21 @@ Rollback: YAML/config changes revert with a normal PR. The ruleset is removed wi
 
 #### Automated
 
-- [x] 2.1 `npm run format:check` passes locally
-- [x] 2.2 `npm audit --audit-level=critical` exits 0 locally
-- [x] 2.3 `npm run lint` and `npm run lint:ui` pass
-- [ ] 2.4 `ci` and `smoke` pass on the PR
+- [x] 2.1 `npm run format:check` passes locally — b94d5a3
+- [x] 2.2 `npm audit --audit-level=critical` exits 0 locally — b94d5a3
+- [x] 2.3 `npm run lint` and `npm run lint:ui` pass — b94d5a3
+- [x] 2.4 `ci` and `smoke` pass on the PR — b94d5a3
 
 #### Manual
 
-- [ ] 2.5 Mis-formatting a YAML or JSON file makes `npm run format:check` fail with that file named
+- [x] 2.5 Mis-formatting a YAML or JSON file makes `npm run format:check` fail with that file named — b94d5a3
 
 ### Phase 3: Dependabot & docs
 
 #### Automated
 
-- [ ] 3.1 `npm run format:check` passes (covers the new YAML/JSON files)
-- [ ] 3.2 `.github/rulesets/master.json` parses as JSON
+- [x] 3.1 `npm run format:check` passes (covers the new YAML/JSON files)
+- [x] 3.2 `.github/rulesets/master.json` parses as JSON
 - [ ] 3.3 `ci` and `smoke` pass on the PR
 
 #### Manual
