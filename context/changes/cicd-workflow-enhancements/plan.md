@@ -347,23 +347,23 @@ Rollback: YAML/config changes revert with a normal PR. The ruleset is removed wi
 
 #### Automated
 
-- [x] 1.1 `npx prettier --check .github/workflows/ci.yml` passes
-- [x] 1.2 No action reference in `ci.yml` uses a tag
-- [x] 1.3 Job ids are still exactly `ci` and `smoke`
-- [ ] 1.4 `ci` and `smoke` both pass on the PR
+- [x] 1.1 `npx prettier --check .github/workflows/ci.yml` passes — 69011bc
+- [x] 1.2 No action reference in `ci.yml` uses a tag — 69011bc
+- [x] 1.3 Job ids are still exactly `ci` and `smoke` — 69011bc
+- [x] 1.4 `ci` and `smoke` both pass on the PR — 69011bc
 
 #### Manual
 
-- [ ] 1.5 PR run log shows Node 22.14.0 and both jobs have the timeout set
-- [ ] 1.6 Pushing a second commit to the PR cancels the first run
+- [x] 1.5 PR run log shows Node 22.14.0 and both jobs have the timeout set — 69011bc
+- [x] 1.6 Pushing a second commit to the PR cancels the first run — 69011bc
 
 ### Phase 2: Format & audit gates
 
 #### Automated
 
-- [ ] 2.1 `npm run format:check` passes locally
-- [ ] 2.2 `npm audit --audit-level=critical` exits 0 locally
-- [ ] 2.3 `npm run lint` and `npm run lint:ui` pass
+- [x] 2.1 `npm run format:check` passes locally
+- [x] 2.2 `npm audit --audit-level=critical` exits 0 locally
+- [x] 2.3 `npm run lint` and `npm run lint:ui` pass
 - [ ] 2.4 `ci` and `smoke` pass on the PR
 
 #### Manual

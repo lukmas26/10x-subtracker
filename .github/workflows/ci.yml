@@ -25,8 +25,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=critical
       - run: npx astro sync
       - run: npm run lint
+      - run: npm run format:check
       - run: npm run lint:ui
       - run: npm run test:smoke
       - run: npx astro check

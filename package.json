@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "lint:ui": "node scripts/ui-literals-check.mjs",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "smoke": "node scripts/smoke.mjs",
     "smoke:remote": "node --env-file=.env.smoke scripts/smoke.mjs",
     "test:smoke": "node --test \"scripts/*.test.mjs\"",
@@ -65,7 +66,7 @@
       "eslint --fix",
       "node scripts/ui-literals-check.mjs"
     ],
-    "*.{json,css,md}": [
+    "*.{json,css,md,yml,yaml}": [
       "prettier --write"
     ]
   },
