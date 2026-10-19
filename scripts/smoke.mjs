@@ -4,7 +4,7 @@
 // CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET and SMOKE_EXPECT_ACCESS=1 (see `npm run smoke:remote`).
 
 import { ROUTES } from "./routes.mjs";
-import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
+import { blocksAnonymous, extractEditPath, matches, rendersList } from "./smoke-match.mjs";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:4321";
 const { SMOKE_EMAIL, SMOKE_PASSWORD, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET, SMOKE_EXPECT_ACCESS } = process.env;
@@ -34,6 +34,8 @@ const secondEmail = `smoke-${runId}-b@example.com`;
 // Alphanumerics and hyphens only, so HTML escaping cannot affect the body match.
 const subscriptionName = `Smoke-Sub-${runId}`;
 const editedName = `Smoke-Edit-${runId}`;
+// Name the second account tries to save onto the first account's subscription; must never appear in A's list.
+const hijackName = "Smoke-Hijack";
 const accessHeaders = CF_ACCESS_CLIENT_ID
   ? { "CF-Access-Client-Id": CF_ACCESS_CLIENT_ID, "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET }
   : {};
@@ -192,6 +194,7 @@ const editSubscriptionSteps = [
 ];
 
 // Sign-out has already expired the first account's session cookies, so the shared jar now holds only B's.
+// B then signs out and A signs back in, to re-read A's subscription through the app after B's attempts.
 const secondAccountSteps = [
   [
     "second account signs up",
@@ -206,7 +209,7 @@ const secondAccountSteps = [
   ["second account cannot open first account's edit page", () => request(editPagePath()), notFoundForCaptured],
   [
     "second account cannot save first account's subscription",
-    () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: "Smoke-Hijack", amount: "1" } }),
+    () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: hijackName, amount: "1" } }),
     notFoundForCaptured,
   ],
   [
@@ -215,12 +218,24 @@ const secondAccountSteps = [
     // B is a fresh account: require the rendered empty state, so an error page cannot pass vacuously.
     { status: 200, bodyIncludes: "No subscriptions yet", bodyExcludes: [subscriptionName, editedName] },
   ],
+  ["second account signs out", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],
+  [
+    "first account signs in again",
+    () => request("/api/auth/signin", { method: "POST", form: { email, password } }),
+    { status: 302, path: "/" },
+  ],
+  [
+    "first account's subscription survived second account's attempts",
+    () => request("/subscriptions"),
+    { status: 200, bodyIncludes: [editedName, "59.99 USD"], bodyExcludes: hijackName },
+  ],
 ];
 
 const steps = [
   ...(expectAccess
     ? [["preview blocks anonymous request", () => anonymousRequest("/"), { check: blocksAnonymous }]]
     : []),
+  // Liveness only: the home page has no user- or data-dependent content to assert on.
   ["home renders", () => request("/"), { status: 200 }],
   ...anonymousSteps,
   caseProbeStep,
@@ -234,8 +249,17 @@ const steps = [
         ],
       ]),
   ...signinSteps,
-  ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
-  ["subscriptions renders for signed-in user", () => request("/subscriptions"), { status: 200 }],
+  // The dashboard greets the signed-in user by email: proves the session belongs to this account.
+  ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200, bodyIncludes: email }],
+  [
+    "subscriptions renders for signed-in user",
+    () => request("/subscriptions"),
+    // Account contents are unknown in remote mode: require the list branch (empty state or an edit link), not an error.
+    {
+      check: (actual) => actual.status === 200 && rendersList(actual.body),
+      describe: "status 200 and the list rendered (empty state or an edit link), not the load error",
+    },
+  ],
   // Remote mode is read-only for subscriptions: it never writes to a hosted environment.
   ...(remote ? [] : [...addSubscriptionSteps, ...editSubscriptionSteps]),
   ["signout clears session", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],

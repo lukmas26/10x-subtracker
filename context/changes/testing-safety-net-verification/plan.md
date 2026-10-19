@@ -383,25 +383,25 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 2.1 `npm run test:smoke` passes, including `routes.test.mjs`
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe
+- [x] 2.1 `npm run test:smoke` passes, including `routes.test.mjs` — 508e756
+- [x] 2.2 `npm run lint` passes — 508e756
+- [x] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe — 508e756
 
 #### Manual
 
-- [x] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed
+- [x] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed — 508e756
 
 ### Phase 3: Harden smoke assertions
 
 #### Automated
 
-- [ ] 3.1 `npm run test:smoke` passes, including the `rendersList` cases
-- [ ] 3.2 `npm run lint` passes
-- [ ] 3.3 `npm run smoke` passes with the 3 re-sign-in steps
+- [x] 3.1 `npm run test:smoke` passes, including the `rendersList` cases
+- [x] 3.2 `npm run lint` passes
+- [x] 3.3 `npm run smoke` passes with the 3 re-sign-in steps
 
 #### Manual
 
-- [ ] 3.4 New step names state the behaviour they protect
+- [x] 3.4 New step names state the behaviour they protect
 
 ### Phase 4: Deliberate-break catalogue
 

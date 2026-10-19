@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
+import { blocksAnonymous, extractEditPath, matches, rendersList } from "./smoke-match.mjs";
 
 const BASE = "http://localhost:4321";
 const home = { status: 302, path: "/" };
@@ -152,4 +152,23 @@ test("extractEditPath returns null when there is no edit link", () => {
 test("extractEditPath ignores non-uuid ids", () => {
   assert.equal(extractEditPath('<a href="/subscriptions/abc/edit">Edit</a>'), null);
   assert.equal(extractEditPath(`<a href="/subscriptions/${SUB_ID}x/edit">Edit</a>`), null);
+});
+
+const LIST_HEADING = "<h2>Your subscriptions</h2>";
+
+test("rendersList: empty state counts as rendered", () => {
+  assert.equal(rendersList(`${LIST_HEADING}<p>No subscriptions yet — add your first one above.</p>`), true);
+});
+
+test("rendersList: an edit link counts as rendered", () => {
+  assert.equal(rendersList(`${LIST_HEADING}<ul><li><a href="/subscriptions/${SUB_ID}/edit">Edit</a></li></ul>`), true);
+});
+
+test("rendersList: load-error branch does not count as rendered", () => {
+  const body = `${LIST_HEADING}<div role="alert">Could not load your subscriptions. Please refresh the page.</div>`;
+  assert.equal(rendersList(body), false);
+});
+
+test("rendersList: empty body does not count as rendered", () => {
+  assert.equal(rendersList(""), false);
 });
