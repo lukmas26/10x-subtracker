@@ -374,13 +374,13 @@ Rollback: YAML/config changes revert with a normal PR. The ruleset is removed wi
 
 #### Automated
 
-- [x] 3.1 `npm run format:check` passes (covers the new YAML/JSON files)
-- [x] 3.2 `.github/rulesets/master.json` parses as JSON
-- [ ] 3.3 `ci` and `smoke` pass on the PR
+- [x] 3.1 `npm run format:check` passes (covers the new YAML/JSON files) — 22929fb
+- [x] 3.2 `.github/rulesets/master.json` parses as JSON — 22929fb
+- [x] 3.3 `ci` and `smoke` pass on the PR — 22929fb
 
 #### Manual
 
-- [ ] 3.4 Reviewer agrees with the ruleset JSON and dependabot.yml in the PR diff
+- [x] 3.4 Reviewer agrees with the ruleset JSON and dependabot.yml in the PR diff — 22929fb
 - [ ] 3.5 PR with Phases 1–3 merged and the post-merge `master` run is green
 
 ### Phase 4: Enforcement
