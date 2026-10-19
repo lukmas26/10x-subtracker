@@ -395,25 +395,25 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 3.1 `npm run test:smoke` passes, including the `rendersList` cases
-- [x] 3.2 `npm run lint` passes
-- [x] 3.3 `npm run smoke` passes with the 3 re-sign-in steps
+- [x] 3.1 `npm run test:smoke` passes, including the `rendersList` cases — e00e078
+- [x] 3.2 `npm run lint` passes — e00e078
+- [x] 3.3 `npm run smoke` passes with the 3 re-sign-in steps — e00e078
 
 #### Manual
 
-- [x] 3.4 New step names state the behaviour they protect
+- [x] 3.4 New step names state the behaviour they protect — e00e078
 
 ### Phase 4: Deliberate-break catalogue
 
 #### Automated
 
-- [ ] 4.1 After reverts, no stray changes or temporary migrations remain
-- [ ] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database
+- [x] 4.1 After reverts, no stray changes or temporary migrations remain
+- [x] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database
 
 #### Manual
 
-- [ ] 4.3 Every catalogue row has an observed FAIL line and is marked reverted
-- [ ] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5
+- [x] 4.3 Every catalogue row has an observed FAIL line and is marked reverted
+- [x] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5
 
 ### Phase 5: Cookbook and docs
 
