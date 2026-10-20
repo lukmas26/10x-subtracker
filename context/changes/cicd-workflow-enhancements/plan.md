@@ -381,18 +381,18 @@ Rollback: YAML/config changes revert with a normal PR. The ruleset is removed wi
 #### Manual
 
 - [x] 3.4 Reviewer agrees with the ruleset JSON and dependabot.yml in the PR diff — 22929fb
-- [ ] 3.5 PR with Phases 1–3 merged and the post-merge `master` run is green
+- [x] 3.5 PR with Phases 1–3 merged and the post-merge `master` run is green — 22929fb
 
 ### Phase 4: Enforcement
 
 #### Automated
 
-- [ ] 4.1 `gh api …/rulesets` lists an active ruleset named `master`
-- [ ] 4.2 `gh api …/vulnerability-alerts` returns 204
-- [ ] 4.3 Throwaway red PR reports `mergeStateStatus` `BLOCKED`
+- [x] 4.1 `gh api …/rulesets` lists an active ruleset named `master`
+- [x] 4.2 `gh api …/vulnerability-alerts` returns 204
+- [x] 4.3 Throwaway red PR reports `mergeStateStatus` `BLOCKED`
 
 #### Manual
 
-- [ ] 4.4 GitHub UI on the throwaway PR shows the merge button disabled with `ci` required
-- [ ] 4.5 Dependabot opened its first update PRs and their checks run
-- [ ] 4.6 Throwaway PR closed and branch deleted
+- [x] 4.4 GitHub UI on the throwaway PR shows the merge button disabled with `ci` required
+- [x] 4.5 Dependabot opened its first update PRs and their checks run
+- [x] 4.6 Throwaway PR closed and branch deleted
