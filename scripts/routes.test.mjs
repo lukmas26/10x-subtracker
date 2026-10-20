@@ -9,10 +9,14 @@ const PAGES_DIR = fileURLToPath(new URL("../src/pages/", import.meta.url));
 const HINT = "classify it in scripts/routes.mjs";
 
 function routeFiles() {
-  return readdirSync(PAGES_DIR, { recursive: true })
-    .map((entry) => String(entry).replaceAll("\\", "/"))
-    .filter((entry) => /\.(astro|ts)$/.test(entry))
-    .sort();
+  return (
+    readdirSync(PAGES_DIR, { recursive: true })
+      .map((entry) => String(entry).replaceAll("\\", "/"))
+      // Every extension Astro turns into a route; a "_" segment is not routed, so it needs no entry.
+      .filter((entry) => /\.(astro|ts|js|md|mdx|html)$/.test(entry))
+      .filter((entry) => !entry.split("/").some((segment) => segment.startsWith("_")))
+      .sort()
+  );
 }
 
 test("every route file under src/pages has exactly one entry", () => {

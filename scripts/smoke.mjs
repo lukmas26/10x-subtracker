@@ -26,6 +26,21 @@ if (expectAccess && !CF_ACCESS_CLIENT_ID) {
 }
 
 const remote = Boolean(SMOKE_EMAIL);
+// Local mode signs up throwaway accounts and writes subscriptions: refuse anything but a local server.
+const LOCAL_HOSTS = ["127.0.0.1", "localhost", "[::1]"];
+if (!remote) {
+  let host = "";
+  try {
+    host = new URL(BASE_URL).hostname;
+  } catch {
+    // Fall through: an unparseable URL is not a local one.
+  }
+  if (!LOCAL_HOSTS.includes(host)) {
+    abort(
+      `refusing local mode against "${host || BASE_URL}"; use npm run smoke:remote with SMOKE_EMAIL/SMOKE_PASSWORD.`,
+    );
+  }
+}
 const runId = Date.now();
 const email = remote ? SMOKE_EMAIL : `smoke-${runId}@example.com`;
 const password = remote ? SMOKE_PASSWORD : "Smoke-Test-Passw0rd!";
@@ -250,7 +265,15 @@ const steps = [
       ]),
   ...signinSteps,
   // The dashboard greets the signed-in user by email: proves the session belongs to this account.
-  ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200, bodyIncludes: email }],
+  [
+    "dashboard renders for signed-in user",
+    () => request("/dashboard"),
+    {
+      // A check with its own description, so a failure never prints the account's email.
+      check: (actual, baseUrl) => matches(actual, { status: 200, bodyIncludes: email }, baseUrl),
+      describe: "status 200 and the signed-in account's email on the page",
+    },
+  ],
   [
     "subscriptions renders for signed-in user",
     () => request("/subscriptions"),
@@ -271,7 +294,14 @@ console.log(`mode: ${remote ? "remote" : "local"}  BASE_URL: ${BASE_URL}${expect
 
 let failed = 0;
 for (const [name, run, expectation] of steps) {
-  const actual = await run();
+  let actual;
+  try {
+    actual = await run();
+  } catch (error) {
+    failed++;
+    console.log(`FAIL  ${name}  -> request failed: ${error instanceof Error ? error.message : String(error)}`);
+    continue;
+  }
   const expected = typeof expectation === "function" ? expectation() : expectation;
   const ok = expected.check ? expected.check(actual, BASE_URL) : matches(actual, expected, BASE_URL);
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}  -> ${actual.status} ${actual.location}`);

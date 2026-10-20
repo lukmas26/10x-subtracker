@@ -34,7 +34,7 @@ function newClient() {
   });
 }
 
-// Postgres insufficient_privilege: what PostgREST returns when an RLS policy rejects a write.
+// Postgres insufficient_privilege: what PostgREST returns when an RLS policy rejects a write, or the role lacks the table/function grant.
 const RLS_DENIED = "42501";
 // Postgres check_violation: what a CHECK constraint (e.g. amount > 0) raises inside a write.
 const CHECK_VIOLATION = "23514";

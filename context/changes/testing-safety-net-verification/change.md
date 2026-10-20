@@ -1,7 +1,7 @@
 ---
 change_id: testing-safety-net-verification
 title: Verify smoke and RLS checks catch leaks and unauthenticated access
-status: implemented
+status: impl_reviewed
 created: 2026-10-15
 updated: 2026-10-19
 archived_at: null

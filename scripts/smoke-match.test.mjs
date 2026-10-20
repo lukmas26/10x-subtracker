@@ -169,6 +169,11 @@ test("rendersList: load-error branch does not count as rendered", () => {
   assert.equal(rendersList(body), false);
 });
 
+test("rendersList: list content without the list heading does not count as rendered", () => {
+  assert.equal(rendersList("<p>No subscriptions yet</p>"), false);
+  assert.equal(rendersList(`<a href="/subscriptions/${SUB_ID}/edit">Edit</a>`), false);
+});
+
 test("rendersList: empty body does not count as rendered", () => {
   assert.equal(rendersList(""), false);
 });
