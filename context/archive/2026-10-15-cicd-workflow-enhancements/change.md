@@ -1,10 +1,10 @@
 ---
 change_id: cicd-workflow-enhancements
 title: Review GitHub CI workflow against PR quality best practices
-status: implemented
+status: archived
 created: 2026-10-15
 updated: 2026-10-20
-archived_at: null
+archived_at: 2026-10-20T04:36:45Z
 ---
 
 ## Notes
