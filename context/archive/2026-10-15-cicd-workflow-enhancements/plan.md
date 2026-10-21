@@ -347,41 +347,41 @@ Rollback: YAML/config changes revert with a normal PR. The ruleset is removed wi
 
 #### Automated
 
-- [x] 1.1 `npx prettier --check .github/workflows/ci.yml` passes — 69011bc
-- [x] 1.2 No action reference in `ci.yml` uses a tag — 69011bc
-- [x] 1.3 Job ids are still exactly `ci` and `smoke` — 69011bc
-- [x] 1.4 `ci` and `smoke` both pass on the PR — 69011bc
+- [x] 1.1 `npx prettier --check .github/workflows/ci.yml` passes — 2fa9a97
+- [x] 1.2 No action reference in `ci.yml` uses a tag — 2fa9a97
+- [x] 1.3 Job ids are still exactly `ci` and `smoke` — 2fa9a97
+- [x] 1.4 `ci` and `smoke` both pass on the PR — 2fa9a97
 
 #### Manual
 
-- [x] 1.5 PR run log shows Node 22.14.0 and both jobs have the timeout set — 69011bc
-- [x] 1.6 Pushing a second commit to the PR cancels the first run — 69011bc
+- [x] 1.5 PR run log shows Node 22.14.0 and both jobs have the timeout set — 2fa9a97
+- [x] 1.6 Pushing a second commit to the PR cancels the first run — 2fa9a97
 
 ### Phase 2: Format & audit gates
 
 #### Automated
 
-- [x] 2.1 `npm run format:check` passes locally — b94d5a3
-- [x] 2.2 `npm audit --audit-level=critical` exits 0 locally — b94d5a3
-- [x] 2.3 `npm run lint` and `npm run lint:ui` pass — b94d5a3
-- [x] 2.4 `ci` and `smoke` pass on the PR — b94d5a3
+- [x] 2.1 `npm run format:check` passes locally — 2fa9a97
+- [x] 2.2 `npm audit --audit-level=critical` exits 0 locally — 2fa9a97
+- [x] 2.3 `npm run lint` and `npm run lint:ui` pass — 2fa9a97
+- [x] 2.4 `ci` and `smoke` pass on the PR — 2fa9a97
 
 #### Manual
 
-- [x] 2.5 Mis-formatting a YAML or JSON file makes `npm run format:check` fail with that file named — b94d5a3
+- [x] 2.5 Mis-formatting a YAML or JSON file makes `npm run format:check` fail with that file named — 2fa9a97
 
 ### Phase 3: Dependabot & docs
 
 #### Automated
 
-- [x] 3.1 `npm run format:check` passes (covers the new YAML/JSON files) — 22929fb
-- [x] 3.2 `.github/rulesets/master.json` parses as JSON — 22929fb
-- [x] 3.3 `ci` and `smoke` pass on the PR — 22929fb
+- [x] 3.1 `npm run format:check` passes (covers the new YAML/JSON files) — 2fa9a97
+- [x] 3.2 `.github/rulesets/master.json` parses as JSON — 2fa9a97
+- [x] 3.3 `ci` and `smoke` pass on the PR — 2fa9a97
 
 #### Manual
 
-- [x] 3.4 Reviewer agrees with the ruleset JSON and dependabot.yml in the PR diff — 22929fb
-- [x] 3.5 PR with Phases 1–3 merged and the post-merge `master` run is green — 22929fb
+- [x] 3.4 Reviewer agrees with the ruleset JSON and dependabot.yml in the PR diff — 2fa9a97
+- [x] 3.5 PR with Phases 1–3 merged and the post-merge `master` run is green — 2fa9a97
 
 ### Phase 4: Enforcement
 
