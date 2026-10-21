@@ -372,56 +372,56 @@ No schema change ships. Phase 4 temporary migrations are deleted, and the databa
 
 #### Automated
 
-- [x] 1.1 `npm run test:rls` passes against local Supabase with no any-error-only assertion left — 2dcfcf6
-- [x] 1.2 `npm run lint` passes — 2dcfcf6
+- [x] 1.1 `npm run test:rls` passes against local Supabase with no any-error-only assertion left — 3435651
+- [x] 1.2 `npm run lint` passes — 3435651
 
 #### Manual
 
-- [x] 1.3 Run output shows the same-name category check as PASS with B's own category — 2dcfcf6
+- [x] 1.3 Run output shows the same-name category check as PASS with B's own category — 3435651
 
 ### Phase 2: Route inventory and anonymous coverage
 
 #### Automated
 
-- [x] 2.1 `npm run test:smoke` passes, including `routes.test.mjs` — 508e756
-- [x] 2.2 `npm run lint` passes — 508e756
-- [x] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe — 508e756
+- [x] 2.1 `npm run test:smoke` passes, including `routes.test.mjs` — 3435651
+- [x] 2.2 `npm run lint` passes — 3435651
+- [x] 2.3 `npm run smoke` passes with 5 anonymous steps and the case probe — 3435651
 
 #### Manual
 
-- [x] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed — 508e756
+- [x] 2.4 A throwaway unlisted page makes `npm run test:smoke` fail naming the file; then removed — 3435651
 
 ### Phase 3: Harden smoke assertions
 
 #### Automated
 
-- [x] 3.1 `npm run test:smoke` passes, including the `rendersList` cases — e00e078
-- [x] 3.2 `npm run lint` passes — e00e078
-- [x] 3.3 `npm run smoke` passes with the 3 re-sign-in steps — e00e078
+- [x] 3.1 `npm run test:smoke` passes, including the `rendersList` cases — 3435651
+- [x] 3.2 `npm run lint` passes — 3435651
+- [x] 3.3 `npm run smoke` passes with the 3 re-sign-in steps — 3435651
 
 #### Manual
 
-- [x] 3.4 New step names state the behaviour they protect — e00e078
+- [x] 3.4 New step names state the behaviour they protect — 3435651
 
 ### Phase 4: Deliberate-break catalogue
 
 #### Automated
 
-- [x] 4.1 After reverts, no stray changes or temporary migrations remain — 64523ff
-- [x] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database — 64523ff
+- [x] 4.1 After reverts, no stray changes or temporary migrations remain — 3435651
+- [x] 4.2 After reverts, `test:smoke`, `test:rls` and `smoke` all pass on a reset database — 3435651
 
 #### Manual
 
-- [x] 4.3 Every catalogue row has an observed FAIL line and is marked reverted — 64523ff
-- [x] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5 — 64523ff
+- [x] 4.3 Every catalogue row has an observed FAIL line and is marked reverted — 3435651
+- [x] 4.4 User confirms the catalogue as evidence for risks #3, #1, #5 — 3435651
 
 ### Phase 5: Cookbook and docs
 
 #### Automated
 
-- [x] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged — 1476ff0
-- [x] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md` — 1476ff0
+- [x] 5.1 `npm run format` leaves `AGENTS.md` and `test-plan.md` unchanged — 3435651
+- [x] 5.2 No "TBD — see §3 Phase 1" placeholder remains in `test-plan.md` — 3435651
 
 #### Manual
 
-- [x] 5.3 A reader can add an access check for a new route by following §6.1 alone — 1476ff0
+- [x] 5.3 A reader can add an access check for a new route by following §6.1 alone — 3435651
