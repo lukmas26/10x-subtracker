@@ -41,6 +41,7 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 - `npm run lint:ui` — UI literal check (`scripts/ui-literals-check.mjs`): fails with `file:line: literal` when a view in its `SCOPE` uses a palette class, hex/rgb/hsl/oklch value or arbitrary size instead of a token (see `## UI`). Runs in pre-commit (lint-staged, scoped files only) and CI.
 - `npx astro check` — type-check `.astro` + TS files (CI runs it; there is no `typecheck` script)
 - `npm run format` — Prettier (astro + tailwind plugins)
+- `npm run format:check` — Prettier in check mode (`prettier --check .`); fails on formatting drift. Runs in CI; pre-commit formats staged files via lint-staged.
 - `npm run smoke` — dependency-free end-to-end smoke test (`scripts/smoke.mjs`) against a running server; `BASE_URL` defaults to `http://localhost:4321`. Needs a reachable Supabase. Covers the auth flow, an anonymous request to every protected route in `scripts/routes.mjs` (it must redirect exactly to `/auth/signin`; POSTs only in local mode), adding and editing a subscription, and cross-account isolation (a fresh second account must not see the first account's subscription, nor open or save its edit page; the first account then signs in again and checks its subscription is unchanged). Run after dependency upgrades.
 - `npm run test:rls` — RLS policy check (`scripts/rls-check.mjs`): signs up two throwaway `@example.com` users through the Supabase REST API with the anon key and asserts neither can read or write the other's subscriptions/categories and anon sees nothing; for updates (`update_subscription` RPC and direct `PATCH`) it also asserts `user_id` is immutable, a row cannot move into another user's private category, and a failed update changes nothing. Needs `SUPABASE_URL`/`SUPABASE_KEY` of a **local** Supabase; never run it against hosted. Runs in CI.
 - `npm run db:types` — regenerate `src/db/database.types.ts` from the local Supabase schema (run after every migration).
@@ -57,6 +58,10 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 
 @`.github/workflows/ci.yml`
 CI needs the repo secrets
+
+- Jobs `ci` and `smoke` are required status checks on `master` (ruleset in `.github/rulesets/master.json`, applied with `gh api`); never rename the jobs — the ruleset matches them by id.
+- Actions are pinned to commit SHAs (`# vX.Y.Z` comment) and bumped weekly by Dependabot (`.github/dependabot.yml`, which also groups npm updates).
+- Node version comes from `.nvmrc` (`node-version-file`); change it there, not in the workflow.
 
 ## UI
 

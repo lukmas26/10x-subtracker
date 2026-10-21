@@ -106,17 +106,21 @@ The full set of gates that must pass before a change reaches production.
 "Required after §3 Phase <N>" means the gate is enforced once that rollout
 phase lands; before that, the gate is `planned`.
 
-| Gate                                     | Where                    | Required?                    | Catches                                |
-| ---------------------------------------- | ------------------------ | ---------------------------- | -------------------------------------- |
-| lint + typecheck (`lint`, `astro check`) | pre-commit + CI          | required                     | syntactic / type drift                 |
-| UI literals (`lint:ui`)                  | pre-commit + CI          | required                     | design-token drift                     |
-| script matcher tests (`test:smoke`)      | CI                       | required                     | smoke matcher regressions              |
-| DB types match migrations                | CI                       | required                     | schema / type drift                    |
-| RLS check (`test:rls`)                   | CI (local Supabase)      | required                     | cross-account access (#1)              |
-| smoke on production build                | CI                       | required                     | broken auth, add/edit, isolation flows |
-| unit + integration for services          | local + CI               | required after §3 Phase 4    | logic regressions (#2, #4, #6, #7)     |
-| post-edit hook                           | local (agent loop)       | recommended after §3 Phase 4 | regressions at edit time               |
-| pre-prod smoke (`smoke:remote`)          | preview, then production | required per release runbook | environment-specific failures          |
+| Gate                                                  | Where                         | Required?                    | Catches                                |
+| ----------------------------------------------------- | ----------------------------- | ---------------------------- | -------------------------------------- |
+| lint + typecheck (`lint`, `astro check`)              | pre-commit + CI               | required                     | syntactic / type drift                 |
+| UI literals (`lint:ui`)                               | pre-commit + CI               | required                     | design-token drift                     |
+| format (`format:check`)                               | pre-commit (lint-staged) + CI | required                     | formatting drift                       |
+| dependency audit (`npm audit --audit-level=critical`) | CI                            | required                     | critical advisories                    |
+| script matcher tests (`test:smoke`)                   | CI                            | required                     | smoke matcher regressions              |
+| DB types match migrations                             | CI                            | required                     | schema / type drift                    |
+| RLS check (`test:rls`)                                | CI (local Supabase)           | required                     | cross-account access (#1)              |
+| smoke on production build                             | CI                            | required                     | broken auth, add/edit, isolation flows |
+| unit + integration for services                       | local + CI                    | required after §3 Phase 4    | logic regressions (#2, #4, #6, #7)     |
+| post-edit hook                                        | local (agent loop)            | recommended after §3 Phase 4 | regressions at edit time               |
+| pre-prod smoke (`smoke:remote`)                       | preview, then production      | required per release runbook | environment-specific failures          |
+
+The CI jobs `ci` and `smoke` are required status checks on `master`, enforced by the ruleset in `.github/rulesets/master.json`.
 
 ## 6. Cookbook Patterns
 
