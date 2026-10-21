@@ -53,6 +53,7 @@ Astro 7 SSR app (`output: "server"`, `@astrojs/cloudflare` adapter → Cloudflar
 - Secrets: copy `.env.example` to `.env` (Node) and/or `.dev.vars` (workerd dev/preview); both gitignored.
 - Local Supabase: `npx supabase start` (Docker), then use its API URL + anon key.
 - Deploy: `npx wrangler deploy`.
+- Worktrees: create them next to the repo, not inside it — `git worktree add ../test-repo-<branch> <branch>` (e.g. `C:\repos\test-repo-<branch>`). Never use the `.claude/worktrees/` default; relocate a misplaced one with `git worktree move`.
 
 ## CI
 
