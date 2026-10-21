@@ -77,3 +77,17 @@ export function blocksAnonymous(actual, baseUrl) {
     return false;
   }
 }
+
+const LIST_HEADING = "Your subscriptions";
+const EMPTY_STATE = "No subscriptions yet";
+
+/**
+ * True when /subscriptions rendered its list branch: the list heading plus either the empty state or an edit link.
+ * The load-error branch (heading and an error alert only) is false, so a 200 cannot hide a failed load.
+ * @param {string | undefined} body
+ * @returns {boolean}
+ */
+export function rendersList(body) {
+  if (typeof body !== "string" || !body.includes(LIST_HEADING)) return false;
+  return body.includes(EMPTY_STATE) || extractEditPath(body) !== null;
+}

@@ -3,7 +3,8 @@
 // Remote mode (existing confirmed account, no sign-up): set SMOKE_EMAIL + SMOKE_PASSWORD, optionally
 // CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET and SMOKE_EXPECT_ACCESS=1 (see `npm run smoke:remote`).
 
-import { blocksAnonymous, extractEditPath, matches } from "./smoke-match.mjs";
+import { ROUTES } from "./routes.mjs";
+import { blocksAnonymous, extractEditPath, matches, rendersList } from "./smoke-match.mjs";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:4321";
 const { SMOKE_EMAIL, SMOKE_PASSWORD, CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET, SMOKE_EXPECT_ACCESS } = process.env;
@@ -25,6 +26,21 @@ if (expectAccess && !CF_ACCESS_CLIENT_ID) {
 }
 
 const remote = Boolean(SMOKE_EMAIL);
+// Local mode signs up throwaway accounts and writes subscriptions: refuse anything but a local server.
+const LOCAL_HOSTS = ["127.0.0.1", "localhost", "[::1]"];
+if (!remote) {
+  let host = "";
+  try {
+    host = new URL(BASE_URL).hostname;
+  } catch {
+    // Fall through: an unparseable URL is not a local one.
+  }
+  if (!LOCAL_HOSTS.includes(host)) {
+    abort(
+      `refusing local mode against "${host || BASE_URL}"; use npm run smoke:remote with SMOKE_EMAIL/SMOKE_PASSWORD.`,
+    );
+  }
+}
 const runId = Date.now();
 const email = remote ? SMOKE_EMAIL : `smoke-${runId}@example.com`;
 const password = remote ? SMOKE_PASSWORD : "Smoke-Test-Passw0rd!";
@@ -33,6 +49,8 @@ const secondEmail = `smoke-${runId}-b@example.com`;
 // Alphanumerics and hyphens only, so HTML escaping cannot affect the body match.
 const subscriptionName = `Smoke-Sub-${runId}`;
 const editedName = `Smoke-Edit-${runId}`;
+// Name the second account tries to save onto the first account's subscription; must never appear in A's list.
+const hijackName = "Smoke-Hijack";
 const accessHeaders = CF_ACCESS_CLIENT_ID
   ? { "CF-Access-Client-Id": CF_ACCESS_CLIENT_ID, "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET }
   : {};
@@ -73,6 +91,42 @@ async function anonymousRequest(path) {
   const response = await fetch(BASE_URL + path, { redirect: "manual" });
   return { status: response.status, location: response.headers.get("location") ?? "" };
 }
+
+// A signed-out visitor past Access: Origin (Astro's CSRF check) and Access headers, but no cookie jar (read or
+// write), so the step exercises the app's auth check rather than the CSRF check or a leftover session.
+async function anonymousAppRequest(path, { method = "GET", form } = {}) {
+  const response = await fetch(BASE_URL + path, {
+    method,
+    redirect: "manual",
+    headers: {
+      ...accessHeaders,
+      Origin: BASE_URL,
+      ...(form ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
+    },
+    body: form ? new URLSearchParams(form).toString() : undefined,
+  });
+  return { status: response.status, location: response.headers.get("location") ?? "", body: await response.text() };
+}
+
+// One step per protected route in scripts/routes.mjs. POSTs run in local mode only: remote mode stays read-only.
+const anonymousSteps = ROUTES.filter((route) => route.access === "protected")
+  .filter((route) => route.method === "GET" || !remote)
+  .map((route) => [
+    `anonymous ${route.method} ${route.path} redirects to signin`,
+    () => anonymousAppRequest(route.path, { method: route.method, form: route.form }),
+    route.anonymous,
+  ]);
+
+// Route matching must not be bypassable by case: a 404 or the signin redirect is fine, a rendered page is not.
+const caseProbeStep = [
+  "anonymous GET /Subscriptions does not render",
+  () => anonymousAppRequest("/Subscriptions"),
+  {
+    check: (actual, baseUrl) =>
+      actual.status === 404 || matches(actual, { status: 302, path: "/auth/signin" }, baseUrl),
+    describe: "404, or 302 exactly to /auth/signin",
+  },
+];
 
 const signinSteps = [
   [
@@ -155,6 +209,7 @@ const editSubscriptionSteps = [
 ];
 
 // Sign-out has already expired the first account's session cookies, so the shared jar now holds only B's.
+// B then signs out and A signs back in, to re-read A's subscription through the app after B's attempts.
 const secondAccountSteps = [
   [
     "second account signs up",
@@ -169,7 +224,7 @@ const secondAccountSteps = [
   ["second account cannot open first account's edit page", () => request(editPagePath()), notFoundForCaptured],
   [
     "second account cannot save first account's subscription",
-    () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: "Smoke-Hijack", amount: "1" } }),
+    () => request(saveEditPath(), { method: "POST", form: { ...editForm, name: hijackName, amount: "1" } }),
     notFoundForCaptured,
   ],
   [
@@ -178,15 +233,27 @@ const secondAccountSteps = [
     // B is a fresh account: require the rendered empty state, so an error page cannot pass vacuously.
     { status: 200, bodyIncludes: "No subscriptions yet", bodyExcludes: [subscriptionName, editedName] },
   ],
+  ["second account signs out", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],
+  [
+    "first account signs in again",
+    () => request("/api/auth/signin", { method: "POST", form: { email, password } }),
+    { status: 302, path: "/" },
+  ],
+  [
+    "first account's subscription survived second account's attempts",
+    () => request("/subscriptions"),
+    { status: 200, bodyIncludes: [editedName, "59.99 USD"], bodyExcludes: hijackName },
+  ],
 ];
 
 const steps = [
   ...(expectAccess
     ? [["preview blocks anonymous request", () => anonymousRequest("/"), { check: blocksAnonymous }]]
     : []),
+  // Liveness only: the home page has no user- or data-dependent content to assert on.
   ["home renders", () => request("/"), { status: 200 }],
-  ["dashboard redirects anonymous user", () => request("/dashboard"), { status: 302, path: "/auth/signin" }],
-  ["subscriptions redirects anonymous user", () => request("/subscriptions"), { status: 302, path: "/auth/signin" }],
+  ...anonymousSteps,
+  caseProbeStep,
   ...(remote
     ? []
     : [
@@ -197,8 +264,25 @@ const steps = [
         ],
       ]),
   ...signinSteps,
-  ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200 }],
-  ["subscriptions renders for signed-in user", () => request("/subscriptions"), { status: 200 }],
+  // The dashboard greets the signed-in user by email: proves the session belongs to this account.
+  [
+    "dashboard renders for signed-in user",
+    () => request("/dashboard"),
+    {
+      // A check with its own description, so a failure never prints the account's email.
+      check: (actual, baseUrl) => matches(actual, { status: 200, bodyIncludes: email }, baseUrl),
+      describe: "status 200 and the signed-in account's email on the page",
+    },
+  ],
+  [
+    "subscriptions renders for signed-in user",
+    () => request("/subscriptions"),
+    // Account contents are unknown in remote mode: require the list branch (empty state or an edit link), not an error.
+    {
+      check: (actual) => actual.status === 200 && rendersList(actual.body),
+      describe: "status 200 and the list rendered (empty state or an edit link), not the load error",
+    },
+  ],
   // Remote mode is read-only for subscriptions: it never writes to a hosted environment.
   ...(remote ? [] : [...addSubscriptionSteps, ...editSubscriptionSteps]),
   ["signout clears session", () => request("/api/auth/signout", { method: "POST" }), { status: 302, path: "/" }],
@@ -210,7 +294,14 @@ console.log(`mode: ${remote ? "remote" : "local"}  BASE_URL: ${BASE_URL}${expect
 
 let failed = 0;
 for (const [name, run, expectation] of steps) {
-  const actual = await run();
+  let actual;
+  try {
+    actual = await run();
+  } catch (error) {
+    failed++;
+    console.log(`FAIL  ${name}  -> request failed: ${error instanceof Error ? error.message : String(error)}`);
+    continue;
+  }
   const expected = typeof expectation === "function" ? expectation() : expectation;
   const ok = expected.check ? expected.check(actual, BASE_URL) : matches(actual, expected, BASE_URL);
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}  -> ${actual.status} ${actual.location}`);

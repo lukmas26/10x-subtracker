@@ -69,8 +69,8 @@ orchestrator updates Status as artifacts appear on disk.
 
 | #   | Phase name              | Goal (one line)                                                                                                                 | Risks covered | Test types                                       | Status        | Change folder                   |
 | --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------ | ------------- | ------------------------------- |
-| 1   | Safety-net verification | Prove the existing smoke and RLS checks really catch leaks, data loss, and unauthenticated access; close the route-coverage gap | #3, #1, #5    | deliberate-break runs, integration (REST), smoke | change opened | testing-safety-net-verification |
-| 2   | Service logic coverage  | Bootstrap a runner for service code; prove atomic writes, honest error feedback, category reuse, and one rule set across layers | #2, #4, #6    | unit + integration (local Supabase)              | not started   | —                               |
+| 1   | Safety-net verification | Prove the existing smoke and RLS checks really catch leaks, data loss, and unauthenticated access; close the route-coverage gap | #3, #1, #5    | deliberate-break runs, integration (REST), smoke | complete      | testing-safety-net-verification |
+| 2   | Service logic coverage  | Bootstrap a runner for service code; prove atomic writes, honest error feedback, category reuse, and one rule set across layers | #2, #4, #6    | unit + integration (local Supabase)              | change opened | testing-service-logic-coverage  |
 | 3   | Summary math oracle     | Prove summary totals against hand-computed PRD examples; starts after roadmap S-04 ships                                        | #7            | unit                                             | not started   | —                               |
 | 4   | Quality-gates wiring    | Make unit + integration a required CI step; add a local post-edit hook on service and migration edits                           | cross-cutting | CI gates, post-edit hook                         | not started   | —                               |
 
@@ -130,11 +130,26 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding an access-control check (new table, route, or write path)
 
-- TBD — see §3 Phase 1 for the two-account denial pattern and deliberate-break proof.
+Shipped by §3 Phase 1 (`testing-safety-net-verification`).
+
+- **New page or API route.** Add one entry for its file to `ROUTES` in `scripts/routes.mjs` with `access` `public`, `protected` or `dev-only`. A protected entry also needs `method`, a concrete `path` (use `SAMPLE_ID` for dynamic segments), `anonymous: toSignin` and, for a `POST`, a valid `form`. `scripts/routes.test.mjs` goes red for any route file that is not listed exactly once. `scripts/smoke.mjs` turns every protected entry into an `anonymous <METHOD> <path> redirects to signin` step that sends `Origin` and no cookies.
+  The test proves that every route is listed, not that it is classified correctly. A page that should be protected, missing from `PROTECTED_ROUTES` and listed as `public`, stays green, so check the `access` value in review like any other auth decision.
+- **New table or write path.** Add checks to `scripts/rls-check.mjs` that use the two throwaway accounts (A owns the data, B attacks it) plus `anon`. Assert the exact outcome: an error code (`RLS_DENIED` 42501, `CHECK_VIOLATION` 23514, `NOT_FOUND` P0002), or a row count and values read back. Never assert just "some error", because a missing function (`PGRST202`) also returns an error. After every denied write, read A's row back as A and compare it with values the test itself wrote. Reference checks: "B cannot save via RPC into A's category", "B's same-name save lands in B's own category, not A's", "A's subscription is unchanged after B's attempts".
+- **Through the app, too.** Add a second-account smoke step for the user-visible path (page, form POST), followed by a re-sign-in as A that checks A's data survived. See "first account's subscription survived second account's attempts".
+- **Prove it.** Break the protected rule once, by hand. For example, use `alter policy … using (true)`, switch the RPC to `security definer`, or drop the `if (!user)` check. Confirm the new check goes red, then revert. `context/changes/testing-safety-net-verification/break-catalogue.md` shows the format.
+- **Run:** `npm run test:smoke` (inventory, no server), `npm run test:rls` (local Supabase only), `npm run smoke` (running server; check ports 4321/8787 first).
 
 ### 6.2 Adding a smoke step that can actually fail
 
-- TBD — see §3 Phase 1 for the step → assertion → deliberate-break pattern.
+Shipped by §3 Phase 1 (`testing-safety-net-verification`).
+
+- **Shape.** A step in `scripts/smoke.mjs` is `[name, () => request(...), expected]`. The name states the behaviour the step protects, not the action it takes.
+- **Assert exactly.** A redirect must match `{ status, path, error? }`: `scripts/smoke-match.mjs` compares the exact pathname and checks whether `?error=` is present or absent, never a prefix. Assert a 200 page through `bodyIncludes` / `bodyExcludes`, or a `check` such as `rendersList`, which rejects the load-error branch, so a page that failed to load cannot pass with status 200 alone.
+- **Oracle from the test's inputs.** Expected strings come from values the run itself sent (`subscriptionName`, `editedName`, `"59.99 USD"`, `hijackName`), never from copying what the implementation currently prints.
+- **No vacuous pass.** When a step depends on a value captured by an earlier step, guard it. Example: `notFoundForCaptured` returns `{ check: () => false, describe: … }` when no edit path was captured, so the later steps fail instead of probing a placeholder URL. A body expectation with no body fails.
+- **Matcher unit tests.** A new matcher or helper in `smoke-match.mjs` gets cases in `scripts/smoke-match.test.mjs`, including a case that must not match.
+- **Prove it.** Break the behaviour (for example, query a missing column), confirm the step goes red, and revert. See `break-catalogue.md`, row 11.
+- **Run:** `npm run test:smoke` (matchers), `npm run smoke` (against a running server).
 
 ### 6.3 Adding a service integration test
 
@@ -151,6 +166,8 @@ the relevant rollout phase ships; before that, the sub-section reads
 ### 6.6 Per-rollout-phase notes
 
 (Appended by each phase after it lands.)
+
+- **Phase 1, safety-net verification (2026-10-19):** 11 deliberate breaks, each red and reverted, recorded in `context/changes/testing-safety-net-verification/break-catalogue.md`. Notable: with exact-match middleware, the anonymous edit page rendered with status 200, and `PGRST202` would have passed the old any-error RLS checks.
 
 ## 7. What We Deliberately Don't Test
 
