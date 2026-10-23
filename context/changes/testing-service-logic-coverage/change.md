@@ -1,9 +1,9 @@
 ---
 change_id: testing-service-logic-coverage
 title: Test plan Phase 2 — service logic coverage (atomic writes, honest feedback, one rule set)
-status: new
+status: implementing
 created: 2026-10-21
-updated: 2026-10-21
+updated: 2026-10-23
 archived_at: null
 ---
 
