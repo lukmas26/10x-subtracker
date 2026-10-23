@@ -469,22 +469,22 @@ None. No schema changes. Phase 5 breaks DB functions only temporarily on local S
 
 #### Automated
 
-- [x] 2.1 `npm test` passes, with the case table executed against both the validator and the parser
-- [x] 2.2 `npm run test:integration` passes, with the DB verdicts for every `dbApplicable` row
-- [x] 2.3 `npm run lint`, `npx astro check`, `npm run lint:ui`, `npm run format:check` and `npm run build` pass
+- [x] 2.1 `npm test` passes, with the case table executed against both the validator and the parser — 8aee5b7
+- [x] 2.2 `npm run test:integration` passes, with the DB verdicts for every `dbApplicable` row — 8aee5b7
+- [x] 2.3 `npm run lint`, `npx astro check`, `npm run lint:ui`, `npm run format:check` and `npm run build` pass — 8aee5b7
 
 #### Manual
 
-- [x] 2.4 In the dev server, the add and edit forms show the same client-side messages as before the extraction (empty name, `abc` amount, empty new category)
-- [x] 2.5 The user reviews the case table's divergence rows (`1.999`, emoji) and their documented reasons
+- [x] 2.4 In the dev server, the add and edit forms show the same client-side messages as before the extraction (empty name, `abc` amount, empty new category) — 8aee5b7
+- [x] 2.5 The user reviews the case table's divergence rows (`1.999`, emoji) and their documented reasons — 8aee5b7
 
 ### Phase 3: Atomic writes and honest feedback (#2, #4)
 
 #### Automated
 
-- [ ] 3.1 `npm run test:integration` passes, including the service and route suites
-- [ ] 3.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
-- [ ] 3.3 `npm run test:rls` still passes (no interference with shared local data)
+- [x] 3.1 `npm run test:integration` passes, including the service and route suites
+- [x] 3.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
+- [x] 3.3 `npm run test:rls` still passes (no interference with shared local data)
 
 ### Phase 4: Category reuse (#4)
 
