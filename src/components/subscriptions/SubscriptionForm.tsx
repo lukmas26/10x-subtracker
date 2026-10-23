@@ -4,20 +4,8 @@ import { FormField } from "@/components/form/FormField";
 import { ServerError } from "@/components/form/ServerError";
 import { SubmitButton } from "@/components/form/SubmitButton";
 import { SelectField } from "@/components/form/SelectField";
-import {
-  AMOUNT_PATTERN,
-  CATEGORY_NAME_MAX_LENGTH,
-  CURRENCIES,
-  CYCLES,
-  SUBSCRIPTION_NAME_MAX_LENGTH,
-  normaliseAmount,
-  type CategoryDTO,
-  type Currency,
-  type Cycle,
-} from "@/types";
-
-/** Select value for the "+ New category…" option; never a valid uuid, so the server ignores it. */
-const NEW_CATEGORY = "__new__";
+import { NEW_CATEGORY, validateSubscriptionForm, type Errors } from "@/lib/services/subscription-validation";
+import { CURRENCIES, CYCLES, type CategoryDTO, type Currency, type Cycle } from "@/types";
 
 const CYCLE_LABELS: Record<Cycle, string> = { monthly: "Monthly", yearly: "Yearly" };
 
@@ -40,8 +28,6 @@ interface Props {
   pendingText?: string;
 }
 
-type Errors = Partial<Record<"name" | "amount" | "category" | "newCategory", string>>;
-
 export default function SubscriptionForm({
   categories,
   serverError,
@@ -61,35 +47,7 @@ export default function SubscriptionForm({
   const isNewCategory = categoryId === NEW_CATEGORY;
 
   function validate() {
-    const next: Errors = {};
-
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      next.name = "Name is required";
-    } else if (trimmedName.length > SUBSCRIPTION_NAME_MAX_LENGTH) {
-      next.name = `Name must be at most ${String(SUBSCRIPTION_NAME_MAX_LENGTH)} characters`;
-    }
-
-    const trimmedAmount = amount.trim();
-    if (!trimmedAmount) {
-      next.amount = "Amount is required";
-    } else if (!AMOUNT_PATTERN.test(trimmedAmount)) {
-      next.amount = "Use a number with up to 2 decimal places, e.g. 49.99";
-    } else if (!(Number(normaliseAmount(trimmedAmount)) > 0)) {
-      next.amount = "Amount must be greater than 0";
-    }
-
-    if (isNewCategory) {
-      const trimmedCategory = newCategory.trim();
-      if (!trimmedCategory) {
-        next.newCategory = "Category name is required";
-      } else if (trimmedCategory.length > CATEGORY_NAME_MAX_LENGTH) {
-        next.newCategory = `Category name must be at most ${String(CATEGORY_NAME_MAX_LENGTH)} characters`;
-      }
-    } else if (!categoryId) {
-      next.category = "Choose a category";
-    }
-
+    const next = validateSubscriptionForm({ name, amount, categoryId, newCategory, isNewCategory });
     setErrors(next);
     return Object.keys(next).length === 0;
   }

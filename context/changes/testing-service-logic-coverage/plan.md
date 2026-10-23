@@ -456,27 +456,27 @@ None. No schema changes. Phase 5 breaks DB functions only temporarily on local S
 
 #### Automated
 
-- [x] 1.1 `npm test` passes, including the alias and `astro:env/server` probe
-- [x] 1.2 `npm run test:integration` passes against local Supabase
-- [x] 1.3 `npm run test:integration` with `SUPABASE_URL` unset exits non-zero with the guard's message
-- [x] 1.4 `npm run lint`, `npx astro check`, `npm run format:check` and `npm run test:smoke` pass
+- [x] 1.1 `npm test` passes, including the alias and `astro:env/server` probe — 2b77698
+- [x] 1.2 `npm run test:integration` passes against local Supabase — 2b77698
+- [x] 1.3 `npm run test:integration` with `SUPABASE_URL` unset exits non-zero with the guard's message — 2b77698
+- [x] 1.4 `npm run lint`, `npx astro check`, `npm run format:check` and `npm run test:smoke` pass — 2b77698
 
 #### Manual
 
-- [x] 1.5 The user confirms that the port/server check was done before running the integration suite, and that it reused their local Supabase without interfering
+- [x] 1.5 The user confirms that the port/server check was done before running the integration suite, and that it reused their local Supabase without interfering — 2b77698
 
 ### Phase 2: One rule set (#6)
 
 #### Automated
 
-- [ ] 2.1 `npm test` passes, with the case table executed against both the validator and the parser
-- [ ] 2.2 `npm run test:integration` passes, with the DB verdicts for every `dbApplicable` row
-- [ ] 2.3 `npm run lint`, `npx astro check`, `npm run lint:ui`, `npm run format:check` and `npm run build` pass
+- [x] 2.1 `npm test` passes, with the case table executed against both the validator and the parser
+- [x] 2.2 `npm run test:integration` passes, with the DB verdicts for every `dbApplicable` row
+- [x] 2.3 `npm run lint`, `npx astro check`, `npm run lint:ui`, `npm run format:check` and `npm run build` pass
 
 #### Manual
 
-- [ ] 2.4 In the dev server, the add and edit forms show the same client-side messages as before the extraction (empty name, `abc` amount, empty new category)
-- [ ] 2.5 The user reviews the case table's divergence rows (`1.999`, emoji) and their documented reasons
+- [x] 2.4 In the dev server, the add and edit forms show the same client-side messages as before the extraction (empty name, `abc` amount, empty new category)
+- [x] 2.5 The user reviews the case table's divergence rows (`1.999`, emoji) and their documented reasons
 
 ### Phase 3: Atomic writes and honest feedback (#2, #4)
 
