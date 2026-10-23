@@ -482,16 +482,16 @@ None. No schema changes. Phase 5 breaks DB functions only temporarily on local S
 
 #### Automated
 
-- [x] 3.1 `npm run test:integration` passes, including the service and route suites
-- [x] 3.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
-- [x] 3.3 `npm run test:rls` still passes (no interference with shared local data)
+- [x] 3.1 `npm run test:integration` passes, including the service and route suites — af49738
+- [x] 3.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass — af49738
+- [x] 3.3 `npm run test:rls` still passes (no interference with shared local data) — af49738
 
 ### Phase 4: Category reuse (#4)
 
 #### Automated
 
-- [ ] 4.1 `npm run test:integration` passes, including the category-reuse suite for both RPCs
-- [ ] 4.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
+- [x] 4.1 `npm run test:integration` passes, including the category-reuse suite for both RPCs
+- [x] 4.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
 
 ### Phase 5: Prove and document
 
