@@ -25,13 +25,20 @@ function subscriptionsByName(url: string, name: string) {
   return endpoint.toString();
 }
 
+// The stored subscriptions with this exact name, read past RLS: what the database holds,
+// not what a page rendered.
+export async function findSubscriptionsNamed(request: APIRequestContext, name: string): Promise<unknown[]> {
+  const { url, headers } = localAdmin();
+  const found = await request.get(subscriptionsByName(url, name), { headers });
+  await expect(found).toBeOK();
+  return (await found.json()) as unknown[];
+}
+
 // Deletes every subscription with this exact name and asserts none is left.
 export async function deleteSubscriptionsNamed(request: APIRequestContext, name: string) {
   const { url, headers } = localAdmin();
   const deleted = await request.delete(subscriptionsByName(url, name), { headers });
   await expect(deleted).toBeOK();
 
-  const left = await request.get(subscriptionsByName(url, name), { headers });
-  await expect(left).toBeOK();
-  expect(await left.json()).toEqual([]);
+  expect(await findSubscriptionsNamed(request, name)).toEqual([]);
 }
