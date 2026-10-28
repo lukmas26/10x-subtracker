@@ -497,11 +497,11 @@ None. No schema changes. Phase 5 breaks DB functions only temporarily on local S
 
 #### Automated
 
-- [x] 5.1 After every revert: `npm test` and `npm run test:integration` pass
-- [x] 5.2 `npm run test:smoke`, `npm run test:rls`, `npm run lint`, `npx astro check`, `npm run format:check` and `npm run build` pass
-- [x] 5.3 `git diff --stat` shows no leftover break in `src/` or `supabase/migrations/`
+- [x] 5.1 After every revert: `npm test` and `npm run test:integration` pass — 9ec20db
+- [x] 5.2 `npm run test:smoke`, `npm run test:rls`, `npm run lint`, `npx astro check`, `npm run format:check` and `npm run build` pass — 9ec20db
+- [x] 5.3 `git diff --stat` shows no leftover break in `src/` or `supabase/migrations/` — 9ec20db
 
 #### Manual
 
-- [x] 5.4 The user reviews `break-catalogue.md`: every break was red and reverted
-- [x] 5.5 The user reviews the test-plan §6.3/§6.4 cookbook text and the `follow-ups.md` entries
+- [x] 5.4 The user reviews `break-catalogue.md`: every break was red and reverted — 9ec20db
+- [x] 5.5 The user reviews the test-plan §6.3/§6.4 cookbook text and the `follow-ups.md` entries — 9ec20db
