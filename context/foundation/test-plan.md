@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-10-14
+> Last updated: 2026-10-24
 
 ## 1. Strategy
 
@@ -70,7 +70,7 @@ orchestrator updates Status as artifacts appear on disk.
 | #   | Phase name              | Goal (one line)                                                                                                                 | Risks covered | Test types                                       | Status        | Change folder                   |
 | --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------ | ------------- | ------------------------------- |
 | 1   | Safety-net verification | Prove the existing smoke and RLS checks really catch leaks, data loss, and unauthenticated access; close the route-coverage gap | #3, #1, #5    | deliberate-break runs, integration (REST), smoke | complete      | testing-safety-net-verification |
-| 2   | Service logic coverage  | Bootstrap a runner for service code; prove atomic writes, honest error feedback, category reuse, and one rule set across layers | #2, #4, #6    | unit + integration (local Supabase)              | change opened | testing-service-logic-coverage  |
+| 2   | Service logic coverage  | Bootstrap a runner for service code; prove atomic writes, honest error feedback, category reuse, and one rule set across layers | #2, #4, #6    | unit + integration (local Supabase)              | complete      | testing-service-logic-coverage  |
 | 3   | Summary math oracle     | Prove summary totals against hand-computed PRD examples; starts after roadmap S-04 ships                                        | #7            | unit                                             | not started   | —                               |
 | 4   | Quality-gates wiring    | Make unit + integration a required CI step; add a local post-edit hook on service and migration edits                           | cross-cutting | CI gates, post-edit hook                         | not started   | —                               |
 
@@ -81,12 +81,12 @@ The classic test base for this project. AI-native tools (if any) carry a
 Recommendations in this section must be grounded in local manifests/configs
 plus the MCP/tools actually exposed in the current session.
 
-Test-base profile: **sparse** — no test-runner config; 2 `node:test` files, both for script matchers (`scripts/*.test.mjs`); script-based e2e smoke and RLS check; zero tests under `src/`.
+Test-base profile: **sparse** — `node:test` for script matchers (`scripts/*.test.mjs`); Vitest for `src/` code, with unit and integration tests in top-level `tests/` (since Phase 2); script-based e2e smoke and RLS check.
 
 | Layer                       | Tool                                              | Version | Notes                                                                                                  |
 | --------------------------- | ------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
 | unit (scripts)              | `node:test` + `node:assert/strict`                | Node 22 | `npm run test:smoke`; covers matchers only                                                             |
-| unit + integration (`src/`) | none yet — see Phase 2                            | —       | runner choice made in Phase 2 research (must run in Node against Astro/TS code)                        |
+| unit + integration (`src/`) | Vitest via `getViteConfig` (`vitest.config.ts`)   | 5.0.5   | `npm test` (unit, no services); `npm run test:integration` (local Supabase only, files in sequence)   |
 | RLS / data isolation        | `scripts/rls-check.mjs` (Supabase REST, anon key) | —       | `npm run test:rls`, local Supabase only                                                                |
 | e2e                         | `scripts/smoke.mjs` (dependency-free HTTP)        | —       | `npm run smoke` local/CI; `smoke:remote` read-only on hosted                                           |
 | accessibility               | `eslint-plugin-jsx-a11y`                          | 6.10.2  | static lint only                                                                                       |
@@ -153,11 +153,30 @@ Shipped by §3 Phase 1 (`testing-safety-net-verification`).
 
 ### 6.3 Adding a service integration test
 
-- TBD — see §3 Phase 2 for the failed-write-leaves-state-unchanged and honest-confirmation pattern.
+Shipped by §3 Phase 2 (`testing-service-logic-coverage`).
+
+- **Where.** `tests/integration/<area>.test.ts`, never under `src/pages/`: `scripts/routes.test.mjs` treats every `.ts`/`.js` file there as a route. References: `subscriptions.service.test.ts` (service Result values), `subscriptions.routes.test.ts` (redirects), `category-reuse.test.ts` (an SQL rule through both RPCs).
+- **Real database, never mocked.** Sign up throwaway users with `signUpUser(label)` from `tests/helpers/supabase.ts` and pass the signed-in client to the service. Local sign-ups are rate limited (30 per 5 minutes, `supabase/config.toml`), so sign up one or two users per file in `beforeAll` and make every name unique with `runId` plus a counter. Tests then never depend on order or on leftover rows.
+- **Route handlers.** Call the exported `POST` directly with `makeContext({ supabase, user, form, params })` from `tests/helpers/api-context.ts`. Assert the exact path and the exact query through `redirectTarget(response)`, so `?saved=1` / `?updated=1` cannot slip into a failure redirect.
+- **Snapshot, call, re-read.** Before the call, read the row (`getSubscription`) and the user's own subscription and category ids. After it, re-read them with a healthy client and compare with the snapshot, after a success as well as after a failure. A Result or a redirect alone proves nothing.
+- **Failure after a category insert.** Send a new category name unique to the run together with something the database rejects later in the same RPC: `amount: "0"` passed straight to the service (the parser would stop it first), or an unknown or another user's subscription id (`P0002` → `notFound`). Assert the error, the unchanged row, and that no category with that name exists.
+- **Network failure.** Build a client with `newClient({ fetch })` whose `fetch` rejects only `/rest/v1/` requests, then `setSession` it with the real user's session, so auth works and the data call fails. postgrest-js resolves this to `{ error }` and does not retry POST, so the service must report `save` and the re-read must show no change.
+- **Prove it.** Break the mapping by hand (for example, return `{ ok: true }` despite `error`, or redirect to `?saved=1` before checking `result.ok`), confirm the test goes red, then revert. See `context/changes/testing-service-logic-coverage/break-catalogue.md`.
+- **Run:** `npm run test:integration` with `SUPABASE_URL`/`SUPABASE_KEY` of a **local** Supabase set in the shell; `vitest.config.ts` ignores `.env`/`.dev.vars`. Under Git Bash, for example: `set -a; . ./.env; set +a; npm run test:integration`. The global setup refuses a missing or non-local URL. Local Supabase is shared with the user's session, so follow the port check in `AGENTS.md` first.
 
 ### 6.4 Adding a validation rule across form, server, and database
 
-- TBD — see §3 Phase 2 for the shared case-table pattern.
+Shipped by §3 Phase 2 (`testing-service-logic-coverage`).
+
+- **One case table.** Add rows to `tests/cases/subscription-cases.ts`, never assertions with their own copy of the rule. Each row has an `id`, the `field`, the raw form `input` (a valid submission with one field changed), the app `verdict`, and `stored` values for an accepted row. Cite the source of each limit in a comment above its rows: PRD, S-01 plan, roadmap, or the migration line of the DB check.
+- **Three layers, same rows.** `tests/unit/subscription-rules.test.ts` runs every row through the form's `validateSubscriptionForm` (`src/lib/services/subscription-validation.ts`) and the server's `parseNewSubscription`. `tests/integration/subscription-rules.db.test.ts` calls `create_subscription` directly with the raw value for every `dbApplicable` row and asserts the exact error code (or the stored values), with no new row and no new category. A new form rule goes into `subscription-validation.ts`, not back into the component.
+- **Divergence rows.** When a layer legitimately disagrees, record it on the row; never drop the row.
+  - `form: { verdict, reason }` for a field the form does not validate (currency and cycle are select-only).
+  - `db: { verdict, code?, reason }` for a different DB verdict or a specific code. Current examples: `"1.999"` (the app rejects; `numeric(10,2)` rounds it to 2.00 and accepts, so the app is the guard), 50 emoji as a new category (the app rejects by UTF-16 `.length`; the DB accepts by `char_length`), and no category (`42501`, because RLS `WITH CHECK` runs before `NOT NULL`).
+  - `dbApplicable: false` for input the app never sends to the database (an empty amount).
+- **Oracle rule.** Expected verdicts and codes come from the cited sources, never from running the code. When a run disagrees with a row, find out which side is right. The outcome is either a documented divergence with its reason, or a bug to raise with the user. Never edit the verdict to make the run green.
+- **Prove it.** Loosen the rule once in one layer (for example, `SUBSCRIPTION_NAME_MAX_LENGTH + 1` in the parser, or no `> 0` amount check in the validator), confirm that layer's rows go red, then revert. For a DB rule, `create or replace` the function on local Supabase only and restore it from its migration file, never with `db reset`.
+- **Run:** `npm test` (validator and parser, no services), `npm run test:integration` (DB layer, local Supabase; see §6.3).
 
 ### 6.5 Adding a calculation test with an independent oracle
 
@@ -168,6 +187,7 @@ Shipped by §3 Phase 1 (`testing-safety-net-verification`).
 (Appended by each phase after it lands.)
 
 - **Phase 1, safety-net verification (2026-10-19):** 11 deliberate breaks, each red and reverted, recorded in `context/changes/testing-safety-net-verification/break-catalogue.md`. Notable: with exact-match middleware, the anonymous edit page rendered with status 200, and `PGRST202` would have passed the old any-error RLS checks.
+- **Phase 2, service logic coverage (2026-10-24):** Vitest 5 runs through Astro's `getViteConfig`, but `vitest.config.ts` drops the Cloudflare adapter's Vite plugins (they move module execution into workerd) and restores `process.env` after config resolution, so tests read Supabase credentials from the shell only. 7 deliberate breaks (service mapping, route redirect, parser, validator, and the category lookup in both RPCs), each red and reverted, recorded in `context/changes/testing-service-logic-coverage/break-catalogue.md`; own-category reuse survives a broken first lookup because the unique index and the second `lower()` lookup also hold it. Notable: "no category" fails with `42501`, not `23502`; the `1.999` and emoji rows are documented divergences; inner double spaces in a category name create a new category (pinned with "Photo storage" / "Photo  storage", because "Cloud storage" is a starter). Follow-ups for separate changes: `context/changes/testing-service-logic-coverage/follow-ups.md`.
 
 ## 7. What We Deliberately Don't Test
 

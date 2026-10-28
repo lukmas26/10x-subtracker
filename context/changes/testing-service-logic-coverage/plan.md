@@ -490,18 +490,18 @@ None. No schema changes. Phase 5 breaks DB functions only temporarily on local S
 
 #### Automated
 
-- [x] 4.1 `npm run test:integration` passes, including the category-reuse suite for both RPCs
-- [x] 4.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass
+- [x] 4.1 `npm run test:integration` passes, including the category-reuse suite for both RPCs — b3866b6
+- [x] 4.2 `npm test`, `npm run lint`, `npx astro check` and `npm run format:check` pass — b3866b6
 
 ### Phase 5: Prove and document
 
 #### Automated
 
-- [ ] 5.1 After every revert: `npm test` and `npm run test:integration` pass
-- [ ] 5.2 `npm run test:smoke`, `npm run test:rls`, `npm run lint`, `npx astro check`, `npm run format:check` and `npm run build` pass
-- [ ] 5.3 `git diff --stat` shows no leftover break in `src/` or `supabase/migrations/`
+- [x] 5.1 After every revert: `npm test` and `npm run test:integration` pass
+- [x] 5.2 `npm run test:smoke`, `npm run test:rls`, `npm run lint`, `npx astro check`, `npm run format:check` and `npm run build` pass
+- [x] 5.3 `git diff --stat` shows no leftover break in `src/` or `supabase/migrations/`
 
 #### Manual
 
-- [ ] 5.4 The user reviews `break-catalogue.md`: every break was red and reverted
-- [ ] 5.5 The user reviews the test-plan §6.3/§6.4 cookbook text and the `follow-ups.md` entries
+- [x] 5.4 The user reviews `break-catalogue.md`: every break was red and reverted
+- [x] 5.5 The user reviews the test-plan §6.3/§6.4 cookbook text and the `follow-ups.md` entries
