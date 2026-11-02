@@ -34,3 +34,11 @@ pnpm-debug.log*
 
 # claude code local session state
 .claude/
+
+# Playwright
+playwright/.auth/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+.playwright-cli/
