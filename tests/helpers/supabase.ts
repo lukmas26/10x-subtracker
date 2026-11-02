@@ -41,6 +41,8 @@ export interface NewClientOptions {
 }
 
 export function newClient(options: NewClientOptions = {}): SupabaseClient<Database> {
+  // Every client goes through the local-only guard, not just runs with the integration globalSetup.
+  assertLocalSupabase();
   const { url, key } = readEnv();
   return createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },

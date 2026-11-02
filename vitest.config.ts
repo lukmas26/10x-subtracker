@@ -25,6 +25,8 @@ const astroViteConfig = getViteConfig({
           globalSetup: ["tests/helpers/global-setup.ts"],
           // All integration files share one local database; run them one at a time.
           fileParallelism: false,
+          // beforeAll blocks sign up 2–3 users; give a cold local auth stack more than the 10s default.
+          hookTimeout: 30_000,
         },
       },
     ],
@@ -35,8 +37,22 @@ const astroViteConfig = getViteConfig({
 // cannot drive ("module is not defined"). Tests run in Node, so drop them; Astro's own plugins stay.
 const CLOUDFLARE_PLUGIN = /^(vite-plugin-cloudflare|@astrojs\/cloudflare)/;
 
-function withoutCloudflare(plugins: PluginOption[]): PluginOption[] {
-  return plugins.flat(Infinity as 1).filter((plugin) => {
+// A plugin option may be a promise or a nested array; resolve both so every plugin has a name to match.
+async function flattenPlugins(options: PluginOption[]): Promise<PluginOption[]> {
+  const flat: PluginOption[] = [];
+  for (const option of options) {
+    const resolved = await option;
+    if (Array.isArray(resolved)) {
+      flat.push(...(await flattenPlugins(resolved)));
+    } else {
+      flat.push(resolved);
+    }
+  }
+  return flat;
+}
+
+async function withoutCloudflare(plugins: PluginOption[]): Promise<PluginOption[]> {
+  return (await flattenPlugins(plugins)).filter((plugin) => {
     return !(plugin && "name" in plugin && CLOUDFLARE_PLUGIN.test(plugin.name));
   });
 }
@@ -57,5 +73,5 @@ export default async (env: { mode: string; command: "build" | "serve" }): Promis
   const snapshot = { ...process.env };
   const config = await astroViteConfig(env);
   restoreEnv(snapshot);
-  return { ...config, plugins: withoutCloudflare(config.plugins ?? []) };
+  return { ...config, plugins: await withoutCloudflare(config.plugins ?? []) };
 };

@@ -52,5 +52,8 @@ describe("server parser (parseNewSubscription)", () => {
     expect(result.value.name).toBe(row.stored.name);
     expect(result.value.amount).toBe(row.stored.amount);
     expect(result.value.newCategory).toBe(row.stored.category ?? null);
+    expect(result.value.currency).toBe(row.input.currency);
+    expect(result.value.cycle).toBe(row.input.cycle);
+    expect(result.value.categoryId).toBe(row.stored.category ? null : row.input.category_id);
   });
 });

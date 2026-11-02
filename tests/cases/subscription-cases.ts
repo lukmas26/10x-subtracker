@@ -178,7 +178,11 @@ export const subscriptionCases: readonly SubscriptionCase[] = [
     field: "amount",
     input: form({ amount: "abc" }),
     verdict: "reject",
-    db: { verdict: "reject", code: "22P02", reason: "not a numeric literal (p_amount numeric)" },
+    db: {
+      verdict: "reject",
+      code: "22P02",
+      reason: "not a numeric literal (p_amount numeric, 20261003140000_create_subscription_rpc.sql:10)",
+    },
     dbApplicable: true,
   },
   {

@@ -163,6 +163,8 @@ describe("POST /api/subscriptions (add)", () => {
   it("database failure: redirects with the save error, no saved, and adds no row or category", async () => {
     const before = await ownRows();
     // Valid for the parser; the insert policy rejects another user's private category.
+    // No new category here: the parser stops every value that would fail after a category insert,
+    // so that rollback is proven in subscriptions.service.test.ts (amount "0" and notFound cases).
     const values = form({ category_id: otherCategoryId });
 
     const response = await addSubscription(makeContext({ supabase: client, user, form: values }));
@@ -208,6 +210,7 @@ describe("POST /api/subscriptions/[id] (edit)", () => {
   it("invalid amount: redirects to the edit page with the amount error and the row is unchanged", async () => {
     const id = await seed();
     const before = await getSubscription(client, id);
+    expect(before).not.toBeNull();
 
     const response = await editSubscription(
       makeContext({ supabase: client, user, form: form({ amount: "abc" }), params: { id } }),
@@ -249,6 +252,7 @@ describe("POST /api/subscriptions/[id] (edit)", () => {
   it("network failure: redirects to the edit page with the save error and the row is unchanged", async () => {
     const id = await seed();
     const before = await getSubscription(client, id);
+    expect(before).not.toBeNull();
     const rowsBefore = await ownRows();
 
     const response = await editSubscription(
@@ -263,6 +267,7 @@ describe("POST /api/subscriptions/[id] (edit)", () => {
   it("no user: redirects to sign-in and the row is unchanged", async () => {
     const id = await seed();
     const before = await getSubscription(client, id);
+    expect(before).not.toBeNull();
 
     const response = await editSubscription(
       makeContext({ supabase: client, user: null, form: form(), params: { id } }),

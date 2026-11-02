@@ -204,6 +204,7 @@ describe("updateSubscription", () => {
   it("rolls back the new category when the amount fails after it was created (save)", async () => {
     const id = await seed();
     const before = await getSubscription(client, id);
+    expect(before).not.toBeNull();
     const newCategory = unique("cat");
 
     // amount "0" bypasses the parser on purpose: the database rejects it after inserting the category.
@@ -221,6 +222,7 @@ describe("updateSubscription", () => {
   ])("rolls back the new category for $label (notFound)", async ({ id }) => {
     const ownId = await seed();
     const before = await getSubscription(client, ownId);
+    expect(before).not.toBeNull();
     const rowsBefore = await ownRows();
     const otherBefore = await otherRow();
     const newCategory = unique("cat");
@@ -238,6 +240,7 @@ describe("updateSubscription", () => {
   it("reports save on a network failure and changes nothing", async () => {
     const id = await seed();
     const before = await getSubscription(client, id);
+    expect(before).not.toBeNull();
     const rowsBefore = await ownRows();
     const newCategory = unique("cat");
 

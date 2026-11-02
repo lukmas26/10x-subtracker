@@ -80,6 +80,8 @@ describe("create_subscription (database layer)", () => {
 
     if (verdict === "reject") {
       expect(data).toBeNull();
+      // A reject row must name its code, or undefined === undefined would pass for any error.
+      expect(row.db?.code).toBeDefined();
       expect(error?.code).toBe(row.db?.code);
       expect(await ownRows()).toEqual(before);
       return;
